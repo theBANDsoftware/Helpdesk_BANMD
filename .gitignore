@@ -1,0 +1,23 @@
+# Beroenden
+node_modules/
+
+# Byggfiler
+dist/
+build/
+target/
+out/
+
+# Miljövariabler och hemligheter. Checka aldrig in dessa.
+.env
+.env.*
+!.env.example
+
+# Loggar
+*.log
+
+# Editorer och operativsystem
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
