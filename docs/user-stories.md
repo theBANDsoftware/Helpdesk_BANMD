@@ -106,34 +106,15 @@ Alla stories i sprint 1 bygger på det.
 
 #### Acceptanskriterier
 
-**AK 1**
-Givet att ingen användare är vald
-när jag öppnar appen
-så visas en lista med alla användare, med namn och roll.
-
-**AK 2**
-Givet att listan visas
-när jag väljer en användare
-så visas mitt namn och min roll i sidhuvudet tillsammans med en knapp för att byta användare.
-
-**AK 3**
-Givet att jag har valt en användare
-när jag laddar om sidan
-så är jag fortfarande vald.
-
-**AK 4**
-Givet att jag har valt en användare
-när jag klickar på "Byt användare"
-så kommer jag tillbaka till listan med användare.
-
-**AK 5**
-Givet att ingen användare är vald
-när jag försöker gå direkt till en annan sida (t.ex. genom att skriva in adressen)
-så skickas jag till listan med användare.
+- [ ] **AK 1:** Givet att ingen användare är vald, när jag öppnar appen, så visas en lista med alla användare, med namn och roll.
+- [ ] **AK 2:** Givet att listan visas, när jag väljer en användare, så visas mitt namn och min roll i sidhuvudet tillsammans med en knapp för att byta användare.
+- [ ] **AK 3:** Givet att jag har valt en användare, när jag laddar om sidan, så är jag fortfarande vald.
+- [ ] **AK 4:** Givet att jag har valt en användare, när jag klickar på "Byt användare", så kommer jag tillbaka till listan med användare.
+- [ ] **AK 5:** Givet att ingen användare är vald, när jag försöker gå direkt till en annan sida (t.ex. genom att skriva in adressen), så skickas jag till listan med användare.
 
 #### Anteckningar
 
-- Ingen riktig inloggning i MVP:n, se beslutslogg #2. Inloggning med lösenord finns som egen story (Should).
+- Ingen riktig inloggning i MVP:n, se beslut 2 i beslutsloggen. Inloggning med lösenord finns som egen story (Should).
 - Testdata: minst fyra anställda och två IT-ansvariga ska finnas i databasen från start, så att storyn går att testa.
 - Efter valet visas en enkel startsida. Vart man skickas beroende på roll ingår i "Se mina ärenden" och "Se alla ärenden", så att den här storyn kan bli klar först.
 
@@ -248,25 +229,10 @@ Ny story jämfört med pass 1. Ärendevyn behövs som plats för att ändra stat
 
 #### Acceptanskriterier
 
-**AK 1**
-Givet att jag är IT-ansvarig och har öppnat ett ärende
-när jag väljer en ny status (Ny, Pågår eller Löst) och sparar
-så visas den nya statusen direkt i ärendet och i "Alla ärenden".
-
-**AK 2**
-Givet att IT har ändrat status på mitt ärende
-när jag som anställd öppnar "Mina ärenden"
-så ser jag den nya statusen.
-
-**AK 3**
-Givet att jag är anställd och har öppnat mitt ärende
-när jag tittar på statusen
-så kan jag se den men inte ändra den.
-
-**AK 4**
-Givet att ett ärende har status Löst
-när IT ändrar det till Pågår
-så är ärendet öppet igen och syns som ej löst.
+- [ ] **AK 1:** Givet att jag är IT-ansvarig och har öppnat ett ärende, när jag väljer en ny status (Ny, Pågår eller Löst) och sparar, så visas den nya statusen direkt i ärendet och i "Alla ärenden".
+- [ ] **AK 2:** Givet att IT har ändrat status på mitt ärende, när jag som anställd öppnar "Mina ärenden", så ser jag den nya statusen.
+- [ ] **AK 3:** Givet att jag är anställd och har öppnat mitt ärende, när jag tittar på statusen, så kan jag se den men inte ändra den.
+- [ ] **AK 4:** Givet att ett ärende har status Löst, när IT ändrar det till Pågår, så är ärendet öppet igen och syns som ej löst.
 
 ---
 
@@ -322,20 +288,9 @@ så är ärendet öppet igen och syns som ej löst.
 
 #### Acceptanskriterier
 
-**AK 1**
-Givet att IT har kommenterat mitt ärende
-när jag öppnar ärendet
-så ser jag kommentaren med namn och tid.
-
-**AK 2**
-Givet att jag har öppnat ett av mina ärenden
-när jag skriver ett svar och skickar det
-så visas svaret bland kommentarerna med mitt namn och tid.
-
-**AK 3**
-Givet att textfältet är tomt
-när jag försöker skicka
-så skickas ingenting.
+- [ ] **AK 1:** Givet att IT har kommenterat mitt ärende, när jag öppnar ärendet, så ser jag kommentaren med namn och tid.
+- [ ] **AK 2:** Givet att jag har öppnat ett av mina ärenden, när jag skriver ett svar och skickar det, så visas svaret bland kommentarerna med mitt namn och tid.
+- [ ] **AK 3:** Givet att textfältet är tomt, när jag försöker skicka, så skickas ingenting.
 
 #### Anteckningar
 
@@ -395,7 +350,7 @@ så skickas ingenting.
 #### Anteckningar
 
 - Bedömd som L: ingen i gruppen har byggt inloggning med Spring Security förut. Gör gärna en undersökning först och dela upp storyn efter den.
-- Ersätter valet i listan från "Välja vem man är" (beslutslogg #2).
+- Ersätter valet i listan från "Välja vem man är" (beslut 2 i beslutsloggen).
 
 ---
 
