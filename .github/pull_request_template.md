@@ -1,34 +1,31 @@
 ## Vad gör den här pull requesten?
 
-<!-- Kort beskrivning av ändringen. -->
+<!-- Beskriv kort vad som ändrats och varför. -->
 
-Closes #<!-- issuenummer, t.ex. Closes #4. Då stängs issuen och kortet flyttas till Klart när PR:en mergas. -->
+Closes #N
+
+<!-- Ersätt N med issuenumret. När PR:en mergas stängs issuen. -->
 
 ## Hur testar man den?
 
-<!--
-  Steg för granskaren. Utgå från acceptanskriterierna.
-  Exempel:
-  1. Starta appen och gå till ett hushåll.
-  2. Lägg till en syssla utan namn: ett felmeddelande ska visas.
-  3. Lägg till en syssla med namn: den ska synas direkt i listan.
--->
+<!-- Beskriv konkreta teststeg utifrån storyns acceptanskriterier. -->
 
-1.
-2.
+1. 
+2. 
 
 ## Definition of Done
 
-<!--
-  Den här listan ska spegla er docs/definition-of-done.md.
-  Uppdatera den här mallen när ni ändrar er DoD.
--->
+Samtliga krav i [Definition of Done](../docs/definition-of-done.md) ska vara uppfyllda innan storyn betraktas som klar.
 
-- [ ] Alla acceptanskriterier är uppfyllda och testade för hand
-- [ ] Applikationen startar och körs utan fel
-- [ ] Inga `console.log`, utkommenterad kod eller TODO kvar
-- [ ] README eller `docs/` är uppdaterad om det behövs
+- [ ] Alla acceptanskriterier är uppfyllda och testade för hand av både utvecklaren och granskaren.
+- [ ] PR:en är kopplad till rätt issue med `Closes #N`.
+- [ ] PR:en är granskad och godkänd av minst en annan i teamet.
+- [ ] Databas, backend och frontend startar utan fel enligt projektets DoD.
+- [ ] Ingen felsökningskod, utkommenterad kod eller några TODO finns kvar.
+- [ ] Inga hemligheter finns i repot.
+- [ ] Backendkoden följer lagerstrukturen controller → service → repository.
+- [ ] README eller `docs/` är uppdaterad om det behövs.
 
 ## Till granskaren
 
-<!-- Något särskilt du vill att granskaren tittar på? Något du är osäker på? -->
+<!-- Ange särskilda områden att granska, osäkerheter eller sådant som behöver verifieras. -->
