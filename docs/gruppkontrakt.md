@@ -1,98 +1,66 @@
 # Gruppkontrakt
 
 <!--
-  INSTRUKTION
-  Fyll i varje avsnitt tillsammans. Ändra, ta bort eller lägg till det som passar er grupp.
-  Var konkreta: "vi svarar inom 4 timmar under arbetstid" går att följa upp, "vi kommunicerar bra" gör det inte.
-  Ta bort exemplen när ni skrivit era egna punkter.
-  Kontraktet får ändras under kursen. Ändringar tas upp på retron och alla måste vara överens.
+  UTKAST att gå igenom tillsammans. Allt här är förslag: stryk, ändra och lägg till.
+  Mallen (gruppkontrakt.md) är orörd.
 -->
 
-**Grupp:**
-**Datum:**
-
+**Grupp:** _[the BANMD]_
+**Datum:** _[13/10 - 2026]_
+**Medlemmar:** _[Bleart Rama]_, _[Adli Anabtawi]_, _[Noah Fältman]_, _[Mustafa Samir]_, _[David Andersson]_
 ## Tillgänglighet
 
-<!-- Vilka tider jobbar ni? När är det okej att inte svara? Hur snabbt förväntas man svara? -->
-
-> **Exempel:**
-> - Vi jobbar vardagar kl. 9–16.
-> - Kvällar och helger är frivilligt. Ingen förväntas svara då.
-> - Under arbetstid svarar vi på meddelanden inom 2 timmar.
-
--
--
+- Vi jobbar med projektet väldigt flexibelt. Vi träffas för standupen varje dag, vi är dock flexibla med när vi träffas varje dag. tidigast kl 08.00, senast kl 22.00.
+- Helger träffas vi vid behov (10-19). Ingen förväntas svara då, och ingen förväntas ha läst meddelanden som skickats då förrän nästa vardag kl. 9.
+- Under arbetstid svarar vi på meddelanden i gruppkanalen inom 2 timmar. Den som blir nämnd (@namn) svarar inom 1 timme.
+- Alla lägger in sina fasta hinder (jobb, andra kurser, återkommande tider) i ett delat schema första veckan, så att vi vet när var och en inte kan.
 
 ## Kommunikation
 
-<!-- Vilken kanal används till vad? Hur ger ni feedback till varandra? -->
-
-> **Exempel:**
-> - Discord för snabba frågor och daglig kontakt.
-> - Frågor om specifik kod tas i kommentarer på pull requesten.
-> - Vi ger feedback på koden, inte på personen.
-
--
--
+- **Discord** för daglig kontakt och snabba frågor. Vi har separata kanaler för `#allmänt`, `#standup` och `#hjälp`.
+- **GitHub** för allt som rör kod: frågor om en ändring tas i kommentarer på pull requesten, inte i chatten.
+- **GitHub Projects** är det enda stället där vi håller koll på vem som gör vad. Står det inte på boarden är det inte bestämt.
+- Beslut som tas i chatten eller på möte skrivs in i beslutsloggen samma dag av den som tog upp frågan.
+- Vi ger feedback på koden och arbetet, inte på personen. Vi säger vad som är bra, inte bara vad som är fel.
 
 ## Närvaro och frånvaro
 
-<!-- Hur och när meddelar man frånvaro? Vad händer om någon missar en ceremoni? -->
-
-> **Exempel:**
-> - Frånvaro meddelas i Discord senast kl. 9 samma dag.
-> - Den som missar daily standup skriver sin rad i loggen själv samma dag.
-
--
--
+- Alla är med på lektionspassen (måndag och onsdag) och på sprint review, retro och sprint planning varje måndag.
+- Daily standup hålls varje vardag kl. _[tid, t.ex. 09:15]_, max 15 minuter, i Discord.
+- Frånvaro meddelas i `#allmänt` senast kl. 9 samma dag, eller så snart man vet om det.
+- Den som missar daily standup skriver sina tre rader (gjort igår, gör idag, hinder) i `#standup` själv samma dag.
+- Den som missar en måndagsceremoni läser anteckningarna och bekräftar i kanalen att den har gjort det innan dagen är slut.
 
 ## Arbetsfördelning
 
-<!-- Hur fördelas uppgifter? Vad gör man om man blir klar eller kör fast? -->
-
-> **Exempel:**
-> - Man tar själv en story från "Att göra" och sätter sig som ansvarig.
-> - Den som kört fast i mer än en timme ber om hjälp.
-> - Den som blir klar hjälper till med granskning innan den tar en ny story.
-
--
--
+- På sprint planning väljer vi tillsammans vilka stories som ska med i sprinten. Sedan tar var och en själv en story från "Att göra" och sätter sig som ansvarig på boarden.
+- Alla tar minst en story per sprint och granskar minst en pull request per sprint.
+- Ingen har mer än en story i "Pågår" åt gången.
+- Den som kört fast i mer än en timme ber om hjälp i `#hjälp`.
+- Den som blir klar granskar öppna pull requests först, och tar en ny story först därefter.
+- Vi roterar rollen Scrum Master. 
 
 ## Beslut
 
-<!-- Hur fattar ni beslut? Vad gör ni om ni inte kommer överens? -->
-
-> **Exempel:**
-> - Mindre beslut tar den som äger frågan.
-> - Större beslut (stack, arkitektur, större ändringar i MVP) tas gemensamt och skrivs in i beslutsloggen.
-> - Om vi inte kommer överens röstar vi. Vid lika har Product Owner sista ordet om vad som byggs.
-
--
--
+- Mindre beslut (namngivning, hur en enskild komponent byggs) tar den som äger storyn.
+- Större beslut (stack, arkitektur, databasschema, ändringar i MVP:n) tas gemensamt och skrivs in i beslutsloggen med datum och motivering.
+- Vi försöker först bli överens. Går det inte röstar vi, och majoriteten bestämmer.
+- Vid lika röster har Product Owner sista ordet om *vad* som byggs. Den som äger storyn har sista ordet om *hur*.
 
 ## Kod och kvalitet
 
-<!-- Fylls på efter pass 3. Hur snabbt granskas PR:er? Får man merga sin egen kod? -->
+<!-- Fylls på efter pass 3 (Git i team). -->
 
-> **Exempel:**
-> - Pull requests granskas inom 24 timmar.
-> - Ingen mergar sin egen pull request.
-
--
--
+- Ingen pushar direkt till `main`. All kod går via en branch och en pull request.
+- Pull requests granskas inom 24 timmar (vardagar).
+- Ingen mergar sin egen pull request. Minst en annan person ska ha godkänt den.
+- Alla ska kunna förklara den kod de lämnar in, även kod som tagits fram med hjälp av AI.
 
 ## Om någon inte följer kontraktet
 
-<!-- Bestäm en trappa: vad händer, i vilken ordning? -->
-
-> **Exempel:**
-> 1. Vi tar upp det direkt med personen.
-> 2. Om det fortsätter tar vi upp det på retron.
-> 3. Om det fortfarande inte löser sig tar vi upp det med läraren.
-
-1.
-2.
-3.
+1. Vi tar upp det direkt och vänligt med personen, i första hand muntligt.
+2. Om det fortsätter tar vi upp det på nästa retrospektiv och skriver ner vad vi kommer överens om.
+3. Om det fortfarande inte löser sig tar vi upp det med Product Ownern.
 
 ## Underskrifter
 
@@ -100,14 +68,13 @@ Vi har läst kontraktet och är överens om det.
 
 | Namn | Datum |
 |---|---|
-| | |
-| | |
-| | |
-| | |
+[Adli Anabtawi], [13/10 - 2026]
+[Bleart Rama], [13/10 - 2026]
+[David Andersson], [13/10 - 2026]
+[Noah Fältman], [13/10 - 2026]
+[Mustafa Samir], [16/10 - 2026]
 
 ## Ändringar
-
-<!-- Fyll i när kontraktet ändras. -->
 
 | Datum | Ändring | Varför |
 |---|---|---|
