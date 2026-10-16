@@ -12,6 +12,7 @@ En story är klar när:
 6. Databaslösenord och andra hemligheter läses från miljövariabler eller från en lokal fil som finns i `.gitignore`. De ligger aldrig i repot.
 7. Backendkoden följer lagren controller → service → repository. Controllern innehåller ingen affärslogik och anropar inte repositoryt direkt.
 8. README eller `docs/` är uppdaterad om ändringen påverkar hur man startar eller använder projektet.
+9. Alla vyer som ändrats fungerar i mobilbredd (360 px) utan att man behöver scrolla i sidled.
 
 **Medvetet bortvalt i version 1:** krav på automatiska tester. Vi tar upp det på retron om fel som borde ha fångats börjar slinka igenom.
 
