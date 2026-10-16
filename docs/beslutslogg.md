@@ -38,45 +38,56 @@ Kopiera den här för varje nytt beslut:
 **Konsekvenser:** Vad betyder beslutet för projektet framåt?
 ```
 
----
-
-> **Exempel (Sysslo):**
->
-> ## #2 Ingen inloggning i MVP:n
->
-> **Datum:** 2026-11-04
-> **Status:** Gäller
->
-> **Bakgrund:** Inloggning stod i första utkastet av MVP:n. När vi estimerade blev den en L, och vi har inte byggt inloggning förut.
->
-> **Alternativ:**
-> - Bygga egen inloggning med lösenord
-> - Använda en färdig tjänst (t.ex. Auth0)
-> - Ingen inloggning i MVP:n. Man väljer vem man är från en lista i hushållet.
->
-> **Beslut:** Ingen inloggning i MVP:n.
->
-> **Varför:** Inloggning är inte kärnan i appen och skulle ta en hel sprint. Vi vill hellre visa fungerande sysslor tidigt. Användartestet visade också att ingen ville skapa konto.
->
-> **Konsekvenser:** Vem som helst med länken kan se hushållet. Vi tar upp inloggning igen efter MVP:n (Should i backloggen).
->
-> ## #1 Stack: React, Node/Express och PostgreSQL
->
-> **Datum:** 2026-10-28
-> **Status:** Gäller
->
-> **Bakgrund:** Vi behövde välja teknik innan vi satte upp projektet.
->
-> **Alternativ:**
-> - React + Node/Express + PostgreSQL
-> - Angular + Spring Boot + PostgreSQL
->
-> **Beslut:** React, Node/Express och PostgreSQL.
->
-> **Varför:** Tre av fyra i gruppen har jobbat med React och Node. Samma språk i frontend och backend gör det lättare att hjälpa varandra.
->
-> **Konsekvenser:** Jonas, som mest kan Java, behöver lära sig Express. Vi parprogrammerar första sprinten.
-
----
-
 <!-- Era beslut nedan, nyaste överst. -->
+
+## 3. Jira vs Github issues
+
+**Datum: 2026-10-16**
+**Status: Gäller** 
+
+**Bakgrund:** Vill vi använda Jira eller github issues som primärt verktyg för kort
+
+**Alternativ:**
+- Github issues och Jira
+- Bara Jira
+  
+**Beslut:** Jira
+
+**Varför:** Jira har större stöd för hela flödet för SCRUM
+
+**Konsekvenser:** Ett tydligare och mer sömlöst arbetssätt.
+
+## 2. MySQL-server
+
+**Datum: 2026-10-16**
+**Status: Gäller** 
+
+**Bakgrund:** Var MySQL-servern hostas.
+
+**Alternativ:**
+- Aiven
+- Supabase
+- Egen VPS
+
+**Beslut:** Aiven
+
+**Varför:** Enkelt att sätta upp och gratis.
+
+**Konsekvenser:** Att vi har en MySQL-server uppsatt som är publik.
+
+## 1. Stack
+
+**Datum: 2026-10-13**
+**Status: Gäller** 
+
+**Bakgrund:** Vilken stack vi ska använda.
+
+**Alternativ:**
+ - MySQL, React, Express
+ - MySQL, React, Spring Boot
+
+**Beslut:** Spring Boot
+
+**Varför:** Bekant stack och tydligt ramverk.
+
+**Konsekvenser:** Utvecklingsprocessen bör vara mer modulär och effektiv.
