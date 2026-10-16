@@ -1,34 +1,20 @@
 ## Vad gör den här pull requesten?
 
-<!-- Kort beskrivning av ändringen. -->
+<!-- Beskriv kort vad som ändrats och varför. -->
 
-Closes #<!-- issuenummer, t.ex. Closes #4. Då stängs issuen och kortet flyttas till Klart när PR:en mergas. -->
+Closes #N
 
 ## Hur testar man den?
 
-<!--
-  Steg för granskaren. Utgå från acceptanskriterierna.
-  Exempel:
-  1. Starta appen och gå till ett hushåll.
-  2. Lägg till en syssla utan namn: ett felmeddelande ska visas.
-  3. Lägg till en syssla med namn: den ska synas direkt i listan.
--->
+<!-- Beskriv konkreta teststeg utifrån storyns acceptanskriterier. -->
 
-1.
-2.
+1. 
+2. 
 
 ## Definition of Done
 
-<!--
-  Den här listan ska spegla er docs/definition-of-done.md.
-  Uppdatera den här mallen när ni ändrar er DoD.
--->
-
-- [ ] Alla acceptanskriterier är uppfyllda och testade för hand
-- [ ] Applikationen startar och körs utan fel
-- [ ] Inga `console.log`, utkommenterad kod eller TODO kvar
-- [ ] README eller `docs/` är uppdaterad om det behövs
+- [ ] Samtliga krav i [Definition of Done](../docs/definition-of-done.md) är uppfyllda.
 
 ## Till granskaren
 
-<!-- Något särskilt du vill att granskaren tittar på? Något du är osäker på? -->
+<!-- Ange särskilda områden att granska eller osäkerheter. -->
