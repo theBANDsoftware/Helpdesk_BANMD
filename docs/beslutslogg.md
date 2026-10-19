@@ -40,6 +40,45 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 6. MySQL-server på en gruppmedlems VPS
+
+**Datum: 2026-10-19**
+**Status: Gäller** 
+
+**Bakgrund:** Beslut 2 var att köra MySQL på Aiven. Vi har bytt till en VPS som en i gruppen har.
+
+**Alternativ:**
+- Aiven (beslut 2)
+- En gruppmedlems VPS
+- MySQL lokalt hos var och en
+
+**Beslut:** MySQL körs på _[namn]_s VPS.
+
+**Varför:** _[fyll i]_
+
+**Konsekvenser:**
+- Databasen är bara uppe när VPS:en är det, och en person ansvarar för den. Backup behöver ordnas.
+- Var och en får en egen MySQL-användare. Lösenorden ligger aldrig i repot (DoD punkt 6).
+- Port 3306 ska inte stå öppen mot hela internet. Begränsa den med brandvägg eller anslut via SSH-tunnel.
+- Det går enkelt att skapa en databas per person att utveckla mot, plus en gemensam för `develop`. Se öppna frågor i `databasschema.md`.
+
+## 5. Kategorier som enum, inte egen tabell
+
+**Datum: 2026-10-19**
+**Status: Gäller** 
+
+**Bakgrund:** Ett ärende har en kategori (Dator, Skrivare, Nätverk, Konto och behörighet, Annat). Vi behövde bestämma hur den lagras i databasen.
+
+**Alternativ:**
+- Enum i Java-koden, lagrad som text i `tickets`
+- Egen tabell `categories` som `tickets` kopplas till
+
+**Beslut:** Enum, lagrad som text (`@Enumerated(EnumType.STRING)`).
+
+**Varför:** Kategorierna är få och ingen story kräver att de kan ändras. En egen tabell hade gett en tabell, en relation och en endpoint till i sprint 1 utan att någon användare får något av det.
+
+**Konsekvenser:** Nya eller ändrade kategorier kräver en kodändring. Att IT-ansvariga själva kan redigera kategorier är medvetet bortvalt. Eftersom värdet lagras som text går det att byta till en egen tabell senare utan att befintlig data behöver tolkas om.
+
 ## 4. Jira-nyckel i branches, commits och pull requests
 
 **Datum: 2026-10-19**
@@ -77,7 +116,7 @@ Kopiera den här för varje nytt beslut:
 ## 2. MySQL-server
 
 **Datum: 2026-10-16**
-**Status: Gäller** 
+**Status: Ersatt av 6** 
 
 **Bakgrund:** Var MySQL-servern hostas.
 
