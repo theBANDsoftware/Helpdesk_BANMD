@@ -1,0 +1,72 @@
+/* Gemensam grundstil. Mobile first: skriv för smal skärm först och lägg till
+   @media (min-width: ...) för större skärmar (DoD punkt 9). */
+
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  color: #1f2328;
+  background-color: #f6f8fa;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-header {
+  padding: 0.75rem 1rem;
+  background-color: #24292f;
+  color: #ffffff;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.app-main {
+  padding: 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.card {
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.status-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.ok {
+  color: #1a7f37;
+}
+
+.error {
+  color: #cf222e;
+}
+
+@media (min-width: 48rem) {
+  .app-main {
+    padding: 2rem;
+  }
+}
