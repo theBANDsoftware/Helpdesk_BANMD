@@ -5,8 +5,8 @@ Gäller för **alla** stories. Det som gäller för en enskild story står i des
 En story är klar när:
 
 1. Alla acceptanskriterier är uppfyllda och testade för hand, både av den som byggt storyn och av granskaren.
-2. Koden ligger i `develop` via en pull request som är kopplad till issuen (`Closes #N`).
-3. Pull requesten är granskad och godkänd av minst en annan i teamet.
+2. Koden ligger i `develop` via en pull request. Branchnamnet, varje commit och PR-titeln börjar med Jira-nyckeln, t.ex. `TB-8`.
+3. Pull requesten är granskad och godkänd av minst en annan i teamet. Den som godkänner är också den som mergar.
 4. Den som mergar hämtar `develop` och startar databas, backend och frontend. Allt startar utan fel.
 5. Ändringen innehåller ingen kvarglömd felsökningskod: inga `console.log` eller `System.out.println`, ingen utkommenterad kod och inga TODO.
 6. Databaslösenord och andra hemligheter läses från miljövariabler eller från en lokal fil som finns i `.gitignore`. De ligger aldrig i repot.
@@ -29,3 +29,4 @@ Gäller hela sprinten, inte enskilda stories. Görs senast söndag kväll, när 
 | Version | Datum | Ändring | Varför (från vilken retro?) |
 |---|---|---|---|
 | 1 | 2026-10-16 | Första versionen | – |
+| 2 | 2026-10-19 | Punkt 2: Jira-nyckel i stället för `Closes #N`. Punkt 3: den som godkänner mergar. | Bytet till Jira (beslut 3 och 4). Ingen mergar sin egen PR enligt gruppkontraktet, så det ska vara tydligt vem som gör det. |

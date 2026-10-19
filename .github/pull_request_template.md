@@ -2,7 +2,9 @@
 
 <!-- Beskriv kort vad som ändrats och varför. -->
 
-Closes #N
+**Jira:** TB-N
+
+<!-- PR-titeln ska börja med Jira-nyckeln, t.ex. "TB-8 Skapa ärende via mejl". Då kopplas PR:en till kortet i Jira. -->
 
 ## Hur testar man den?
 
