@@ -1,8 +1,8 @@
 # User stories och backlog
 
-Underlag för backloggen, version 1 (2026-10-16). Här samlar vi stories, acceptanskriterier och det vi diskuterat, innan korten läggs in som issues på GitHub.
+Underlag för backloggen, version 1 (2026-10-16). Här samlar vi stories, acceptanskriterier och det vi diskuterat, innan korten läggs in i Jira.
 
-> **När korten är inlagda som issues är det boarden och issues som gäller.** Ändringar görs då där, inte i den här filen. Filen ligger kvar som historik över hur backloggen såg ut från början.
+> **När korten är inlagda i Jira är det Jira som gäller.** Ändringar görs då där, inte i den här filen. Filen ligger kvar som historik över hur backloggen såg ut från början.
 
 ## Ordnad backlog
 

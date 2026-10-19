@@ -19,7 +19,7 @@
 
 - **Discord** för daglig kontakt och snabba frågor. Vi har separata kanaler för `#allmänt`, `#standup` och `#hjälp`.
 - **GitHub** för allt som rör kod: frågor om en ändring tas i kommentarer på pull requesten, inte i chatten.
-- **GitHub Projects** är det enda stället där vi håller koll på vem som gör vad. Står det inte på boarden är det inte bestämt.
+- **Jira** är där vi organiserar arbetet: backlog, sprintar och vem som gör vad. Står det inte på ett kort i Jira är det inte bestämt. Kod och dokumentation ligger i GitHub.
 - Beslut som tas i chatten eller på möte skrivs in i beslutsloggen samma dag av den som tog upp frågan.
 - Vi ger feedback på koden och arbetet, inte på personen. Vi säger vad som är bra, inte bara vad som är fel.
 
@@ -51,7 +51,8 @@
 
 <!-- Fylls på efter pass 3 (Git i team). -->
 
-- Ingen pushar direkt till `main`. All kod går via en branch och en pull request.
+- Ingen pushar direkt till `main` eller `develop`. All kod går via en branch och en pull request.
+- Branches och commits börjar med Jira-nyckeln: branchen heter t.ex. `TB-8-skapa-arende-via-mejl` och commiten `TB-8 Skapa ärende via mejl`.
 - Pull requests granskas inom 24 timmar (vardagar).
 - Ingen mergar sin egen pull request. Minst en annan person ska ha godkänt den.
 - Alla ska kunna förklara den kod de lämnar in, även kod som tagits fram med hjälp av AI.

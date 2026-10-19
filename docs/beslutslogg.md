@@ -40,6 +40,23 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 4. Jira-nyckel i branches, commits och pull requests
+
+**Datum: 2026-10-19**
+**Status: Gäller** 
+
+**Bakgrund:** När vi bytte till Jira (beslut 3) behövde korten i Jira kopplas till koden i GitHub.
+
+**Alternativ:**
+- Ingen koppling. Korten och koden hålls ihop för hand.
+- Jira-nyckeln först i branchnamn, commits och PR-titlar, så att GitHub for Jira kopplar ihop dem.
+
+**Beslut:** Jira-nyckeln först i allt. Branchen heter t.ex. `TB-8-skapa-arende-via-mejl` och commiten `TB-8 Skapa ärende via mejl`.
+
+**Varför:** I Jira-kortet syns vilka branches, commits och pull requests som hör till storyn, utan att någon behöver länka för hand.
+
+**Konsekvenser:** `Closes #N` gäller inte längre. DoD punkt 2 och PR-mallen är ändrade. Korten flyttas till Done med en automatiseringsregel i Jira eller för hand.
+
 ## 3. Jira vs Github issues
 
 **Datum: 2026-10-16**
