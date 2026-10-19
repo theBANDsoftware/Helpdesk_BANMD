@@ -40,6 +40,23 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 5. Kategorier som enum, inte egen tabell
+
+**Datum: 2026-10-19**
+**Status: Gäller** 
+
+**Bakgrund:** Ett ärende har en kategori (Dator, Skrivare, Nätverk, Konto och behörighet, Annat). Vi behövde bestämma hur den lagras i databasen.
+
+**Alternativ:**
+- Enum i Java-koden, lagrad som text i `tickets`
+- Egen tabell `categories` som `tickets` kopplas till
+
+**Beslut:** Enum, lagrad som text (`@Enumerated(EnumType.STRING)`).
+
+**Varför:** Kategorierna är få och ingen story kräver att de kan ändras. En egen tabell hade gett en tabell, en relation och en endpoint till i sprint 1 utan att någon användare får något av det.
+
+**Konsekvenser:** Nya eller ändrade kategorier kräver en kodändring. Att IT-ansvariga själva kan redigera kategorier är medvetet bortvalt. Eftersom värdet lagras som text går det att byta till en egen tabell senare utan att befintlig data behöver tolkas om.
+
 ## 4. Jira-nyckel i branches, commits och pull requests
 
 **Datum: 2026-10-19**
