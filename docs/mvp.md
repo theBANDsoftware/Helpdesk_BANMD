@@ -94,7 +94,7 @@ Behövs för att MVP-storyna ska gå att bygga. Läggs som egna kort på boarden
 
 - Sätta upp repot med `frontend/` och `backend/`
 - Sätta upp Spring Boot (Spring Initializr) med en första endpoint
-- Sätta upp MySQL och koppla den till backend med Spring Data JPA
+- Sätta upp MariaDB och koppla den till backend med Spring Data JPA
 - Seed-data: några anställda och två IT-ansvariga, så att story 1 fungerar direkt
 
 ### Första tanke om data
@@ -111,8 +111,8 @@ Inget färdigt schema, bara ett underlag inför pass 2.
 |---|---|
 | Frontend | React med TypeScript (Vite) |
 | Backend | Java med Spring Boot |
-| Databas | MySQL, via Spring Data JPA |
+| Databas | MariaDB, via Spring Data JPA (ändrat från MySQL, se beslut 7) |
 
-**Motivering:** Vi väljer React, Spring Boot och MySQL eftersom det är den stack gruppen känner sig tryggast i, och Spring Boots fasta struktur (controller, service, repository) gör att alla i gruppen skriver backendkoden på samma sätt när vi arbetar parallellt.
+**Motivering:** Vi väljer React, Spring Boot och MariaDB eftersom det är den stack gruppen känner sig tryggast i, och Spring Boots fasta struktur (controller, service, repository) gör att alla i gruppen skriver backendkoden på samma sätt när vi arbetar parallellt.
 
 _Valet är preliminärt och kan ändras fram till pass 3._

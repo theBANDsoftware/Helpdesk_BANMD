@@ -40,25 +40,46 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
-## 6. MySQL-server på en gruppmedlems VPS
+## 7. MariaDB i stället för MySQL
+
+**Datum: 2026-10-21**
+**Status: Gäller** 
+
+**Bakgrund:** Davids VPS (beslut 6) kör MariaDB. Skelettet var byggt för MySQL.
+
+**Alternativ:**
+- Installera MySQL på VPS:en
+- Använda MariaDB, som redan finns där
+
+**Beslut:** MariaDB.
+
+**Varför:** Den finns redan på VPS:en och fungerar nästan likadant som MySQL för det vi behöver.
+
+**Konsekvenser:**
+- Backend använder drivrutinen `mariadb-java-client` och dialekten `MariaDBDialect`.
+- I `backend/.env` anges bara adress, port och databas i `DB_URL`, t.ex. `VPS-ADRESS:3306/helpdesk`. `jdbc:mariadb://` står redan i `application.properties`.
+- SQL-skript ska fungera i MariaDB. Sorteringen `utf8mb4_0900_ai_ci` finns bara i MySQL, så vi använder `utf8mb4_unicode_ci`.
+- Beslut 1 och 2 nämner MySQL. De står kvar som de togs.
+
+## 6. Databasservern på Davids VPS
 
 **Datum: 2026-10-19**
 **Status: Gäller** 
 
-**Bakgrund:** Beslut 2 var att köra MySQL på Aiven. Vi har bytt till en VPS som en i gruppen har.
+**Bakgrund:** Beslut 2 var att köra databasen på Aiven. Vi har bytt till en VPS som David har.
 
 **Alternativ:**
 - Aiven (beslut 2)
-- En gruppmedlems VPS
-- MySQL lokalt hos var och en
+- Davids VPS
+- En databas lokalt hos var och en
 
-**Beslut:** MySQL körs på _[namn]_s VPS.
+**Beslut:** Databasen körs på Davids VPS. Vilken databas det är står i beslut 7.
 
 **Varför:** _[fyll i]_
 
 **Konsekvenser:**
-- Databasen är bara uppe när VPS:en är det, och en person ansvarar för den. Backup behöver ordnas.
-- Var och en får en egen MySQL-användare. Lösenorden ligger aldrig i repot (DoD punkt 6).
+- Databasen är bara uppe när VPS:en är det, och David ansvarar för den. Backup behöver ordnas.
+- Var och en får en egen databasanvändare. Lösenorden ligger aldrig i repot (DoD punkt 6).
 - Port 3306 ska inte stå öppen mot hela internet. Begränsa den med brandvägg eller anslut via SSH-tunnel.
 - Det går enkelt att skapa en databas per person att utveckla mot, plus en gemensam för `develop`. Se öppna frågor i `databasschema.md`.
 
