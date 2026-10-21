@@ -1,13 +1,9 @@
 # Gruppkontrakt
 
-<!--
-  UTKAST att gå igenom tillsammans. Allt här är förslag: stryk, ändra och lägg till.
-  Mallen (gruppkontrakt.md) är orörd.
--->
+**Grupp:** the BANMD
+**Datum:** 2026-10-13
+**Medlemmar:** Bleart Rama, Adli Anabtawi, Noah Fältman, Mustafa Samir, David Andersson
 
-**Grupp:** _[the BANMD]_
-**Datum:** _[13/10 - 2026]_
-**Medlemmar:** _[Bleart Rama]_, _[Adli Anabtawi]_, _[Noah Fältman]_, _[Mustafa Samir]_, _[David Andersson]_
 ## Tillgänglighet
 
 - Vi jobbar med projektet väldigt flexibelt. Vi träffas för standupen varje dag, vi är dock flexibla med när vi träffas varje dag. tidigast kl 08.00, senast kl 22.00.
@@ -74,11 +70,11 @@ Vi har läst kontraktet och är överens om det.
 
 | Namn | Datum |
 |---|---|
-[Adli Anabtawi], [13/10 - 2026]
-[Bleart Rama], [13/10 - 2026]
-[David Andersson], [13/10 - 2026]
-[Noah Fältman], [13/10 - 2026]
-[Mustafa Samir], [16/10 - 2026]
+| Adli Anabtawi | 2026-10-13 |
+| Bleart Rama | 2026-10-13 |
+| David Andersson | 2026-10-13 |
+| Noah Fältman | 2026-10-13 |
+| Mustafa Samir | 2026-10-16 |
 
 ## Ändringar
 

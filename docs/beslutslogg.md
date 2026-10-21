@@ -40,6 +40,28 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 8. Tabellerna skapas med SQL-skript som körs för hand
+
+**Datum: 2026-10-21**
+**Status: Gäller** 
+
+**Bakgrund:** Backend behöver tabellerna `users`, `tickets` och `comments` på Davids VPS. Vi behövde bestämma hur de skapas och ändras.
+
+**Alternativ:**
+- Hibernate skapar dem automatiskt (`ddl-auto=update`)
+- Flyway kör migreringsfiler automatiskt när backend startar
+- SQL-skript i repot som David kör för hand
+
+**Beslut:** SQL-skript i `database/`, som David kör för hand på VPS:en. Hibernate rör inte tabellerna (`ddl-auto=none`).
+
+**Varför:** Inget nytt beroende, och David har full kontroll över databasen på sin VPS. Med `ddl-auto=update` hade vem som helst kunnat ändra den gemensamma databasen genom att starta backend från en ofärdig branch.
+
+**Konsekvenser:**
+- Skripten numreras (`V1__…`, `V2__…`). Ett skript som redan har körts ändras aldrig, utan ändringar blir ett nytt skript.
+- Den som ändrar schemat säger till på standupen, och David kör skriptet när PR:en är mergad.
+- Om databasen och koden inte stämmer märks det först när en endpoint anropas, inte när backend startar.
+- Namnen följer Flyways format, så det går att byta till Flyway senare utan att döpa om något.
+
 ## 7. MariaDB i stället för MySQL
 
 **Datum: 2026-10-21**
