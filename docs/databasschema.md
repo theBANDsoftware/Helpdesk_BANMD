@@ -83,13 +83,13 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 | Statistik per kategori (Could) | Inget nytt. Räknas fram ur befintlig data. | Ingen |
 | Skapa ärende via mejl (Won't) | Inget i databasen | Ingen |
 
-## Öppna frågor till pass 3
+## Hur tabellerna skapas
 
-**Hur skapas och ändras tabellerna i databasen?** Vi kör alla mot MariaDB på Davids VPS (beslut 6 och 7). Det finns två vanliga sätt:
+Tabellerna skapas med SQL-skripten i [`database/`](../database/README.md), som David kör för hand på VPS:en (beslut 8). Hibernate skapar eller ändrar inga tabeller (`ddl-auto=none`).
 
-- **Hibernate skapar tabellerna själv** (`spring.jpa.hibernate.ddl-auto=update`). Inget extra att göra. Men så fort någon startar backend ändras den gemensamma databasen efter just den personens kod, även från en branch som inte är mergad. Hibernate lägger till kolumner men tar aldrig bort eller byter namn på dem.
-- **Migreringsfiler med Flyway.** Varje ändring av databasen är en numrerad SQL-fil i repot, t.ex. `V1__skapa_tabeller.sql` och `V2__testdata.sql`. Filerna granskas i pull requests som all annan kod, och alla får exakt samma databas. Hibernate kontrollerar bara att koden stämmer med databasen (`ddl-auto=validate`).
+| Skript | Innehåll |
+|---|---|
+| `V1__skapa_tabeller.sql` | `users`, `tickets` och `comments` enligt diagrammet ovan |
+| `V2__testdata.sql` | Fyra anställda, två IT-ansvariga, tre ärenden och tre kommentarer |
 
-Om vi väljer Flyway behöver vi också bestämma om var och en ska ha en egen databas att utveckla mot, eller om nya migreringar bara får köras från `develop`.
-
-**Testdata:** de fyra anställda och två IT-ansvariga som "Välja vem man är" behöver. Läggs de in med en migrering eller på annat sätt?
+När schemat ändras läggs ett nytt skript till med nästa nummer. Ett skript som redan har körts ändras aldrig. Den som ändrar schemat säger till på standupen, och bara en i taget ändrar schemat.

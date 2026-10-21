@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { HealthStatus } from './features/health/HealthStatus';
+import { UserList } from './features/users/UserList';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -13,7 +13,7 @@ export default function App() {
       </header>
       <main className="app-main">
         <Routes>
-          <Route path="/" element={<HealthStatus />} />
+          <Route path="/" element={<UserList />} />
         </Routes>
       </main>
     </BrowserRouter>

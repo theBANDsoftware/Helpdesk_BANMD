@@ -52,13 +52,27 @@ body {
   font-size: 1.1rem;
 }
 
-.status-list {
+.user-list {
   margin: 0;
-  padding-left: 1.25rem;
+  padding: 0;
+  list-style: none;
 }
 
-.ok {
-  color: #1a7f37;
+.user-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.user-list li:last-child {
+  border-bottom: none;
+}
+
+.user-role {
+  color: #57606a;
+  white-space: nowrap;
 }
 
 .error {
