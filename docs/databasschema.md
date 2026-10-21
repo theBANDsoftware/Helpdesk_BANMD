@@ -85,7 +85,7 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 
 ## Öppna frågor till pass 3
 
-**Hur skapas och ändras tabellerna i databasen?** Vi kör alla mot MySQL på en gruppmedlems VPS (beslut 6). Det finns två vanliga sätt:
+**Hur skapas och ändras tabellerna i databasen?** Vi kör alla mot MariaDB på Davids VPS (beslut 6 och 7). Det finns två vanliga sätt:
 
 - **Hibernate skapar tabellerna själv** (`spring.jpa.hibernate.ddl-auto=update`). Inget extra att göra. Men så fort någon startar backend ändras den gemensamma databasen efter just den personens kod, även från en branch som inte är mergad. Hibernate lägger till kolumner men tar aldrig bort eller byter namn på dem.
 - **Migreringsfiler med Flyway.** Varje ändring av databasen är en numrerad SQL-fil i repot, t.ex. `V1__skapa_tabeller.sql` och `V2__testdata.sql`. Filerna granskas i pull requests som all annan kod, och alla får exakt samma databas. Hibernate kontrollerar bara att koden stämmer med databasen (`ddl-auto=validate`).

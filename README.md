@@ -17,7 +17,7 @@ Ett enkelt ärendesystem där anställda på en liten organisation anmäler IT-f
 |---|---|
 | Frontend | React 19 med TypeScript, Vite, React Router |
 | Backend | Java 21, Spring Boot 4 (Web, Data JPA, Validation) |
-| Databas | MySQL 8 på en gruppmedlems VPS |
+| Databas | MariaDB på Davids VPS |
 
 Varför vi valt den här stacken står i [beslutsloggen](docs/beslutslogg.md).
 
@@ -27,7 +27,7 @@ Varför vi valt den här stacken står i [beslutsloggen](docs/beslutslogg.md).
 
 - **Java 21**: kontrollera med `java -version`
 - **Node.js 22** eller senare: kontrollera med `node -v`
-- **Databasuppgifter** till MySQL på VPS:en: adress, användarnamn och lösenord. Fråga den som sköter databasen. Uppgifterna skickas aldrig i chatten eller läggs i repot.
+- **Databasuppgifter** till MariaDB på Davids VPS: adress, användarnamn och lösenord. Fråga David. Uppgifterna skickas aldrig i chatten eller läggs i repot.
 
 Maven behöver du inte installera. Repot innehåller `mvnw`, som laddar ner rätt version själv.
 
