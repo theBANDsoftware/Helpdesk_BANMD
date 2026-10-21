@@ -49,13 +49,18 @@
 
 ## Kod och kvalitet
 
-<!-- Fylls på efter pass 3 (Git i team). -->
-
 - Ingen pushar direkt till `main` eller `develop`. All kod går via en branch och en pull request.
 - Branches och commits börjar med Jira-nyckeln: branchen heter t.ex. `TB-8-skapa-arende-via-mejl` och commiten `TB-8 Skapa ärende via mejl`.
+- En pull request innehåller en story eller uppgift.
 - Pull requests granskas inom 24 timmar (vardagar).
-- Ingen mergar sin egen pull request. Minst en annan person ska ha godkänt den.
 - Alla ska kunna förklara den kod de lämnar in, även kod som tagits fram med hjälp av AI.
+
+**Granskning**
+
+- Ett godkännande betyder att granskaren har läst hela ändringen under "Files changed", hämtat branchen och testat acceptanskriterierna själv, och gått igenom DoD-checklistan i PR:en.
+- Granskaren skriver i godkännandet vad den har testat, t.ex. "Testade att skicka ett ärende utan rubrik, felmeddelandet visas."
+- Är en pull request för stor för att granska ordentligt ber granskaren om att den delas upp.
+- Ingen mergar sin egen pull request. Den som godkänner är den som mergar, och startar sedan appen från `develop` (DoD punkt 3 och 4).
 
 ## Om någon inte följer kontraktet
 
@@ -79,4 +84,4 @@ Vi har läst kontraktet och är överens om det.
 
 | Datum | Ändring | Varför |
 |---|---|---|
-| | | |
+| 2026-10-21 | "Kod och kvalitet": regler för granskning, PR-storlek och vem som mergar | Läxan i pass 3. Ett godkännande ska betyda att PR:en faktiskt är granskad och testad. |
