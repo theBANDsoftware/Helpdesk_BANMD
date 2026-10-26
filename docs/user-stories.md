@@ -25,7 +25,6 @@ Underlag för backloggen, version 1 (2026-10-16). Här samlar vi stories, accept
 | 15 | Mejl när mitt ärende är löst | Story | Could | L | följa ärenden | – |
 | 16 | Bifoga skärmdump | Story | Could | L | anmäla fel | – |
 | 17 | Statistik över öppna ärenden per kategori | Story | Could | M | uppföljning | – |
-| 18 | Skapa ärende via mejl | Story | Won't | – | anmäla fel | – |
 
 **Genomgången:** acceptanskriterierna är diskuterade och godkända av gruppen. **Utkast:** ska gås igenom innan storyn tas in i en sprint.
 
@@ -41,6 +40,7 @@ Underlag för backloggen, version 1 (2026-10-16). Här samlar vi stories, accept
 | 2026-10-16 | Vart man skickas efter valet av användare flyttades från "Välja vem man är" till "Se mina ärenden" och "Se alla ärenden" | Annars kunde "Välja vem man är" inte bli klar förrän de två andra var byggda, trots att den görs först (Independent i INVEST). |
 | 2026-10-16 | "Välja vem man är" fick ett nytt "så att" och ett kriterium för att byta användare | Värdet "jag ser det som gäller mig" levereras nu av story 3 och 4. |
 | 2026-10-16 | "Mejl när ärendet är löst" fick Could, och "Skapa ärende via mejl" lades till som Won't | Appen fungerar utan mejl. Bortvalet syns som ett kort så att vi inte tar samma diskussion igen. |
+| 2026-10-26 | "Skapa ärende via mejl" togs bort ur backloggen | Det är en avsiktlig avgränsning, inte en story vi kan ta in senare. Den står under "Ingår inte i MVP:n" i `docs/mvp.md`. |
 
 ## Korten
 
@@ -399,19 +399,3 @@ Kräver filuppladdning och lagring av filer. Acceptanskriterier skrivs om storyn
 #### Anteckningar
 
 Acceptanskriterier skrivs om storyn flyttas upp.
-
----
-
-### 18. Skapa ärende via mejl
-
-**Typ:** Story · **MoSCoW:** Won't · **Storlek:** – · **Epic:** anmäla fel
-
-#### Story
-
-**Som** anställd
-**vill jag** skapa ett ärende genom att mejla till en adress
-**så att** jag inte behöver öppna appen.
-
-#### Anteckningar
-
-**Won't (this time).** Medvetet bortvald: kräver att en mejlbox läses av och tolkas, vilket är ett eget projekt. Står här så att vi inte tar samma diskussion igen.
