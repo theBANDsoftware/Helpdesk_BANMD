@@ -20,52 +20,42 @@
 
 <!-- En mening. Vad ska vara möjligt efter sprinten som inte var det innan? -->
 
-> **Exempel:** En användare kan skapa ett hushåll och lägga till sysslor som sparas.
-
-
+En anställd kan välja vem hen är, anmäla ett fel och se sina egna ärenden i en lista som hämtas från databasen.
 
 ## Kapacitet
 
 <!-- Är någon borta eller har mindre tid den här veckan? -->
 
-> **Exempel:** Jonas är borta torsdag. Lina har tandläkare onsdag förmiddag.
-
-
+Alla fem har full tid den här veckan.
 
 ## Från förra retron
 
 <!-- Vilka åtgärder från förra retron tar vi med oss in i sprinten? -->
 
-> **Exempel:** PR:er ska granskas inom 24 timmar. Amir påminner på standupen.
-
--
+- Ingen retro än, det här är första sprinten.
 
 ## Valda stories
 
 <!-- Länka issues med #nummer. Storlek: S, M eller L. -->
 
-> **Exempel:**
->
-> | Issue | Story | Storlek | Ansvarig |
-> |---|---|---|---|
-> | #3 | Skapa ett hushåll | M | Sara |
-> | #4 | Lägga till en syssla | M | Lina |
-> | #7 | Visa lista med sysslor | S | Jonas |
-> | #9 | Projektskelett och databas | M | Amir |
-
 | Issue | Story | Storlek | Ansvarig |
 |---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
+| TB-23 | Anmäla ett fel | M | Alla, byggs tillsammans först |
+| TB-22 | Välja vem man är | M | _[namn]_ |
+| TB-24 | Se mina ärenden | S | _[namn]_ |
+| TB-25 | Se alla ärenden | S | _[namn]_ |
+| TB-26 | Öppna ett ärende (reserv) | S | Tas in om resten blir klart i tid |
 
-**Totalt:** _ S, _ M, _ L
+**Totalt:** 2 S, 2 M, 0 L, och 1 S i reserv
+
+**Första storyn tillsammans:** TB-23 "Anmäla ett fel". Den går genom alla lager (formulär, endpoint, validering och databas), så alla ser hur en story byggs från början till slut innan vi delar upp oss. Den är också referensstoryn för estimeringen.
 <!-- Jämför med förra sprinten: hur mycket blev klart då? -->
 
 ## Risker och osäkerheter
 
 <!-- Något ni inte vet hur man gör? Beroenden mellan stories? -->
 
-> **Exempel:** Ingen av oss har kopplat React till ett Express-API förut. Lina och Jonas sätter sig tillsammans tisdag.
-
--
+- **`tickets/` i backend och `ticketsApi.ts` i frontend** rörs av TB-23, TB-24 och TB-25. TB-23 byggs därför först, och TB-24 och TB-25 tas gärna av samma person.
+- **Hur backend vet vem som är vald** måste bestämmas innan TB-23 sparar en anmälare. Förslaget är att frontend skickar headern `X-User-Id`. Beslutet skrivs in i beslutsloggen.
+- **`spring-boot-starter-validation`** saknas i `pom.xml` och läggs till i TB-23.
+- **Inga schemaändringar** behövs i den här sprinten. Tabellerna `users` och `tickets` finns redan.
