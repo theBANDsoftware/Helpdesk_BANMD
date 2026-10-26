@@ -1,6 +1,7 @@
 package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.UserResponse;
+import com.thebanmd.helpdesk.mappers.UserMapper;
 import com.thebanmd.helpdesk.repositories.UserRepository;
 
 import java.util.List;
@@ -20,5 +21,8 @@ public class UserService {
         return userRepository.findAllByOrderByNameAsc().stream()
                 .map(UserResponse::from)
                 .toList();
+    }
+    public UserResponse findById(Long id) {
+        return UserResponse.from(UserMapper.DTOToUser(userRepository.findById(id)));
     }
 }

@@ -1,5 +1,8 @@
 package com.thebanmd.helpdesk.entities;
 
+import com.thebanmd.helpdesk.dtos.UserResponse;
+import com.thebanmd.helpdesk.enums.Category;
+import com.thebanmd.helpdesk.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,16 +28,17 @@ public class Ticket {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Size(max = 20)
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'OTHER'") // Check if default value is applied
     @Column(name = "category", nullable = false, length = 20)
-    private String category;
+    private Category category;  // ENUM might bug, CHECK!
 
-    @Size(max = 20)
     @NotNull
-    @ColumnDefault("'NEW'")
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'NEW'") // Check if default value is applied
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private Status status;  // ENUM might bug, CHECK!
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -54,6 +58,15 @@ public class Ticket {
     @ColumnDefault("current_timestamp()")
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    public Ticket(String title, String description, Category category, User createdBy) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.createdBy = createdBy;
+    }
+
+    public Ticket() {}
 
     public Long getId() {
         return id;
@@ -79,19 +92,19 @@ public class Ticket {
         this.description = description;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
