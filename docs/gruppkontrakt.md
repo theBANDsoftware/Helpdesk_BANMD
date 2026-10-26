@@ -34,7 +34,16 @@
 - Ingen har mer än en story i "Pågår" åt gången.
 - Den som kört fast i mer än en timme ber om hjälp i `#hjälp`.
 - Den som blir klar granskar öppna pull requests först, och tar en ny story först därefter.
-- Vi roterar rollen Scrum Master. 
+- Vi roterar rollerna Product Owner och Scrum Master varje sprint, enligt tabellen nedan. Alla har varje roll en gång, och ingen har båda samma sprint. Ordningen lottades 2026-10-26.
+- Den som inte kan ha sin roll en vecka byter med någon annan. Bytet skrivs in i sprintens `planning.md`.
+
+| Sprint | Vecka | Product Owner | Scrum Master |
+|---|---|---|---|
+| 1 | 3 | Mustafa Samir | Adli Anabtawi |
+| 2 | 4 | Noah Fältman | David Andersson |
+| 3 | 5 | Bleart Rama | Mustafa Samir |
+| 4 | 6 | Adli Anabtawi | Noah Fältman |
+| 5 | 7 | David Andersson | Bleart Rama |
 
 ## Beslut
 
@@ -81,3 +90,4 @@ Vi har läst kontraktet och är överens om det.
 | Datum | Ändring | Varför |
 |---|---|---|
 | 2026-10-21 | "Kod och kvalitet": regler för granskning, PR-storlek och vem som mergar | Läxan i pass 3. Ett godkännande ska betyda att PR:en faktiskt är granskad och testad. |
+| 2026-10-26 | "Arbetsfördelning": PO och SM roterar varje sprint, med lottad ordning för sprint 1–5 | Läxan i pass 4. Alla får prova båda rollerna, och det är bestämt i förväg vem som har vilken. |
