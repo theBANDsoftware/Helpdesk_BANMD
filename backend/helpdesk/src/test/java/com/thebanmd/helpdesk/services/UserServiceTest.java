@@ -1,4 +1,9 @@
-package com.thebanmd.helpdesk.users;
+package com.thebanmd.helpdesk.services;
+
+import com.thebanmd.helpdesk.dtos.UserResponse;
+import com.thebanmd.helpdesk.entities.Role;
+import com.thebanmd.helpdesk.entities.User;
+import com.thebanmd.helpdesk.repositories.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

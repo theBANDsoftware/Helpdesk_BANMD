@@ -40,6 +40,26 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 9. Backend sorteras efter typ av klass
+
+**Datum: 2026-10-26**
+**Status: Gäller** 
+
+**Bakgrund:** Skelettet sorterade backend efter funktion, med en mapp per funktion (`users/`). Inför den första storyn med ärenden behövde vi bestämma hur koden ska sorteras när den växer.
+
+**Alternativ:**
+- Efter funktion: `users/`, `tickets/`, där varje mapp har sin controller, service, repository och entitet
+- Efter typ: `controllers/`, `services/`, `repositories/`, `entities/`, `dtos/` och `exceptions/`
+
+**Beslut:** Efter typ.
+
+**Varför:** Det är lättare att hitta rätt fil när alla controllers, services osv. ligger på samma ställe, och det är den struktur som de flesta Spring Boot-guider använder. Det passar också DoD punkt 7, där lagren controller → service → repository syns direkt i mapparna.
+
+**Konsekvenser:**
+- En ny funktion lägger till en fil i flera mappar i stället för en egen mapp.
+- Klasser och metoder som används från en annan mapp måste vara `public`, eftersom mapparna är olika paket i Java.
+- Frontend sorteras fortfarande efter funktion (`frontend/src/features/`).
+
 ## 8. Tabellerna skapas med SQL-skript som körs för hand
 
 **Datum: 2026-10-21**

@@ -55,7 +55,7 @@ Alla fem har full tid den här veckan.
 
 <!-- Något ni inte vet hur man gör? Beroenden mellan stories? -->
 
-- **`tickets/` i backend och `ticketsApi.ts` i frontend** rörs av TB-23, TB-24 och TB-25. TB-23 byggs därför först, och TB-24 och TB-25 tas gärna av samma person.
+- **`TicketController`, `TicketService` och `TicketRepository` i backend och `ticketsApi.ts` i frontend** rörs av TB-23, TB-24 och TB-25. TB-23 byggs därför först, och TB-24 och TB-25 tas gärna av samma person.
 - **Hur backend vet vem som är vald** måste bestämmas innan TB-23 sparar en anmälare. Förslaget är att frontend skickar headern `X-User-Id`. Beslutet skrivs in i beslutsloggen.
 - **`spring-boot-starter-validation`** saknas i `pom.xml` och läggs till i TB-23.
 - **Inga schemaändringar** behövs i den här sprinten. Tabellerna `users` och `tickets` finns redan.

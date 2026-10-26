@@ -1,4 +1,4 @@
-package com.thebanmd.helpdesk.shared;
+package com.thebanmd.helpdesk.exceptions;
 
 import java.util.Map;
 import org.springframework.dao.DataAccessException;

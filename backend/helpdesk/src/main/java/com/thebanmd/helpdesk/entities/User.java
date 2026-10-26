@@ -1,4 +1,4 @@
-package com.thebanmd.helpdesk.users;
+package com.thebanmd.helpdesk.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

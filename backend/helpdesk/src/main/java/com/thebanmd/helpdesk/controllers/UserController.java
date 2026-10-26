@@ -1,4 +1,7 @@
-package com.thebanmd.helpdesk.users;
+package com.thebanmd.helpdesk.controllers;
+
+import com.thebanmd.helpdesk.dtos.UserResponse;
+import com.thebanmd.helpdesk.services.UserService;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;

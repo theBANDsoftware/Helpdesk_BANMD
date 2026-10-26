@@ -1,4 +1,7 @@
-package com.thebanmd.helpdesk.users;
+package com.thebanmd.helpdesk.dtos;
+
+import com.thebanmd.helpdesk.entities.Role;
+import com.thebanmd.helpdesk.entities.User;
 
 /**
  * Det som skickas till frontend. Entiteten skickas aldrig direkt, så att
@@ -6,7 +9,7 @@ package com.thebanmd.helpdesk.users;
  */
 public record UserResponse(Long id, String name, Role role) {
 
-    static UserResponse from(User user) {
+    public static UserResponse from(User user) {
         return new UserResponse(user.getId(), user.getName(), user.getRole());
     }
 }

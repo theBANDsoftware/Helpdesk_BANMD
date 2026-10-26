@@ -90,20 +90,17 @@ npm run dev
 
 ## Projektstruktur
 
-Koden är uppdelad efter **funktion**, inte efter lager. Allt som hör till en funktion ligger i samma mapp, så att två personer som bygger olika stories sällan rör samma filer.
+Backend är uppdelad efter **typ av klass**: alla controllers i en mapp, alla services i en annan, och så vidare. Frontend är uppdelad efter **funktion**, med en mapp per funktion under `features/`.
 
 ```
 backend/helpdesk/src/main/java/com/thebanmd/helpdesk/
   HelpdeskApplication.java
-  users/                      ← en mapp per funktion
-    UserController.java       ← tar emot anropet
-    UserService.java          ← logiken
-    UserRepository.java       ← pratar med databasen (Spring Data JPA)
-    User.java                 ← entiteten, en rad i tabellen users
-    UserResponse.java         ← det som skickas till frontend
-    Role.java
-  shared/
-    ApiExceptionHandler.java  ← gemensam felhantering, t.ex. 503 när databasen inte svarar
+  controllers/                ← tar emot anropen, t.ex. UserController
+  services/                   ← logiken, t.ex. UserService
+  repositories/               ← pratar med databasen (Spring Data JPA), t.ex. UserRepository
+  entities/                   ← en klass per tabell, t.ex. User, och enums som Role
+  dtos/                       ← det som skickas till och från frontend, t.ex. UserResponse
+  exceptions/                 ← gemensam felhantering, t.ex. 503 när databasen inte svarar
 
 frontend/src/
   App.tsx                     ← routern: en rad per sida
@@ -117,7 +114,7 @@ frontend/src/
 database/                     ← SQL-skripten för databasen, körs av David
 ```
 
-En ny funktion, till exempel ärenden, får mappen `backend/.../tickets/` och `frontend/src/features/tickets/`, uppbyggd på samma sätt som `users`.
+Strukturen i backend är beslut 9 i beslutsloggen. En ny funktion, till exempel ärenden, får därför en fil i varje mapp: `TicketController`, `TicketService`, `TicketRepository`, `Ticket` och sina dto:er. Frontend är fortfarande sorterad efter funktion och får mappen `frontend/src/features/tickets/`.
 
 Frontend anropar alltid `/api/...`. Under utveckling skickar Vite vidare de anropen till backend på port 8080, så backend behöver ingen CORS-inställning.
 

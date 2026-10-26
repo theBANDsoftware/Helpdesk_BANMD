@@ -1,4 +1,6 @@
-package com.thebanmd.helpdesk.users;
+package com.thebanmd.helpdesk.repositories;
+
+import com.thebanmd.helpdesk.entities.User;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

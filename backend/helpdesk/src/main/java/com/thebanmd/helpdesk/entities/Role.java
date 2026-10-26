@@ -1,4 +1,4 @@
-package com.thebanmd.helpdesk.users;
+package com.thebanmd.helpdesk.entities;
 
 /** En användares roll. Lagras som text i kolumnen users.role (beslut 5). */
 public enum Role {
