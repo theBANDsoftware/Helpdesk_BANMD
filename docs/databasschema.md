@@ -81,7 +81,6 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 | Mejl när ärendet är löst (Could) | `email` i `users` (samma som ovan) | Lägger till |
 | Bifoga skärmdump (Could) | Ny tabell `attachments` kopplad till `tickets` | Lägger till |
 | Statistik per kategori (Could) | Inget nytt. Räknas fram ur befintlig data. | Ingen |
-| Skapa ärende via mejl (Won't) | Inget i databasen | Ingen |
 
 ## Hur tabellerna skapas
 
