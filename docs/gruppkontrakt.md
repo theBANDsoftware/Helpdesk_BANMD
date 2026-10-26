@@ -6,7 +6,7 @@
 
 ## Tillgänglighet
 
-- Vi jobbar med projektet väldigt flexibelt. Vi träffas för standupen varje dag, vi är dock flexibla med när vi träffas varje dag. tidigast kl 08.00, senast kl 22.00.
+- Vi jobbar flexibelt med projektet, mellan kl. 08.00 och 22.00. Daily standup har en fast tid, se "Närvaro och frånvaro".
 - Helger träffas vi vid behov (10-19). Ingen förväntas svara då, och ingen förväntas ha läst meddelanden som skickats då förrän nästa vardag kl. 9.
 - Under arbetstid svarar vi på meddelanden i gruppkanalen inom 2 timmar. Den som blir nämnd (@namn) svarar inom 1 timme.
 - Alla lägger in sina fasta hinder (jobb, andra kurser, återkommande tider) i ett delat schema första veckan, så att vi vet när var och en inte kan.
@@ -22,7 +22,8 @@
 ## Närvaro och frånvaro
 
 - Alla är med på lektionspassen (måndag och onsdag) och på sprint review, retro och sprint planning varje måndag.
-- Daily standup hålls varje vardag kl. _[tid, t.ex. 09:15]_, max 15 minuter, i Discord.
+- Daily standup hålls varje vardag kl. 20.00–20.15 i Discord. Tiden är preliminär och ses över på retron efter sprint 1.
+- Scrum Master leder standupen och loggar den i `docs/sprintar/sprint-N/standup.md` samma kväll.
 - Frånvaro meddelas i `#allmänt` senast kl. 9 samma dag, eller så snart man vet om det.
 - Den som missar daily standup skriver sina tre rader (gjort igår, gör idag, hinder) i `#standup` själv samma dag.
 - Den som missar en måndagsceremoni läser anteckningarna och bekräftar i kanalen att den har gjort det innan dagen är slut.
@@ -90,4 +91,5 @@ Vi har läst kontraktet och är överens om det.
 | Datum | Ändring | Varför |
 |---|---|---|
 | 2026-10-21 | "Kod och kvalitet": regler för granskning, PR-storlek och vem som mergar | Läxan i pass 3. Ett godkännande ska betyda att PR:en faktiskt är granskad och testad. |
+| 2026-10-26 | "Närvaro och frånvaro": daily standup kl. 20.00–20.15, och Scrum Master loggar den | Läxan i pass 4. |
 | 2026-10-26 | "Arbetsfördelning": PO och SM roterar varje sprint, med lottad ordning för sprint 1–5 | Läxan i pass 4. Alla får prova båda rollerna, och det är bestämt i förväg vem som har vilken. |
