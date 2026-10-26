@@ -1,5 +1,6 @@
 package com.thebanmd.helpdesk.entities;
 
+import com.thebanmd.helpdesk.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

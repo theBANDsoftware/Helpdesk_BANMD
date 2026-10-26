@@ -1,6 +1,6 @@
 package com.thebanmd.helpdesk.dtos;
 
-import com.thebanmd.helpdesk.entities.Role;
+import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.entities.User;
 
 /**

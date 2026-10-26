@@ -1,7 +1,7 @@
 package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.UserResponse;
-import com.thebanmd.helpdesk.entities.Role;
+import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.repositories.UserRepository;
 
