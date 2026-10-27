@@ -1,22 +1,25 @@
 package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
+import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
 import com.thebanmd.helpdesk.repositories.TicketRepository;
+import com.thebanmd.helpdesk.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.thebanmd.helpdesk.mappers.TicketMapper.DTOToTicket;
 
 @Service
+@RequiredArgsConstructor
 public class TicketService {
     private final TicketRepository ticketRepository;
-
-    public TicketService(TicketRepository ticketRepository) {
-        this.ticketRepository = ticketRepository;
-    }
+    private final TicketMapper ticketMapper;
+    private final UserRepository userRepository;
 
     public Boolean addTicket(CreateTicketRequest ticket) {
-        ticketRepository.save(TicketMapper.DTOToTicket(ticket));
+        Ticket newTicket = ticketMapper.toEntity(ticket);
+        newTicket.setCreatedBy(userRepository.getReferenceById(1L));
+        ticketRepository.save(newTicket);
         return true;
     }
 }

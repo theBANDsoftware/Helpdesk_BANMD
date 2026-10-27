@@ -5,24 +5,22 @@ import com.thebanmd.helpdesk.mappers.UserMapper;
 import com.thebanmd.helpdesk.repositories.UserRepository;
 
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserMapper userMapper;
 
     /** Alla användare i namnordning, till listan i "Välja vem man är". */
     public List<UserResponse> listUsers() {
-        return userRepository.findAllByOrderByNameAsc().stream()
-                .map(UserResponse::from)
-                .toList();
+        return userMapper.toResponseList(userRepository.findAllByOrderByNameAsc());
     }
     public UserResponse findById(Long id) {
-        return UserResponse.from(UserMapper.DTOToUser(userRepository.findById(id)));
+        return userMapper.toResponse(userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found: " + id)));
     }
 }

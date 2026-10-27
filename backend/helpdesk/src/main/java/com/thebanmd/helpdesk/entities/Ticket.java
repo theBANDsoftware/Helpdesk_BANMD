@@ -1,17 +1,18 @@
 package com.thebanmd.helpdesk.entities;
 
-import com.thebanmd.helpdesk.dtos.UserResponse;
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.Instant;
 
 @Entity
-@Table(name = "tickets", schema = "webuser_helpdesk_develop")
+@DynamicInsert
+@Table(name = "tickets")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,13 +35,11 @@ public class Ticket {
     @Column(name = "category", nullable = false, length = 20)
     private Category category;  // ENUM might bug, CHECK!
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NEW'") // Check if default value is applied
     @Column(name = "status", nullable = false, length = 20)
     private Status status;  // ENUM might bug, CHECK!
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -49,12 +48,10 @@ public class Ticket {
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
-    @NotNull
     @ColumnDefault("current_timestamp()")
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @NotNull
     @ColumnDefault("current_timestamp()")
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

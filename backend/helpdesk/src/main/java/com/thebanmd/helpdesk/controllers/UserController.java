@@ -1,7 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
 import com.thebanmd.helpdesk.dtos.UserResponse;
-import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.services.UserService;
 
 import java.util.List;

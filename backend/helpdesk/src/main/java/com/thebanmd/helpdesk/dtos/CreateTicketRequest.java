@@ -1,13 +1,12 @@
 package com.thebanmd.helpdesk.dtos;
 
-import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Category;
-import com.thebanmd.helpdesk.enums.Status;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record CreateTicketRequest(
-    @NotBlank String title,
+    @NotBlank @Size(max = 120) String title,
     @NotBlank String description,
-    @NotBlank Category category,
-    @NotBlank User createdBy
+    @NotNull Category category
 ) {}
