@@ -24,3 +24,16 @@ export async function apiGet<T>(path: string): Promise<T> {
   }
   return body as T;
 }
+
+export async function apiPost<T>(path: string, requestBody: unknown): Promise<T> {
+  const response = await fetch(`/api${path}`, {
+    headers: { Accept: 'application/json' },
+    body: requestBody !== undefined ? JSON.stringify(requestBody): undefined,
+  });
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new ApiError(response.status, body);
+  }
+  return body as T;
+}
