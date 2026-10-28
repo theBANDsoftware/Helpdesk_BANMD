@@ -1,22 +1,36 @@
 import { useEffect, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router';
 import { ApiError } from '../../shared/apiClient';
+import { useSelectedUser } from './selectedUserContext';
 import { getUsers, roleLabels, type User } from './usersApi';
 
 type State =
   { kind: 'loading' } | { kind: 'ok'; users: User[] } | { kind: 'error'; message: string };
 
 /**
- * Listan med användare från databasen. Första delen av storyn "Välja vem man är":
- * än så länge visas bara listan, att välja en användare kommer i nästa steg.
+ * Listan med användare från databasen (AK 1). Klickar man på en användare
+ * blir den vald och man kommer till startsidan (AK 2).
  */
 export function UserList() {
   const [state, setState] = useState<State>({ kind: 'loading' });
+  const { user: selectedUser, selectUser } = useSelectedUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getUsers()
       .then((users) => setState({ kind: 'ok', users }))
       .catch((error: unknown) => setState({ kind: 'error', message: errorMessage(error) }));
   }, []);
+
+  // Är någon redan vald finns inget att välja här. "Byt användare" tömmer valet först.
+  if (selectedUser !== null) {
+    return <Navigate to="/start" replace />;
+  }
+
+  function choose(user: User) {
+    selectUser(user);
+    navigate('/start');
+  }
 
   return (
     <section className="card">
@@ -29,8 +43,10 @@ export function UserList() {
         <ul className="user-list">
           {state.users.map((user) => (
             <li key={user.id}>
-              <span className="user-name">{user.name}</span>
-              <span className="user-role">{roleLabels[user.role]}</span>
+              <button type="button" className="user-option" onClick={() => choose(user)}>
+                <span className="user-name">{user.name}</span>
+                <span className="user-role">{roleLabels[user.role]}</span>
+              </button>
             </li>
           ))}
         </ul>
