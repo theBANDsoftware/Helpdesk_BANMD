@@ -31,14 +31,14 @@ public class Ticket {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'OTHER'") // Check if default value is applied
+    @ColumnDefault("'OTHER'")
     @Column(name = "category", nullable = false, length = 20)
-    private Category category;  // ENUM might bug, CHECK!
+    private Category category;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'NEW'") // Check if default value is applied
+    @ColumnDefault("'NEW'")
     @Column(name = "status", nullable = false, length = 20)
-    private Status status;  // ENUM might bug, CHECK!
+    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)

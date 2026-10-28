@@ -2,6 +2,7 @@ package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.entities.Ticket;
+import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
 import com.thebanmd.helpdesk.repositories.TicketRepository;
 import com.thebanmd.helpdesk.repositories.UserRepository;
@@ -16,10 +17,10 @@ public class TicketService {
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
 
-    public Boolean addTicket(CreateTicketRequest ticket) {
+    public void create(CreateTicketRequest ticket, Long createdById) {
         Ticket newTicket = ticketMapper.toEntity(ticket);
-        newTicket.setCreatedBy(userRepository.getReferenceById(1L));
+        newTicket.setStatus(Status.NEW);
+        newTicket.setCreatedBy(userRepository.getReferenceById(createdById));
         ticketRepository.save(newTicket);
-        return true;
     }
 }

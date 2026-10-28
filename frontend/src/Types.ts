@@ -9,12 +9,4 @@ export type CreateTicket = {
 
 };
 
-export const categoryLabels: Record<categoryTicket, string> = {
-  COMPUTER: 'Dator',
-  PRINTER: 'Skrivare',
-  NETWORK: 'Nätverk',
-  ACCOUNT: 'Konto',
-  OTHER: 'Övrigt',
-};
-
 

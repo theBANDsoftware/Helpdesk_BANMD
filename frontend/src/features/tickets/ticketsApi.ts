@@ -1,6 +1,5 @@
-import { apiPost } from './apiClient';
-import type { categoryTicket } from '../Types';
-
+import { apiPost } from '../../shared/apiClient';
+import type { categoryTicket } from '../../Types';
 
 export type CreateTicketRequest = {
   title: string;
@@ -8,7 +7,14 @@ export type CreateTicketRequest = {
   category: categoryTicket;
 };
 
-export function createTicket(ticket: CreateTicketRequest): Promise<boolean> {
-  console.log("woho 2");
-  return apiPost<boolean>('/ticket/create', ticket);
+export const categoryLabels: Record<categoryTicket, string> = {
+  COMPUTER: 'Dator',
+  PRINTER: 'Skrivare',
+  NETWORK: 'Nätverk',
+  ACCOUNT: 'Konto och behörighet',
+  OTHER: 'Annat',
+};
+
+export function createTicket(ticket: CreateTicketRequest): Promise<void> {
+  return apiPost<void>('/tickets', ticket);
 }
