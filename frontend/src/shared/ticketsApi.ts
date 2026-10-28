@@ -1,5 +1,5 @@
 import { apiPost } from './apiClient';
-import type { categoryTicket,categoryLabels } from '../Types';
+import type { categoryTicket } from '../Types';
 
 
 export type CreateTicketRequest = {
@@ -9,5 +9,6 @@ export type CreateTicketRequest = {
 };
 
 export function createTicket(ticket: CreateTicketRequest): Promise<boolean> {
+  console.log("woho 2");
   return apiPost<boolean>('/ticket/create', ticket);
 }

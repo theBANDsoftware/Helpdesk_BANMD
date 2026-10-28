@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { UserList } from './features/users/UserList';
+import Ticket from './features/Tickets/Ticket';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/" element={<UserList />} />
         </Routes>
       </main>
+      <Ticket></Ticket>
     </BrowserRouter>
   );
 }

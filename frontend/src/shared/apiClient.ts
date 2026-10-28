@@ -27,7 +27,8 @@ export async function apiGet<T>(path: string): Promise<T> {
 
 export async function apiPost<T>(path: string, requestBody: unknown): Promise<T> {
   const response = await fetch(`/api${path}`, {
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    method: "POST",
     body: requestBody !== undefined ? JSON.stringify(requestBody): undefined,
   });
   const body: unknown = await response.json().catch(() => null);

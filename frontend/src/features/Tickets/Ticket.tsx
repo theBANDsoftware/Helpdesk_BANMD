@@ -1,17 +1,25 @@
-
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { useMutation } from '@tanstack/react-query';
 import { createTicket } from '../../shared/ticketsApi'; 
 import { ApiError } from '../../shared/apiClient';
+import { categoryLabels } from '../../Types';
+import type { categoryTicket } from '../../Types';
 
-function CreateTicketForm() {
+export default function CreateTicketForm() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<categoryTicket>("OTHER");
   const mutation = useMutation({
     mutationFn: createTicket,
     onSuccess: () => {
-      // t.ex. töm formuläret eller visa "Ärendet skapat"
+      setTitle('');
+      setDescription('');
+      setCategory('OTHER');
     },
   });
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
     mutation.mutate({ title, description, category });
   }
@@ -32,7 +40,7 @@ function CreateTicketForm() {
 
         <label>
           Kategori
-          <select value={category} onChange={(e) => setCategory(e.target.value as Category)}>
+          <select value={category} onChange={(e) => setCategory(e.target.value as categoryTicket)}>
             {Object.entries(categoryLabels).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
@@ -51,7 +59,19 @@ function CreateTicketForm() {
 }
         
 
-
+function errorMessage(error: unknown): string {
+  console.log("FEL", error);
+  if (error instanceof ApiError) {
+    if (error.status === 400) {
+      return 'Kontrollera att alla fält är ifyllda.';
+    }
+    if (error.status === 502 || error.status === 504) {
+      return 'Kunde inte nå backend. Är den startad på port 8080?';
+    }
+    return `Backend svarade med fel (${error.status}).`;
+  }
+  return 'Något gick fel.';
+}
 
 
   
