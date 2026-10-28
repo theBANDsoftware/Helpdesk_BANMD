@@ -40,6 +40,26 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 10. Vald användare skickas i headern `X-User-Id`
+
+**Datum: 2026-10-28**
+**Status: Gäller** 
+
+**Bakgrund:** I MVP:n väljer man vem man är i en lista, utan lösenord (beslut 2). Backend måste ändå veta vem som gör anropet, till exempel vem som är anmälare när ett ärende skapas. Tills nu var anmälaren hårdkodad till användare 1.
+
+**Alternativ:**
+- Id:t skickas i bodyn på varje anrop som behöver det, t.ex. `createdById` i `CreateTicketRequest`
+- Id:t skickas i en header, `X-User-Id`, på alla anrop
+- Riktig inloggning med session eller token
+
+**Beslut:** Frontend sparar den valda användaren i webbläsaren och skickar dess id i headern `X-User-Id` på alla anrop till backend. Det görs på ett ställe, i `shared/apiClient.ts`. Controllers som behöver veta vem som anropar läser headern med `@RequestHeader("X-User-Id")`.
+
+**Varför:** Vem som anropar är inte en del av själva ärendet, så det hör inte hemma i bodyn. Med en header behöver ingen DTO ändras när fler endpoints behöver veta vem som anropar. Riktig inloggning är en egen story (TB-33, Should) och för stor för MVP:n.
+
+**Konsekvenser:**
+- Det här är inget skydd. Vem som helst kan skicka vilket id som helst. Riktigt skydd kommer med inloggning, och då ersätts headern.
+- Saknas headern svarar backend 400. Finns inte användaren svarar backend 404, så att frontend kan skicka tillbaka till listan.
+
 ## 9. Backend sorteras efter typ av klass
 
 **Datum: 2026-10-26**
