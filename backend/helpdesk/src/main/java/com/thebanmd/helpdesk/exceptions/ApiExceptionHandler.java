@@ -1,9 +1,12 @@
-package com.thebanmd.helpdesk.shared;
+package com.thebanmd.helpdesk.exceptions;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -19,5 +22,15 @@ public class ApiExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDatabaseError(DataAccessException e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(Map.of("error", "Databasen svarar inte: " + e.getMostSpecificCause().getMessage()));
+    }
+
+    /** Ogiltig data från @Valid. Svarar 400 med ett felmeddelande per fält, t.ex. {"title": "..."}. */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationError(MethodArgumentNotValidException e) {
+        Map<String, String> fieldErrors = new LinkedHashMap<>();
+        for (FieldError error : e.getBindingResult().getFieldErrors()) {
+            fieldErrors.putIfAbsent(error.getField(), error.getDefaultMessage());
+        }
+        return ResponseEntity.badRequest().body(fieldErrors);
     }
 }
