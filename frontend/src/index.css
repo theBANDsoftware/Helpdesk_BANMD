@@ -125,3 +125,7 @@ body {
     padding: 2rem;
   }
 }
+
+.data-table th {
+  text-align: left;
+}
