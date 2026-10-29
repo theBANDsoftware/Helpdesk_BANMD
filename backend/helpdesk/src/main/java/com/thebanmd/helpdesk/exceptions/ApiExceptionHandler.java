@@ -47,4 +47,9 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(Map.of("error", "Ingen användare är vald. Headern " + e.getHeaderName() + " saknas."));
     }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleTicketNotFound(TicketNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+    }
 }

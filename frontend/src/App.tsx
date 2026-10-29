@@ -5,6 +5,7 @@ import { RequireUser } from './features/users/RequireUser';
 import { SelectedUserProvider } from './features/users/SelectedUserProvider';
 import { StartPage } from './features/start/StartPage';
 import NewTicketForm from './features/tickets/NewTicketForm';
+import TicketDetail from './features/tickets/TicketDetail';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -27,6 +28,7 @@ export default function App() {
             <Route element={<RequireUser />}>
               <Route path="/start" element={<StartPage />} />
               <Route path="/tickets/new" element={<NewTicketForm />} />
+              <Route path="/tickets/:id" element={<TicketDetail />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
