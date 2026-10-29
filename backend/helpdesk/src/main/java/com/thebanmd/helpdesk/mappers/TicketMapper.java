@@ -1,6 +1,7 @@
 package com.thebanmd.helpdesk.mappers;
 
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
+import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.entities.Ticket;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,4 +17,8 @@ public interface TicketMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Ticket toEntity(CreateTicketRequest request);
+
+    @Mapping(target = "createdBy", source = "createdBy.name")
+    @Mapping(target = "assignedTo", source = "assignedTo.name")
+    TicketDetailResponse toDetailResponse(Ticket ticket);
 }
