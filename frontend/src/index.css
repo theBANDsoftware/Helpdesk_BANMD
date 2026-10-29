@@ -24,9 +24,35 @@ body {
 }
 
 .app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
   padding: 0.75rem 1rem;
   background-color: #24292f;
   color: #ffffff;
+}
+
+.current-user {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.current-user-role {
+  color: #d0d7de;
+}
+
+.current-user button {
+  padding: 0.25rem 0.75rem;
+  font: inherit;
+  color: #ffffff;
+  background: transparent;
+  border: 1px solid #8c959f;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .app-header h1 {
@@ -59,11 +85,26 @@ body {
 }
 
 .user-list li {
+  border-bottom: 1px solid #d0d7de;
+}
+
+.user-option {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #d0d7de;
+  width: 100%;
+  padding: 0.75rem 0.25rem;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.user-option:hover,
+.user-option:focus-visible {
+  background-color: #f6f8fa;
 }
 
 .user-list li:last-child {

@@ -1,6 +1,7 @@
 package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.UserResponse;
+import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.UserMapper;
 import com.thebanmd.helpdesk.repositories.UserRepository;
 
@@ -21,6 +22,6 @@ public class UserService {
     }
     public UserResponse findById(Long id) {
         return userMapper.toResponse(userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found: " + id)));
+            .orElseThrow(() -> new UserNotFoundException(id)));
     }
 }

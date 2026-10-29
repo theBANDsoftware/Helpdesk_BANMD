@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
-    /** Anmälaren tills vald användare skickas från frontend (bygger på "Välja vem man är"). */
-    private static final Long SELECTED_USER_ID = 1L;
-
     private final TicketService ticketService;
 
     public TicketController(TicketService ticketService) {
@@ -21,7 +18,8 @@ public class TicketController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody CreateTicketRequest ticket) {
-        ticketService.create(ticket, SELECTED_USER_ID);
+    public void create(@Valid @RequestBody CreateTicketRequest ticket,
+                       @RequestHeader("X-User-Id") Long userId) {
+        ticketService.create(ticket, userId);
     }
 }
