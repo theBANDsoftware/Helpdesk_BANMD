@@ -1,5 +1,5 @@
 import { apiGet, apiPost, ApiError } from '../../shared/apiClient';
-import type { categoryTicket } from '../../Types';
+import type { categoryTicket, TicketStatus, TicketDetail, TicketSummary } from '../../Types';
 
 // Återanvänder eller definierar status- och kategorityper
 export type StatusTicket = 'NEW' | 'IN_PROGRESS' | 'RESOLVED';
@@ -109,3 +109,10 @@ export async function assignTicket(
 
   return body as TicketDetailResponse;
 }
+export function getTicket(id: number): Promise<TicketDetail> {
+  return apiGet<TicketDetail>(`/tickets/${id}`);
+}
+
+export function getMyTickets(): Promise<TicketSummary[]> {
+  return apiGet<TicketSummary[]>('/tickets/mine');
+} 
