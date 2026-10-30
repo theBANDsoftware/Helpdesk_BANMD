@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ticketColumns, getTicket, categoryLabels, statusLabels, assignTicket } from './ticketsApi';
 import { DataTable, setColumns } from '../../shared/DataTable';
@@ -11,8 +11,8 @@ import { getUsers } from '../users/usersApi';
 export default function TicketDetail() {
   const { id } = useParams();
   const ticketId = Number(id);
-  const location = useLocation();
-  const backTo: string = location.state?.from ?? '/start';
+  const navigate = useNavigate();
+  const backTo: string = "/tickets/mine";
 
   const { user: currentUser } = useSelectedUser();
   const queryClient = useQueryClient();
@@ -62,7 +62,7 @@ export default function TicketDetail() {
   if (!Number.isInteger(ticketId)) {
     return (
       <section className="card">
-        <Link to={backTo}>&lt; Tillbaka</Link>
+        <a href="#" onClick={() => navigate(-1)} className="link">&lt; Tillbaka</a>
         <p className="error">Ärendet hittades inte</p>
       </section>
     );
@@ -80,7 +80,7 @@ export default function TicketDetail() {
 
   return (
     <section className="card">
-      <Link to={backTo}>&lt; Tillbaka</Link>
+        <a href="#" onClick={() => navigate(-1)} className="link">&lt; Tillbaka</a>
       {query.isPending && <p>Hämtar ärendet …</p>}
       {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
         <p className="error">Ärendet hittades inte</p>
