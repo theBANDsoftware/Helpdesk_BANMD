@@ -1,5 +1,5 @@
 import { apiGet, apiPost } from '../../shared/apiClient';
-import type { categoryTicket, TicketStatus, TicketDetail } from '../../Types';
+import type { categoryTicket, TicketStatus, TicketDetail, TicketSummary } from '../../Types';
 
 export type CreateTicketRequest = {
   title: string;
@@ -40,3 +40,7 @@ export function createTicket(ticket: CreateTicketRequest): Promise<void> {
 export function getTicket(id: number): Promise<TicketDetail> {
   return apiGet<TicketDetail>(`/tickets/${id}`);
 }
+
+export function getMyTickets(): Promise<TicketSummary[]> {
+  return apiGet<TicketSummary[]>('/tickets/mine');
+} 

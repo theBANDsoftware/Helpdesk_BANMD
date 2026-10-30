@@ -24,3 +24,11 @@ export type TicketDetail = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TicketSummary = {
+  id: number;
+  title: string;
+  category: categoryTicket;
+  status: TicketStatus;
+  createdAt: string;
+};
