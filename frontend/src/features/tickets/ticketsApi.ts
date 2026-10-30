@@ -109,9 +109,6 @@ export async function assignTicket(
 
   return body as TicketDetailResponse;
 }
-// export function getTicket(id: number): Promise<TicketDetail> {
-//   return apiGet<TicketDetail>(`/tickets/${id}`);
-// }
 
 export function getMyTickets(): Promise<TicketSummary[]> {
   return apiGet<TicketSummary[]>('/tickets/mine');
