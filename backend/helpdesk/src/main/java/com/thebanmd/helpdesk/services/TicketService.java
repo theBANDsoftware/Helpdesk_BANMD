@@ -2,6 +2,7 @@ package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
+import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
@@ -12,6 +13,8 @@ import com.thebanmd.helpdesk.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -34,5 +37,14 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new TicketNotFoundException(id));
         return ticketMapper.toDetailResponse(ticket);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketSummaryResponse> getMyTickets(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+        List<Ticket> tickets = ticketRepository.findByCreatedByIdOrderByCreatedAtDescIdDesc(userId);
+        return ticketMapper.toSummaryResponseList(tickets);
     }
 }

@@ -3,13 +3,14 @@ import { Navigate, useNavigate } from 'react-router';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from './selectedUserContext';
 import { getUsers, roleLabels, type User } from './usersApi';
+import { homePaths } from './homePaths';
 
 type State =
   { kind: 'loading' } | { kind: 'ok'; users: User[] } | { kind: 'error'; message: string };
 
 /**
- * Listan med användare från databasen (AK 1). Klickar man på en användare
- * blir den vald och man kommer till startsidan (AK 2).
+ * Listan med användare från databasen. Klickar man på en användare blir den
+ * vald och skickas vidare beroende på roll (se homePaths).
  */
 export function UserList() {
   const [state, setState] = useState<State>({ kind: 'loading' });
@@ -24,12 +25,12 @@ export function UserList() {
 
   // Är någon redan vald finns inget att välja här. "Byt användare" tömmer valet först.
   if (selectedUser !== null) {
-    return <Navigate to="/start" replace />;
+    return <Navigate to={homePaths[selectedUser.role]} replace />;
   }
 
   function choose(user: User) {
     selectUser(user);
-    navigate('/start');
+    navigate(homePaths[user.role]);
   }
 
   return (
