@@ -1,5 +1,6 @@
-import { apiGet, apiPost, ApiError } from '../../shared/apiClient';
-import type { categoryTicket, TicketStatus, TicketDetail, TicketSummary } from '../../Types';
+import { apiGet, ApiError } from '../../shared/apiClient';
+import type { categoryTicket, TicketSummary } from '../../Types';
+import { readSelectedUserId } from '../../shared/selectedUserStorage';
 
 // Återanvänder eller definierar status- och kategorityper
 export type StatusTicket = 'NEW' | 'IN_PROGRESS' | 'RESOLVED';
@@ -63,15 +64,14 @@ export async function getTicket(id: number): Promise<TicketDetailResponse> {
 
 /** Skapar ett nytt ärende med anmälarens id i X-User-Id-headern */
 export async function createTicket(
-  ticket: CreateTicketDTO,
-  userId: number
+  ticket: CreateTicketDTO
 ): Promise<TicketDetailResponse> {
   const response = await fetch('/api/tickets', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'X-User-Id': userId.toString(),
+       'X-User-Id': String(readSelectedUserId() === null ? 0 : readSelectedUserId()),
     },
     body: JSON.stringify(ticket),
   });
@@ -108,9 +108,6 @@ export async function assignTicket(
   }
 
   return body as TicketDetailResponse;
-}
-export function getTicket(id: number): Promise<TicketDetail> {
-  return apiGet<TicketDetail>(`/tickets/${id}`);
 }
 
 export function getMyTickets(): Promise<TicketSummary[]> {
