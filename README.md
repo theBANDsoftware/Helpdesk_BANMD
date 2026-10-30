@@ -105,6 +105,10 @@ backend/helpdesk/src/main/java/com/thebanmd/helpdesk/
 frontend/src/
   App.tsx                     ← routern: en rad per sida
   features/
+    tickets/
+      NewTicketForm.tsx
+      TicketDetail.tsx
+      ticketsApi.ts
     users/                    ← en mapp per funktion
       UserList.tsx
       usersApi.ts

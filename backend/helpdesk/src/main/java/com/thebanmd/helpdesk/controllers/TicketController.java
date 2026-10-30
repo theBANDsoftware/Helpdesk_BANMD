@@ -1,5 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
+import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
@@ -37,5 +38,13 @@ public class TicketController {
         return ticketService.findById(id);
     }
 
+    @PutMapping("/{id}/assign")
+    public TicketDetailResponse assignTicket(
+        @PathVariable Long id,
+        @RequestBody AssignTicketRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.assignTicket(id, request, userId);
+    }
 
 }
+
