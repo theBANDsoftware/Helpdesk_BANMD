@@ -1,5 +1,6 @@
 package com.thebanmd.helpdesk.services;
 
+import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.entities.Ticket;
@@ -30,9 +31,34 @@ public class TicketService {
     }
 
     @Transactional(readOnly = true)
-    public TicketDetailResponse findById(Long id) {
-        Ticket ticket = ticketRepository.findById(id)
-            .orElseThrow(() -> new TicketNotFoundException(id));
-        return ticketMapper.toDetailResponse(ticket);
+    public TicketDetailResponse assignTicket(Long ticketId, AssignTicketRequest request, Long performedByUserId) {
+        User performingUser = userRepository.findById(performedByUserId)
+            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
+
+        // Kontrollera att den som utför ändringen är IT-ansvarig
+        if (performingUser.getRole() != Role.IT_ADMIN) {
+            throw new IllegalArgumentException("Bara IT-ansvariga kan tilldela ärenden");
+        }
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        if (request.assignedToUserId() == null) {
+            // Ta bort tilldelning
+            ticket.setAssignedTo(null);
+        } else {
+            User assignee = userRepository.findById(request.assignedToUserId())
+                .orElseThrow(() -> new UserNotFoundException(request.assignedToUserId()));
+
+            // Endast IT_ADMIN får tilldelas
+            if (assignee.getRole() != Role.IT_ADMIN) {
+                throw new IllegalArgumentException("Endast IT-ansvariga kan tilldelas ärenden");
+            }
+
+            ticket.setAssignedTo(assignee);
+        }
+
+        Ticket updated = ticketRepository.save(ticket);
+        return ticketMapper.toDetailResponse(updated);
     }
 }

@@ -1,4 +1,4 @@
 package com.thebanmd.helpdesk.dtos;
 
-public record AssignTicketRequest() {
+public record AssignTicketRequest(Long assignedToUserId) {
 }
