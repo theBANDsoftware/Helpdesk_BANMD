@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { formatDate } from './formatDate';
 
 type Props = {
   data: [string, ReactNode][];
@@ -36,8 +37,4 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
 function isIsoDate(value: unknown): value is string {
   return typeof value === 'string' && ISO_DATE.test(value);
-}
-
-export function formatDate(value: string): string {
-  return new Date(value).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
 }

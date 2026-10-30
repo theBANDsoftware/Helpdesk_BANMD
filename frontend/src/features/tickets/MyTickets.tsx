@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { categoryLabels, getMyTickets, statusLabels } from './ticketsApi';
-import { formatDate } from '../../shared/DataTable';
+import { formatDate } from '../../shared/formatDate';
 
 /** Den valda användarens egna ärenden, nyaste först (TB-24). */
 export default function MyTickets() {
