@@ -13,18 +13,16 @@ export default function MyTickets() {
   return (
     <section className="card">
       <h2>Mina ärenden</h2>
+      <p>
+        <Link to="/tickets/new" className="button">
+          Anmäl ett fel
+        </Link>
+      </p>
 
       {query.isPending && <p>Hämtar ärenden …</p>}
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
 
-      {query.isSuccess && query.data.length === 0 && (
-        <>
-          <p>Du har inga ärenden än</p>
-          <Link to="/tickets/new" className="button">
-            Anmäl ett fel
-          </Link>
-        </>
-      )}
+      {query.isSuccess && query.data.length === 0 && <p>Du har inga ärenden än</p>}
 
       {query.isSuccess && query.data.length > 0 && (
         <ul className="ticket-list">
