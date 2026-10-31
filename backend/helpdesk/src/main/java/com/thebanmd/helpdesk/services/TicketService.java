@@ -79,4 +79,11 @@ public class TicketService {
         List<Ticket> tickets = ticketRepository.findByCreatedByIdOrderByCreatedAtDescIdDesc(userId);
         return ticketMapper.toSummaryResponseList(tickets);
     }
+
+
+    @Transactional(readOnly = true)
+    public List<TicketSummaryResponse> getAllTickets() {
+        List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
+        return ticketMapper.toSummaryResponseList(tickets);
+    }
 }
