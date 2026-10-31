@@ -1,7 +1,7 @@
 import type { Role } from './usersApi';
 
-/** Vart man skickas efter att ha valt användare, beroende på roll (TB-24). */
+/** Vart man skickas efter att ha valt användare, beroende på roll (TB-24, TB-25). */
 export const homePaths: Record<Role, string> = {
   EMPLOYEE: '/tickets/mine',
-  IT_ADMIN: '/start',
+  IT_ADMIN: '/tickets',
 };
