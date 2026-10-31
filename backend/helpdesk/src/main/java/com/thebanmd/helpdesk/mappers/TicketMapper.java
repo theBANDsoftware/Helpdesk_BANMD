@@ -24,6 +24,9 @@ public interface TicketMapper {
     @Mapping(target = "assignedTo", source = "assignedTo.name")
     TicketDetailResponse toDetailResponse(Ticket ticket);
 
+    @Mapping(target = "createdBy", source = "createdBy.name")
+    @Mapping(target = "assignedTo", source = "assignedTo.name")
     TicketSummaryResponse toSummaryResponse(Ticket ticket);
+
     List<TicketSummaryResponse> toSummaryResponseList(List<Ticket> tickets);
 }
