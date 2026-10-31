@@ -8,6 +8,7 @@ import NewTicketForm from './features/tickets/NewTicketForm';
 import TicketDetail from './features/tickets/TicketDetail';
 import MyTickets from './features/tickets/MyTickets';
 import AllTickets from './features/tickets/AllTickets';
+import { NavMenu } from './features/users/NavMenu';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -22,6 +23,7 @@ export default function App() {
       <SelectedUserProvider>
         <header className="app-header">
           <h1>Helpdesk</h1>
+          <NavMenu />
           <CurrentUser />
         </header>
         <main className="app-main">

@@ -55,6 +55,27 @@ body {
   cursor: pointer;
 }
 
+.nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  order: 3;
+  width: 100%;
+}
+
+.nav-menu a {
+  padding: 0.25rem 0;
+  color: #d0d7de;
+  text-decoration: none;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
 .app-header h1 {
   margin: 0;
   font-size: 1.25rem;
@@ -160,6 +181,11 @@ body {
 @media (min-width: 48rem) {
   .app-main {
     padding: 2rem;
+  }
+
+  .nav-menu {
+    order: 0;
+    width: auto;
   }
 }
 
