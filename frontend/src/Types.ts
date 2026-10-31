@@ -30,5 +30,7 @@ export type TicketSummary = {
   title: string;
   category: categoryTicket;
   status: TicketStatus;
+  createdBy: string;
+  assignedTo: string | null;
   createdAt: string;
 };
