@@ -27,6 +27,11 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
+    
+    @GetMapping
+    public List<TicketSummaryResponse> getAllTickets() {
+        return ticketService.getAllTickets();
+    }
 
     @GetMapping("/mine")
     public List<TicketSummaryResponse> getMyTickets(@RequestHeader("X-User-Id") Long userId) {
