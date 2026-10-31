@@ -7,6 +7,7 @@ import { StartPage } from './features/start/StartPage';
 import NewTicketForm from './features/tickets/NewTicketForm';
 import TicketDetail from './features/tickets/TicketDetail';
 import MyTickets from './features/tickets/MyTickets';
+import AllTickets from './features/tickets/AllTickets';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/" element={<UserList />} />
             <Route element={<RequireUser />}>
               <Route path="/start" element={<StartPage />} />
+              <Route path="/tickets" element={<AllTickets />} />
               <Route path="/tickets/mine" element={<MyTickets />} />
               <Route path="/tickets/new" element={<NewTicketForm />} />
               <Route path="/tickets/:id" element={<TicketDetail />} />
