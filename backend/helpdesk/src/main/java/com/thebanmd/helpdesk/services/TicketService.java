@@ -4,10 +4,12 @@ import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
+import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
+import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
@@ -67,6 +69,24 @@ public class TicketService {
             ticket.setAssignedTo(assignee);
         }
 
+        Ticket updated = ticketRepository.save(ticket);
+        return ticketMapper.toDetailResponse(updated);
+    }
+
+    /** Ändrar status på ett ärende. Bara IT-ansvariga får göra det (TB-27, AK 3). */
+    @Transactional
+    public TicketDetailResponse updateStatus(Long ticketId, UpdateStatusRequest request, Long performedByUserId) {
+        User performingUser = userRepository.findById(performedByUserId)
+            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
+
+        if (performingUser.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan ändra status");
+        }
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        ticket.setStatus(request.status());
         Ticket updated = ticketRepository.save(ticket);
         return ticketMapper.toDetailResponse(updated);
     }

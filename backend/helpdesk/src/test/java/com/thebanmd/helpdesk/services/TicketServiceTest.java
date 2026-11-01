@@ -1,11 +1,15 @@
 package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
+import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
+import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
+import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
+import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
 import com.thebanmd.helpdesk.repositories.TicketRepository;
@@ -55,6 +59,55 @@ class TicketServiceTest {
         assertThatThrownBy(() -> service.create(request, 99L))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessage("Användaren med id 99 finns inte");
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStatusAndrarStatusNarItAnsvarigAndrar() {
+        User maria = new User("Maria Nordin", Role.IT_ADMIN);
+        Ticket ticket = new Ticket("Wifi försvinner", "I rum Ekan", Category.NETWORK, new User("Anna Lind", Role.EMPLOYEE));
+        ticket.setStatus(Status.NEW);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(maria));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+
+        TicketDetailResponse response = service.updateStatus(1L, new UpdateStatusRequest(Status.IN_PROGRESS), 5L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+        assertThat(response.status()).isEqualTo(Status.IN_PROGRESS);
+    }
+
+    @Test
+    void updateStatusKanOppnaEttLostArendeIgen() {
+        User maria = new User("Maria Nordin", Role.IT_ADMIN);
+        Ticket ticket = new Ticket("Wifi försvinner", "I rum Ekan", Category.NETWORK, new User("Anna Lind", Role.EMPLOYEE));
+        ticket.setStatus(Status.RESOLVED);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(maria));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+
+        service.updateStatus(1L, new UpdateStatusRequest(Status.IN_PROGRESS), 5L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+    }
+
+    @Test
+    void updateStatusKastarForbiddenOmAnstalldForsokerAndra() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new User("Anna Lind", Role.EMPLOYEE)));
+
+        assertThatThrownBy(() -> service.updateStatus(1L, new UpdateStatusRequest(Status.RESOLVED), 1L))
+                .isInstanceOf(ForbiddenActionException.class)
+                .hasMessage("Bara IT-ansvariga kan ändra status");
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStatusKastarTicketNotFoundOmArendetInteFinns() {
+        when(userRepository.findById(5L)).thenReturn(Optional.of(new User("Maria Nordin", Role.IT_ADMIN)));
+        when(ticketRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.updateStatus(99L, new UpdateStatusRequest(Status.RESOLVED), 5L))
+                .isInstanceOf(TicketNotFoundException.class);
         verify(ticketRepository, never()).save(any());
     }
 }
