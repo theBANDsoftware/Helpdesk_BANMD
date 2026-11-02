@@ -4,6 +4,7 @@ import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
+import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
 import com.thebanmd.helpdesk.services.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,14 @@ public class TicketController {
         @RequestBody AssignTicketRequest request,
         @RequestHeader("X-User-Id") Long userId) {
         return ticketService.assignTicket(id, request, userId);
+    }
+
+    @PutMapping("/{id}/status")
+    public TicketDetailResponse updateStatus(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateStatusRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.updateStatus(id, request, userId);
     }
 
 }

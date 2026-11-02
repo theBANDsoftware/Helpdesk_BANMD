@@ -1,7 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ticketColumns, getTicket, categoryLabels, statusLabels, assignTicket } from './ticketsApi';
+import {
+  ticketColumns,
+  getTicket,
+  categoryLabels,
+  statusLabels,
+  assignTicket,
+  updateTicketStatus,
+  type StatusTicket,
+} from './ticketsApi';
 import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
@@ -17,6 +25,7 @@ export default function TicketDetail() {
   const { user: currentUser } = useSelectedUser();
   const queryClient = useQueryClient();
   const [assignError, setAssignError] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ['tickets', ticketId],
@@ -59,6 +68,31 @@ export default function TicketDetail() {
     },
   });
 
+  // Mutation för att ändra status (TB-27). Samma mönster som tilldelningen ovan.
+  const statusMutation = useMutation({
+    mutationFn: (status: StatusTicket) => {
+      if (!currentUser) throw new Error('Ingen användare är vald');
+      return updateTicketStatus(ticketId, status, currentUser.id);
+    },
+    onSuccess: (updatedTicket) => {
+      setStatusError(null);
+      queryClient.setQueryData(['tickets', ticketId], updatedTicket);
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        typeof error.body === 'object' &&
+        error.body &&
+        'error' in error.body
+      ) {
+        setStatusError((error.body as { error: string }).error);
+      } else {
+        setStatusError('Kunde inte ändra status.');
+      }
+    },
+  });
+
   if (!Number.isInteger(ticketId)) {
     return (
       <section className="card">
@@ -76,6 +110,10 @@ export default function TicketDetail() {
     const value = e.target.value;
     const targetUserId = value === '' ? null : Number(value);
     assignMutation.mutate(targetUserId);
+  }
+
+  function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    statusMutation.mutate(e.target.value as StatusTicket);
   }
 
   return (
@@ -101,6 +139,35 @@ export default function TicketDetail() {
               ['title', 'description'],
             )}
           ></DataTable>
+
+          {/* Val för status – visas bara för IT-ansvariga (TB-27, AK 3) */}
+          {isItAdmin && (
+            <div
+              className="status-control"
+              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+            >
+              <label
+                htmlFor="statusSelect"
+                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+              >
+                Status
+              </label>
+              <select
+                id="statusSelect"
+                value={query.data.status}
+                onChange={handleStatusChange}
+                disabled={statusMutation.isPending}
+              >
+                {(Object.keys(statusLabels) as StatusTicket[]).map((status) => (
+                  <option key={status} value={status}>
+                    {statusLabels[status]}
+                  </option>
+                ))}
+              </select>
+              {statusMutation.isPending && <span> Sparar …</span>}
+              {statusError && <p className="error">{statusError}</p>}
+            </div>
+          )}
 
           {/* Val för tilldelad – visas bara för IT-ansvariga */}
           {isItAdmin && (

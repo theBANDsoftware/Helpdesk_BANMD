@@ -110,6 +110,31 @@ export async function assignTicket(
   return body as TicketDetailResponse;
 }
 
+/** Ändrar status på ärendet. Bara IT-ansvariga får göra det, backend svarar annars 403 (TB-27). */
+export async function updateTicketStatus(
+  ticketId: number,
+  status: StatusTicket,
+  currentUserId: number,
+): Promise<TicketDetailResponse> {
+  const response = await fetch(`/api/tickets/${ticketId}/status`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'X-User-Id': currentUserId.toString(),
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new ApiError(response.status, body);
+  }
+
+  return body as TicketDetailResponse;
+}
+
 export function getMyTickets(): Promise<TicketSummary[]> {
   return apiGet<TicketSummary[]>('/tickets/mine');
 } 

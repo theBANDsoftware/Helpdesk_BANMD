@@ -52,4 +52,10 @@ public class ApiExceptionHandler {
     public ResponseEntity<Map<String, String>> handleTicketNotFound(TicketNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
+
+    /** Användaren har fel roll, t.ex. en anställd som försöker ändra status (TB-27). */
+    @ExceptionHandler(ForbiddenActionException.class)
+    public ResponseEntity<Map<String, String>> handleForbiddenAction(ForbiddenActionException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
+    }
 }
