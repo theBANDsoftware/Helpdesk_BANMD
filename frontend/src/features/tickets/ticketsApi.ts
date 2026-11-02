@@ -113,3 +113,8 @@ export async function assignTicket(
 export function getMyTickets(): Promise<TicketSummary[]> {
   return apiGet<TicketSummary[]>('/tickets/mine');
 } 
+
+/** Alla ärenden från alla anmälare, nyaste först */
+export function getAllTickets(): Promise<TicketSummary[]> {
+  return apiGet<TicketSummary[]>('/tickets');
+}

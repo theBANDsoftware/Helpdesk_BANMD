@@ -8,6 +8,11 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
+    /** Ärenden som en användare har anmält, nyaste först (TB-24). */
     @EntityGraph(attributePaths = {"createdBy", "assignedTo"})
     List<Ticket> findByCreatedByIdOrderByCreatedAtDescIdDesc(Long userId);
+
+    /** Alla ärenden, nyaste först (TB-25). */
+    @EntityGraph(attributePaths = {"createdBy", "assignedTo"})
+    List<Ticket> findAllByOrderByCreatedAtDescIdDesc();
 }
