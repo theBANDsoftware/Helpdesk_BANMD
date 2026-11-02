@@ -1,34 +1,42 @@
 ## Vad gör den här pull requesten?
 
-<!-- Kort beskrivning av ändringen. -->
+<!-- Beskriv kort vad som ändrats och varför. -->
 
-Closes #<!-- issuenummer, t.ex. Closes #4. Då stängs issuen och kortet flyttas till Klart när PR:en mergas. -->
+**Jira:** TB-N
+
+<!-- PR-titeln ska börja med Jira-nyckeln, t.ex. "TB-8 Skapa ärende via mejl". Då kopplas PR:en till kortet i Jira. -->
 
 ## Hur testar man den?
 
-<!--
-  Steg för granskaren. Utgå från acceptanskriterierna.
-  Exempel:
-  1. Starta appen och gå till ett hushåll.
-  2. Lägg till en syssla utan namn: ett felmeddelande ska visas.
-  3. Lägg till en syssla med namn: den ska synas direkt i listan.
--->
+<!-- Beskriv konkreta teststeg utifrån storyns acceptanskriterier. -->
 
-1.
-2.
+1. 
+2. 
 
 ## Definition of Done
 
-<!--
-  Den här listan ska spegla er docs/definition-of-done.md.
-  Uppdatera den här mallen när ni ändrar er DoD.
--->
+<!-- Speglar docs/definition-of-done.md. Ändras DoD ska den här listan ändras i samma PR. -->
 
-- [ ] Alla acceptanskriterier är uppfyllda och testade för hand
-- [ ] Applikationen startar och körs utan fel
-- [ ] Inga `console.log`, utkommenterad kod eller TODO kvar
-- [ ] README eller `docs/` är uppdaterad om det behövs
+**Innan du ber om granskning (den som skrivit koden)**
+
+- [ ] Alla acceptanskriterier i storyn är uppfyllda och testade för hand
+- [ ] Branchnamnet, alla commits och PR-titeln börjar med Jira-nyckeln
+- [ ] Ingen kvarglömd felsökningskod: inga `console.log` eller `System.out.println`, ingen utkommenterad kod och inga TODO
+- [ ] Inga lösenord eller andra hemligheter i koden
+- [ ] Backendkoden följer controller → service → repository
+- [ ] Vyer som ändrats fungerar i mobilbredd (360 px) utan att man behöver scrolla i sidled
+- [ ] README eller `docs/` är uppdaterad om ändringen påverkar hur man startar eller använder projektet
+
+**Granskaren, före och efter merge**
+
+- [ ] Jag har läst hela ändringen under "Files changed"
+- [ ] Jag har hämtat branchen och testat acceptanskriterierna själv
+- [ ] Jag har skrivit i godkännandet vad jag har testat
+- [ ] Jag godkänner PR:en och mergar den själv (ingen mergar sin egen PR)
+- [ ] Efter mergen har jag hämtat `develop` och startat databas, backend och frontend utan fel
+
+Hela DoD: [docs/definition-of-done.md](https://github.com/theBANDsoftware/Helpdesk_BANMD/blob/develop/docs/definition-of-done.md)
 
 ## Till granskaren
 
-<!-- Något särskilt du vill att granskaren tittar på? Något du är osäker på? -->
+<!-- Ange särskilda områden att granska eller osäkerheter. -->

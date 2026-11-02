@@ -1,0 +1,194 @@
+/* Gemensam grundstil. Mobile first: skriv för smal skärm först och lägg till
+   @media (min-width: ...) för större skärmar (DoD punkt 9). */
+
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  color: #1f2328;
+  background-color: #f6f8fa;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #24292f;
+  color: #ffffff;
+}
+
+.current-user {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.current-user-role {
+  color: #d0d7de;
+}
+
+.current-user button {
+  padding: 0.25rem 0.75rem;
+  font: inherit;
+  color: #ffffff;
+  background: transparent;
+  border: 1px solid #8c959f;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  order: 3;
+  width: 100%;
+}
+
+.nav-menu a {
+  padding: 0.25rem 0;
+  color: #d0d7de;
+  text-decoration: none;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.app-main {
+  padding: 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.card {
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.user-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.user-list li {
+  border-bottom: 1px solid #d0d7de;
+}
+
+.user-option {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.75rem 0.25rem;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.user-option:hover,
+.user-option:focus-visible {
+  background-color: #f6f8fa;
+}
+
+.user-list li:last-child {
+  border-bottom: none;
+}
+
+.user-role {
+  color: #57606a;
+  white-space: nowrap;
+}
+
+.error {
+  color: #cf222e;
+}
+
+.ticket-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticket-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.ticket-list li:last-child {
+  border-bottom: none;
+}
+
+.ticket-title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.ticket-meta {
+  color: #57606a;
+  font-size: 0.9rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  color: #ffffff;
+  background-color: #1f883d;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+@media (min-width: 48rem) {
+  .app-main {
+    padding: 2rem;
+  }
+
+  .nav-menu {
+    order: 0;
+    width: auto;
+  }
+}
+
+.data-table th {
+  text-align: left;
+}
