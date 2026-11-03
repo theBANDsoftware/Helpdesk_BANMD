@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { categoryLabels, getAllTickets, statusLabels } from './ticketsApi';
 import { formatDate } from '../../shared/formatDate';
+import { Link } from 'react-router';
 
 /** Alla ärenden från alla anmälare, nyaste först. För IT-ansvariga */
 export default function AllTickets() {
@@ -22,7 +23,7 @@ export default function AllTickets() {
         <ul className="ticket-list">
           {query.data.map((ticket) => (
             <li key={ticket.id}>
-              <span className="ticket-title">{ticket.title}</span>
+             <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
               <span className="ticket-meta">
                 {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} ·{' '}
                 {formatDate(ticket.createdAt)}
