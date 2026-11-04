@@ -11,62 +11,42 @@
   Skriv ärligt. Det här är bra underlag för er individuella reflektion.
 -->
 
-**Datum:**
-**Deltagare:**
-**Leds av:**
+**Datum:** 2026-11-02
+**Deltagare:** Adli Anabtawi, Bleart Rama, David Andersson, Noah Fältman, Mustafa Samir
+**Leds av:** Adli Anabtawi (Scrum Master sprint 1)
 
 ## Förra retrons åtgärder
 
-> **Exempel:**
->
-> | Åtgärd | Blev den av? | Hjälpte den? |
-> |---|---|---|
-> | PR:er granskas inom 24 timmar | Ja, nästan alltid | Ja, mycket färre PR:er som låg och väntade |
-
-| Åtgärd | Blev den av? | Hjälpte den? |
-|---|---|---|
-| | | |
+Inga. Det här var första sprinten.
 
 ## Vad gick bra?
 
-> **Exempel:**
-> - Standupen tog aldrig mer än 10 minuter.
-> - Lina och Jonas parprogrammerade API-kopplingen och båda förstår den nu.
-
--
--
+- Vi hade standup nästan varje dag. Den låg på kvällen, så att alla kunde vara med, även de som jobbar.
+- TB-23 byggdes tillsammans. På backend delade David skärm, och på frontend delade Noah och David. Resten följde med, så alla har sett hur en story går genom alla lager.
+- Den som fastnade sa till, antingen i Discord eller på standupen.
+- Arbetet var relativt jämnt fördelat. Bleart tog både TB-24 och TB-25, eftersom de hörde ihop och rörde samma filer, som planeringen föreslog.
+- Nya behov som upptäcktes under sprinten blev egna kort i Jira (TB-42–TB-52) i stället för att byggas in i pågående stories.
 
 ## Vad gick mindre bra?
 
-> **Exempel:**
-> - PR:er låg ogranskade i upp till två dagar.
-> - Vi tog in för mycket. Två stories blev inte klara.
-> - Ingen visste att Amir satt fast med Docker förrän torsdag.
-
--
--
+- Standupen loggades inte under sprinten. Närvaron fick återskapas i efterhand från Discord, men vad var och en gjorde och vilka hinder som fanns gick inte att få fram.
+- En branch blev försenad till helgen. Söndag kväll fungerade inte för alla, så `develop` mergades till `main` först på måndagen, strax före reviewn. DoD säger söndag kväll.
+- Granskningen av PR:er varierade. Vissa granskade noggrant, andra mindre.
+- Rollen som Scrum Master var otydlig. Ingen av oss hade sett någon i rollen förut, så det var svårt att veta vad som förväntades.
+- TB-24 och TB-28 krockade i samma filer, och det behövdes ett eget kort (TB-43) för att lösa merge-konflikten. Risken stod i `planning.md`, men vi följde inte upp den.
+- 13 av 49 commits saknar Jira-nyckel (DoD punkt 2), och ansvariga fylldes aldrig i i `planning.md`.
 
 ## Åtgärder till nästa sprint
 
 <!-- Högst 2–3. Konkreta, med ansvarig. "Bli bättre på att kommunicera" är inte en åtgärd. -->
 
-> **Exempel:**
->
-> | Åtgärd | Ansvarig |
-> |---|---|
-> | PR:er granskas inom 24 timmar. | Amir påminner på standupen |
-> | Den som sitter fast mer än en timme säger till i Discord. | Alla |
-> | Vi tar in en story mindre än förra sprinten. | Sara (PO) |
-
 | Åtgärd | Ansvarig |
 |---|---|
-| | |
-| | |
+| Allt som ska visas på reviewn är mergat till `develop` senast fredag kväll, och `develop` mergas till `main` samma kväll. | Alla. Scrum Master påminner på onsdagens standup och gör PR:en till `main`. |
+| Standupen loggas i `standup.md` direkt efter standupen, samma kväll. | Scrum Master (David i sprint 2) |
+| Vi skriver en kort lista över vad Scrum Master gör varje dag och varje vecka, och lägger den i gruppkontraktet. | Adli, och lämnar över till David |
 
 ## Ändringar i Definition of Done eller gruppkontrakt
 
-<!-- Om ni ändrar något: uppdatera dokumentet och skriv här vad och varför. -->
-
-> **Exempel:** Ny punkt i gruppkontraktet: "Pull requests granskas inom 24 timmar."
-
--
+- **DoD, "Inför sprint review":** `develop` mergas till `main` fredag kväll i stället för söndag kväll. Fredag passar gruppen bäst, och på söndagen har inte alla tid.
+- **Gruppkontraktet:** en lista över vad Scrum Master gör, se åtgärd 3.
