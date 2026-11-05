@@ -125,7 +125,7 @@ export default function TicketDetail() {
         {/* Här lägger du in din nya komponent och skickar med id och behörighet */}
         <TicketComments
           ticketId={ticketId}
-          isItAdmin={currentUser?.role === 'IT_ADMIN'} // Byt ut till den variabel du använder för att kolla rollen
+          canComment={isItAdmin || query.data?.createdById === currentUser?.id}
         />
       </section>
       <section className="card">

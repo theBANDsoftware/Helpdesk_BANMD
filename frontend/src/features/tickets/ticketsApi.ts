@@ -46,6 +46,7 @@ export interface TicketDetailResponse {
   description: string;
   category: categoryTicket;
   status: StatusTicket;
+  createdById: number;
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;

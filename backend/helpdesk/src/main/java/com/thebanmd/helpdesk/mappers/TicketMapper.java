@@ -20,6 +20,7 @@ public interface TicketMapper {
     @Mapping(target = "updatedAt", ignore = true)
     Ticket toEntity(CreateTicketRequest request);
 
+    @Mapping(target = "createdById", source = "createdBy.id")
     @Mapping(target = "createdBy", source = "createdBy.name")
     @Mapping(target = "assignedTo", source = "assignedTo.name")
     TicketDetailResponse toDetailResponse(Ticket ticket);
