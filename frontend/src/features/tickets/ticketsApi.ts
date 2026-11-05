@@ -143,3 +143,11 @@ export function getMyTickets(): Promise<TicketSummary[]> {
 export function getAllTickets(): Promise<TicketSummary[]> {
   return apiGet<TicketSummary[]>('/tickets');
 }
+
+/**
+ * Hämtar alla ärenden som är tilldelade den inloggade IT-ansvariga.
+ * Anropar GET /api/tickets/assigned-to-me där X-User-Id skickas med automatiskt av apiGet.
+ */
+export function getMyAssignedTickets(): Promise<TicketSummary[]> {
+  return apiGet<TicketSummary[]>('/tickets/assigned-to-me');
+}

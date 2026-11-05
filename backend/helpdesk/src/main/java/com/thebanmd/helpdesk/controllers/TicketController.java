@@ -57,5 +57,10 @@ public class TicketController {
         return ticketService.updateStatus(id, request, userId);
     }
 
+    @GetMapping("/assigned-to-me")
+    public List<TicketSummaryResponse> getMyAssignedTickets(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getMyAssignedTickets(userId);
+    }
+
 }
 

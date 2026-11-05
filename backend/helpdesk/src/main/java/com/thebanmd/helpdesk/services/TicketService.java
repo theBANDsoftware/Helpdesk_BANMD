@@ -106,4 +106,18 @@ public class TicketService {
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
         return ticketMapper.toSummaryResponseList(tickets);
     }
+
+    @Transactional(readOnly = true)
+    public List<TicketSummaryResponse> getMyAssignedTickets(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Endast IT-ansvariga har tilldelade ärenden.");
+        }
+
+        List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
+
+        return ticketMapper.toSummaryResponseList(tickets);
+    }
 }
