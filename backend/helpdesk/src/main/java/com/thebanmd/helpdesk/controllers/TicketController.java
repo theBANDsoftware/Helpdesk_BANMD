@@ -1,10 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
-import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
-import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
-import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
-import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
-import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
+import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.services.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
+
     private final TicketService ticketService;
 
     public TicketController(TicketService ticketService) {
@@ -28,7 +25,7 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-    
+
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets() {
         return ticketService.getAllTickets();
