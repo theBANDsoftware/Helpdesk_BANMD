@@ -28,7 +28,7 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-    
+
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets() {
         return ticketService.getAllTickets();
@@ -58,6 +58,11 @@ public class TicketController {
         @Valid @RequestBody UpdateStatusRequest request,
         @RequestHeader("X-User-Id") Long userId) {
         return ticketService.updateStatus(id, request, userId);
+    }
+
+    @GetMapping("/assigned-to-me")
+    public List<TicketSummaryResponse> getMyAssignedTickets(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getMyAssignedTickets(userId);
     }
 
 }
