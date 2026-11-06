@@ -50,12 +50,13 @@ public class ApiExceptionHandler {
                 .body(Map.of("error", "Ingen användare är vald. Headern " + e.getHeaderName() + " saknas."));
     }
 
+    /** Ärendet finns inte. Svarar 404. */
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleTicketNotFound(TicketNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
 
-    /** Användaren har fel roll, t.ex. en anställd som försöker ändra status (TB-27). */
+    /** Användaren har fel roll, t.ex. En anställd som försöker ändra status (TB-27). */
     @ExceptionHandler(ForbiddenActionException.class)
     public ResponseEntity<Map<String, String>> handleForbiddenAction(ForbiddenActionException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));

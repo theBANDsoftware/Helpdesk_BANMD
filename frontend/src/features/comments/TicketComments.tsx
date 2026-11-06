@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getComments,addComment } from './CommentsApi';
-import type{ CommentResponse } from './CommentsApi';
+import { getComments, addComment } from './CommentsApi';
+import type { CommentResponse } from './CommentsApi';
 
 interface TicketCommentsProps {
   ticketId: number;
-  isItAdmin: boolean;
+  canComment: boolean;
 }
 
-export default function TicketComments({ ticketId, isItAdmin }: TicketCommentsProps) {
+export default function TicketComments({ ticketId, canComment }: TicketCommentsProps) {
   const queryClient = useQueryClient();
   const [commentBody, setCommentBody] = useState('');
 
@@ -63,13 +63,13 @@ export default function TicketComments({ ticketId, isItAdmin }: TicketCommentsPr
         )}
       </div>
 
-      {/* Formulär - visas BARA om användaren är IT-ansvarig */}
-      {isItAdmin && (
+      {/* Formulär - visas för IT-ansvariga och för den som anmält ärendet (TB-30) */}
+      {canComment && (
         <form onSubmit={handleCommentSubmit} className="flex flex-col gap-3">
           <textarea
             className="border border-gray-300 rounded-md p-3 w-full"
             rows={3}
-            placeholder="Skriv en följdfråga till anmälaren..."
+            placeholder="Skriv en kommentar..."
             value={commentBody}
             onChange={(e) => setCommentBody(e.target.value)}
           />
@@ -78,7 +78,7 @@ export default function TicketComments({ ticketId, isItAdmin }: TicketCommentsPr
             disabled={!commentBody.trim() || commentMutation.isPending}
             className="bg-blue-600 text-white py-2 px-4 rounded-md w-fit font-medium disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
           >
-            {commentMutation.isPending ? 'Skickar...' : 'Skicka '}
+            {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
           </button>
         </form>
       )}

@@ -28,7 +28,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
 
-    // Hämtar alla kommentarer för ett visst ärende
+    /** Hämtar alla kommentarer på ett ärende, äldst först. Kastar TicketNotFoundException om ärendet inte finns. */
     public List<CommentResponse> getComments(Long ticketId) {
         if (!ticketRepository.existsById(ticketId)) {
             throw new TicketNotFoundException(ticketId);
@@ -40,21 +40,24 @@ public class CommentService {
             .toList();
     }
 
-    // Skapar en ny kommentar
+    /** Skapar en ny kommentar. IT-ansvariga får kommentera alla ärenden, anmälaren bara sitt eget (TB-30). */
     @Transactional
     public CommentResponse createComment(Long ticketId, Long authorId, CreateCommentRequest request) {
         // 1. Hämta den inloggade användaren
         User author = userRepository.findById(authorId)
             .orElseThrow(() -> new UserNotFoundException(authorId));
 
-        // 2. Kontrollera behörighet: Endast IT_ADMIN får kommentera
-        if (author.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Bara IT-ansvariga får kommentera ärenden.");
-        }
-
-        // 3. Hämta ärendet som ska kommenteras
+        // 2. Hämta ärendet som ska kommenteras
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        // 3. Kontrollera behörighet: IT_ADMIN får kommentera alla ärenden,
+        //    den som anmält ärendet får svara i sitt eget (TB-30)
+        boolean isItAdmin = author.getRole() == Role.IT_ADMIN;
+        boolean isReporter = ticket.getCreatedBy().getId().equals(authorId);
+        if (!isItAdmin && !isReporter) {
+            throw new ForbiddenActionException("Du kan bara kommentera dina egna ärenden.");
+        }
 
         // 4. Skapa och spara kommentaren
         Comment comment = new Comment(ticket, author, request.body());

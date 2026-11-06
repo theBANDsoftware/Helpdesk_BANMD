@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ticketColumns,
@@ -8,12 +8,15 @@ import {
   statusLabels,
   assignTicket,
   updateTicketStatus,
+  updateTicketPriority,
+  priorityLabels,
   type StatusTicket,
 } from './ticketsApi';
 import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
+import type { TicketPriority, TicketStatus } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 
@@ -22,12 +25,12 @@ export default function TicketDetail() {
   const { id } = useParams();
   const ticketId = Number(id);
   const navigate = useNavigate();
-  const backTo: string = '/tickets/mine';
 
   const { user: currentUser } = useSelectedUser();
   const queryClient = useQueryClient();
   const [assignError, setAssignError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [priorityError, setPriorityError] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ['tickets', ticketId],
@@ -95,6 +98,31 @@ export default function TicketDetail() {
     },
   });
 
+  // Mutation till prioritering
+  const priorityMutation = useMutation({
+    mutationFn: (priority: TicketPriority) => {
+      if (!currentUser) throw new Error('Ingen användare är vald');
+      return updateTicketPriority(ticketId, priority, currentUser.id);
+    },
+    onSuccess: (updatedTicket) => {
+      setPriorityError(null);
+      queryClient.setQueryData(['tickets', ticketId], updatedTicket);
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        typeof error.body === 'object' &&
+        error.body &&
+        'error' in error.body
+      ) {
+        setPriorityError((error.body as { error: string }).error);
+      } else {
+        setPriorityError('Kunde inte ändra status.');
+      }
+    },
+  });
+
   if (!Number.isInteger(ticketId)) {
     return (
       <section className="card">
@@ -120,13 +148,16 @@ export default function TicketDetail() {
     statusMutation.mutate(e.target.value as StatusTicket);
   }
 
+  function handlePriorityChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    priorityMutation.mutate(e.target.value as TicketPriority);
+  }
+
   return (
     <>
       <section>
-        {/* Här lägger du in din nya komponent och skickar med id och behörighet */}
         <TicketComments
           ticketId={ticketId}
-          isItAdmin={currentUser?.role === 'IT_ADMIN'} // Byt ut till den variabel du använder för att kolla rollen
+          canComment={isItAdmin || query.data?.createdById === currentUser?.id}
         />
       </section>
       <section className="card">
@@ -147,6 +178,7 @@ export default function TicketDetail() {
                   ...query.data,
                   category: categoryLabels[query.data.category],
                   status: statusLabels[query.data.status],
+                  priority: priorityLabels[query.data.priority],
                   assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
                 },
                 ticketColumns,
@@ -189,6 +221,52 @@ export default function TicketDetail() {
               </div>
             )}
 
+          {/* Val för prioritet */}
+          {isItAdmin && (
+            <div
+              className="status-control"
+              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+            >
+              <label
+                htmlFor="prioritySelect"
+                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+              >
+                Prioritet
+              </label>
+              <select
+                id="prioritySelect"
+                value={query.data.priority}
+                onChange={handlePriorityChange}
+                disabled={priorityMutation.isPending}
+              >
+                {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
+                  <option key={priority} value={priority}>
+                    {priorityLabels[priority]}
+                  </option>
+                ))}
+              </select>
+              {priorityMutation.isPending && <span> Sparar …</span>}
+              {priorityError && <p className="error">{priorityError}</p>}
+            </div>
+          )}
+
+          {/* Val för tilldelad – visas bara för IT-ansvariga */}
+          {isItAdmin && (
+            <div
+              className="assign-control"
+              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+            >
+              <label
+                htmlFor="assignSelect"
+                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+              >
+                Tilldelad
+              </label>
+              <select
+                id="assignSelect"
+                value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
+                onChange={handleAssignChange}
+                disabled={assignMutation.isPending}
             {/* Val för tilldelad – visas bara för IT-ansvariga */}
             {isItAdmin && (
               <div

@@ -2,6 +2,7 @@ package com.thebanmd.helpdesk.entities;
 
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Status;
+import com.thebanmd.helpdesk.enums.TicketPriority;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -55,6 +56,12 @@ public class Ticket {
     @ColumnDefault("current_timestamp()")
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @NotNull
+    @ColumnDefault("'MEDIUM'")
+    @Column(name = "priority", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TicketPriority priority = TicketPriority.MEDIUM;
 
     public Ticket(String title, String description, Category category, User createdBy) {
         this.title = title;
@@ -135,6 +142,14 @@ public class Ticket {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public TicketPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TicketPriority priority) {
+        this.priority = priority;
     }
 
 }

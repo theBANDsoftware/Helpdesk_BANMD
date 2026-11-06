@@ -1,5 +1,5 @@
-import { apiGet, ApiError } from '../../shared/apiClient';
-import type { categoryTicket, TicketSummary } from '../../Types';
+import { apiGet, apiRequest, ApiError } from '../../shared/apiClient';
+import type { categoryTicket, TicketPriority, TicketSummary } from '../../Types';
 import { readSelectedUserId } from '../../shared/selectedUserStorage';
 
 // Återanvänder eller definierar status- och kategorityper
@@ -20,12 +20,19 @@ export const statusLabels: Record<StatusTicket, string> = {
   IN_PROGRESS: 'Pågående',
   RESOLVED: 'Löst',
 };
+// Svenska visningstexter för ärendeprioritering
+export const priorityLabels: Record<TicketPriority, string> = {
+  LOW: 'Låg',
+  MEDIUM: 'Mellan',
+  HIGH: 'Hög',
+};
 
 // Kolumnrubriker som används av DataTable i TicketDetail
 export const ticketColumns: Record<string, string> = {
   id: 'Ärendenummer',
   category: 'Kategori',
   status: 'Status',
+  priority: "Prioritet",
   createdBy: 'Anmälare',
   assignedTo: 'Tilldelad',
   createdAt: 'Skapad',
@@ -46,6 +53,8 @@ export interface TicketDetailResponse {
   description: string;
   category: categoryTicket;
   status: StatusTicket;
+  priority: TicketPriority;
+  createdById: number;
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;
@@ -133,6 +142,14 @@ export async function updateTicketStatus(
   }
 
   return body as TicketDetailResponse;
+}
+
+export async function updateTicketPriority(
+    ticketId: number,
+    priority: TicketPriority,
+    currentUserId: number 
+  ) {
+    return apiRequest<TicketSummary[]>(`/tickets/${ticketId}/priority`, "PUT", {"priority": priority});
 }
 
 export function getMyTickets(): Promise<TicketSummary[]> {
