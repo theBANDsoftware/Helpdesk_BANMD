@@ -165,6 +165,7 @@ export default function TicketDetail() {
                 ...query.data,
                 category: categoryLabels[query.data.category],
                 status: statusLabels[query.data.status],
+                priority: priorityLabels[query.data.priority],
                 assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
               },
               ticketColumns,

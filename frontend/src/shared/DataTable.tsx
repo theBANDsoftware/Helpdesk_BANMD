@@ -21,16 +21,18 @@ export function DataTable({ data }: Props) {
 }
 
 export function setColumns(
-  data: object,
-  columns: Record<string, string>,
-  filter: string[] = [],
+	data: object,
+	columns: Record<string, string>,
+	filter: string[] = [],
 ): [string, ReactNode][] {
-  return Object.entries(data)
-    .filter(([key]) => columns[key] && !filter.includes(key))
-    .map(([key, value]) => [
-      columns[key],
-      isIsoDate(value) ? formatDate(value) : !value ? '-' : value,
-    ]);
+	const values = data as Record<string, ReactNode>;
+
+	return Object.entries(columns)
+		.filter(([key]) => key in values && !filter.includes(key))
+		.map(([key, label]) => {
+			const value = values[key];
+			return [label, isIsoDate(value) ? formatDate(value) : !value ? '-' : value];
+		});
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;

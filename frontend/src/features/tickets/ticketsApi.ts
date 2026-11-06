@@ -32,6 +32,7 @@ export const ticketColumns: Record<string, string> = {
   id: 'Ärendenummer',
   category: 'Kategori',
   status: 'Status',
+  priority: "Prioritet",
   createdBy: 'Anmälare',
   assignedTo: 'Tilldelad',
   createdAt: 'Skapad',
