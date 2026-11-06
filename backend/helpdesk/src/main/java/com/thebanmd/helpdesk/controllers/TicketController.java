@@ -29,7 +29,7 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-
+  
     /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets() {
@@ -64,6 +64,13 @@ public class TicketController {
         @Valid @RequestBody UpdateStatusRequest request,
         @RequestHeader("X-User-Id") Long userId) {
         return ticketService.updateStatus(id, request, userId);
+    }
+    @PutMapping("/{id}/priority")
+    public TicketDetailResponse updatePriority(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdatePriorityRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.updatePriority(id, request, userId);
     }
 
     /** Ärenden som är tilldelade den valda IT-ansvariga (TB-49). */

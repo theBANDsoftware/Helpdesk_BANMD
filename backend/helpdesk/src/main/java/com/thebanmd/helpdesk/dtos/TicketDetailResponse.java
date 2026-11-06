@@ -2,6 +2,7 @@ package com.thebanmd.helpdesk.dtos;
 
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Status;
+import com.thebanmd.helpdesk.enums.TicketPriority;
 
 import java.time.Instant;
 
@@ -20,6 +21,7 @@ public record TicketDetailResponse(
     String createdBy,
     String assignedTo,
     Instant createdAt,
-    Instant updatedAt
+    Instant updatedAt,
+    TicketPriority priority
 ) {
 }
