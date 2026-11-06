@@ -29,6 +29,7 @@
   <properties>
     <java.version>21</java.version>
     <mapstruct.version>1.6.3</mapstruct.version>
+    <aws-sdk.version>2.30.0</aws-sdk.version>
   </properties>
   <dependencies>
     <dependency>
@@ -72,6 +73,19 @@
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
       <version>${mapstruct.version}</version>
+    </dependency>
+    <!-- S3-klient för fillagringen i Backblaze B2 (TB-35, beslut 11) -->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3</artifactId>
+      <version>${aws-sdk.version}</version>
+      <exclusions>
+        <!-- Används bara av den asynkrona klienten, som vi inte använder -->
+        <exclusion>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>netty-nio-client</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
