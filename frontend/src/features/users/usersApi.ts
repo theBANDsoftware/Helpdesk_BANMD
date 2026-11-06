@@ -1,4 +1,4 @@
-import { apiGet } from '../../shared/apiClient';
+import { apiRequest } from '../../shared/apiClient';
 
 export type Role = 'EMPLOYEE' | 'IT_ADMIN';
 
@@ -14,5 +14,5 @@ export const roleLabels: Record<Role, string> = {
 };
 
 export function getUsers(): Promise<User[]> {
-  return apiGet<User[]>('/users');
+  return apiRequest<User[]>('/users');
 }
