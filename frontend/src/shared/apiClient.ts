@@ -59,6 +59,15 @@ export async function apiPostForm<T>(path: string, formData: FormData): Promise<
     headers: withSelectedUser({ Accept: 'application/json' }),
     method: 'POST',
     body: formData,
+  });
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new ApiError(response.status, body);
+  }
+  return body as T;
+}
+
 export async function apiRequest<T>(path: string, method: string, requestBody: unknown = []): Promise<T> {
   const response = await fetch(`/api${path}`, {
     headers: withSelectedUser({ Accept: 'application/json', 'Content-Type': 'application/json' }),

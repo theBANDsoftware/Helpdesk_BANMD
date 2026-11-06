@@ -251,51 +251,32 @@ export default function TicketDetail() {
           )}
 
           {/* Val för tilldelad – visas bara för IT-ansvariga */}
-          {isItAdmin && (
             <div
               className="assign-control"
               style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
             >
-              <label
-                htmlFor="assignSelect"
-                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-              >
-                Tilldelad
-              </label>
+            <label
+              htmlFor="assignSelect"
+              style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+            >
+              Tilldelad
+            </label>
               <select
                 id="assignSelect"
                 value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
                 onChange={handleAssignChange}
                 disabled={assignMutation.isPending}
-            {/* Val för tilldelad – visas bara för IT-ansvariga */}
-            {isItAdmin && (
-              <div
-                className="assign-control"
-                style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
               >
-                <label
-                  htmlFor="assignSelect"
-                  style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                >
-                  Tilldelad
-                </label>
-                <select
-                  id="assignSelect"
-                  value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
-                  onChange={handleAssignChange}
-                  disabled={assignMutation.isPending}
-                >
-                  <option value="">Ej tilldelad</option>
-                  {itAdmins.map((admin) => (
-                    <option key={admin.id} value={admin.id}>
-                      {admin.name}
-                    </option>
-                  ))}
-                </select>
-                {assignMutation.isPending && <span> Sparar …</span>}
-                {assignError && <p className="error">{assignError}</p>}
-              </div>
-            )}
+                <option value="">Ej tilldelad</option>
+                {itAdmins.map((admin) => (
+                  <option key={admin.id} value={admin.id}>
+                    {admin.name}
+                  </option>
+                ))}
+              </select>
+              {assignMutation.isPending && <span> Sparar …</span>}
+              {assignError && <p className="error">{assignError}</p>}
+            </div>
           </>
         )}
       </section>
