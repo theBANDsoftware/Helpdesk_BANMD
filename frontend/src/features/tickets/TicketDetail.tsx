@@ -121,7 +121,6 @@ export default function TicketDetail() {
   return (
     <>
       <section>
-        {/* Här lägger du in din nya komponent och skickar med id och behörighet */}
         <TicketComments
           ticketId={ticketId}
           canComment={isItAdmin || query.data?.createdById === currentUser?.id}
