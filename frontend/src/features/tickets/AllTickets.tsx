@@ -1,27 +1,50 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { categoryLabels, getAllTickets, statusLabels } from './ticketsApi';
 import { formatDate } from '../../shared/formatDate';
 import { Link } from 'react-router';
 
-/** Alla ärenden från alla anmälare, nyaste först. För IT-ansvariga */
+/** Alla ärenden från alla anmälare, nyaste först, filtrerade på status. För IT-ansvariga (TB-25, TB-31). */
 export default function AllTickets() {
   const query = useQuery({
     queryKey: ['tickets', 'all'],
     queryFn: getAllTickets,
+  });
+  const [filter, setFilter] = useState('OPEN');
+
+  const visibleTickets = (query.data ?? []).filter((ticket) => {
+    if (filter === 'ALL') return true;
+    if (filter === 'OPEN') return ticket.status !== 'RESOLVED';
+    return ticket.status === filter;
   });
 
   return (
     <section className="card">
       <h2>Alla ärenden</h2>
 
+      <label className="status-filter">
+        Visa
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="ALL">Alla</option>
+          <option value="OPEN">Ej lösta</option>
+          <option value="NEW">{statusLabels.NEW}</option>
+          <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
+          <option value="RESOLVED">{statusLabels.RESOLVED}</option>
+        </select>
+      </label>
+
       {query.isPending && <p>Hämtar ärenden …</p>}
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
 
       {query.isSuccess && query.data.length === 0 && <p>Det finns inga ärenden än</p>}
 
-      {query.isSuccess && query.data.length > 0 && (
+      {query.isSuccess && query.data.length > 0 && visibleTickets.length === 0 && (
+        <p>Inga ärenden med den statusen</p>
+      )}
+
+      {visibleTickets.length > 0 && (
         <ul className="ticket-list">
-          {query.data.map((ticket) => (
+          {visibleTickets.map((ticket) => (
             <li key={ticket.id}>
              <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
               <span className="ticket-meta">
