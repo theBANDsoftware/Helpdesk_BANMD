@@ -1,89 +1,61 @@
 # Sprint review: sprint 1
 
-<!--
-  INSTRUKTION
-  Del 1 fylls i INNAN reviewn, senast söndag kväll. Det är ert manus.
-  Del 2 fylls i UNDER eller DIREKT EFTER reviewn.
-
-  Reviewn med läraren är ungefär 20 minuter:
-  - Sprintmål och vad som blev klart (2 min)
-  - Demo av fungerande mjukvara (10 min)
-  - Feedback och frågor (8 min)
-
-  Visa bara stories som uppfyller Definition of Done. Halvfärdigt redovisas under "Blev inte klart".
-  Demot ska köras på riktigt, inte med skärmdumpar. Testa det innan.
--->
-
-**Datum:**
-**Deltagare:**
+**Datum:** 2026-11-04
+**Deltagare:** Mustafa Samir (PO), Adli Anabtawi (SM), David Andersson, Bleart Rama, Noah Fältman, läraren
 
 ## Del 1: Förberedelse
 
 ### Sprintmål
 
-<!-- Kopiera från planning.md. -->
+En anställd kan välja vem hen är, anmäla ett fel och se sina egna ärenden i en lista som hämtas från databasen.
 
-
-
-**Uppnåddes sprintmålet?** Ja / Delvis / Nej
+**Uppnåddes sprintmålet?** Ja. Vi levererade dessutom IT-ansvarigas vy: se alla ärenden, tilldela och ändra status.
 
 ### Blev klart
 
-> **Exempel:**
->
-> | Issue | Story | Visas av |
-> |---|---|---|
-> | #3 | Skapa ett hushåll | Sara |
-> | #4 | Lägga till en syssla | Lina |
-> | #7 | Visa lista med sysslor | Jonas |
-
 | Issue | Story | Visas av |
 |---|---|---|
-| | | |
-| | | |
+| TB-22 | Välja vem man är | Adli |
+| TB-23 | Anmäla ett fel | David |
+| TB-24 | Se mina ärenden | Bleart |
+| TB-25 | Se alla ärenden (IT-ansvarig) | Bleart |
+| TB-26 | Öppna ett ärende | David |
+| TB-42 | Länka listorna till detaljvyn | David |
+| TB-28 | Tilldela ett ärende | Noah |
+| TB-27 | Ändra status på ett ärende | Mustafa |
+| TB-43 | Merge-fix efter TB-24 och TB-28 (tekniskt) | David |
+
+Allt är granskat, mergat till develop och därefter till main (PR #46).
 
 ### Blev inte klart
 
-<!-- Vad och varför? Det är inget misslyckande, men det ska förklaras. -->
-
-> **Exempel:** #9 Projektskelett blev klart, men databasen körs bara lokalt hos Amir. Vi underskattade hur lång tid Docker-uppsättningen tog.
-
 | Issue | Story | Varför inte klar | Vad händer med den? |
 |---|---|---|---|
-| | | | |
+| – | Alla planerade stories blev klara | – | – |
+
+Känt fel: tilldelning till en användare som inte är IT-ansvarig ger HTTP 500 i stället för 403. Åtgärdas i sprint 2 (TB-45 Städa kod).
 
 ### Demoplan
 
-<!-- I vilken ordning visar ni? Vem gör vad? Berätta det som en användares väg genom appen, inte story för story. -->
-
-> **Exempel:**
-> 1. Sara skapar hushållet "Korridor 4B".
-> 2. Lina lägger till tre sysslor.
-> 3. Jonas visar att sysslorna finns kvar efter omladdning.
-
-1.
-2.
-3.
+1. Anna Lind (anställd) väljer vem hon är. (Adli, TB-22)
+2. Anna anmäler ett fel. (David, TB-23)
+3. Anna ser ärendet i "Mina ärenden" och öppnar detaljvyn. (Bleart TB-24, David TB-26/TB-42)
+4. Maria Nordin (IT-ansvarig) ser "Alla ärenden" och tilldelar ärendet. (Bleart TB-25, Noah TB-28)
+5. Maria ändrar status till Pågående. (Mustafa, TB-27)
+6. Anna öppnar ärendet igen och ser den nya statusen, men kan inte ändra den. (Mustafa, TB-27)
 
 ### Frågor till läraren
 
-<!-- Något ni vill ha feedback på eller är osäkra på? -->
-
--
+- Är det rimligt att välja användare utan inloggning så här tidigt, eller bör vi prioritera inloggning (TB-33) högre?
+- Vi planerar att lagra bilagor (TB-35) i S3-kompatibel molnlagring i stället för databasen. Är det en rimlig nivå för kursen?
 
 ## Del 2: Efter reviewn
 
 ### Feedback
 
-> **Exempel:** Läraren frågade hur man vet vem som ska göra nästa disk. I deras kollektiv turas man om varje vecka i stället för att tilldela.
-
 -
 -
 
 ### Ändringar i backloggen
-
-<!-- Nya stories, ändrad prioritet, stories som tagits bort. Länka issues. -->
-
-> **Exempel:** Ny story #15 "Turordning per vecka" som Must. "Tilldela en syssla" (#5) sänks till Should.
 
 -

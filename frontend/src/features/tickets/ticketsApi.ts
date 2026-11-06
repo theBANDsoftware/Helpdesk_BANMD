@@ -54,6 +54,7 @@ export interface TicketDetailResponse {
   category: categoryTicket;
   status: StatusTicket;
   priority: TicketPriority;
+  createdById: number;
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;
@@ -158,4 +159,12 @@ export function getMyTickets(): Promise<TicketSummary[]> {
 /** Alla ärenden från alla anmälare, nyaste först */
 export function getAllTickets(): Promise<TicketSummary[]> {
   return apiGet<TicketSummary[]>('/tickets');
+}
+
+/**
+ * Hämtar alla ärenden som är tilldelade den inloggade IT-ansvariga.
+ * Anropar GET /api/tickets/assigned-to-me där X-User-Id skickas med automatiskt av apiGet.
+ */
+export function getMyAssignedTickets(): Promise<TicketSummary[]> {
+  return apiGet<TicketSummary[]>('/tickets/assigned-to-me');
 }

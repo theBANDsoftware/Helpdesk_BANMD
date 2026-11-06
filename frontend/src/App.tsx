@@ -9,6 +9,7 @@ import TicketDetail from './features/tickets/TicketDetail';
 import MyTickets from './features/tickets/MyTickets';
 import AllTickets from './features/tickets/AllTickets';
 import { NavMenu } from './features/users/NavMenu';
+import MyAssignedTickets from './features/tickets/MyAssignedTickets';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/tickets/mine" element={<MyTickets />} />
               <Route path="/tickets/new" element={<NewTicketForm />} />
               <Route path="/tickets/:id" element={<TicketDetail />} />
+              <Route path="/tickets/assigned" element={<MyAssignedTickets />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

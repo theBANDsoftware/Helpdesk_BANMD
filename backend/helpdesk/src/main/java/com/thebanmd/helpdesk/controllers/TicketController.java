@@ -8,38 +8,47 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+/**
+ * Endpoints för ärenden. Tar bara emot anropet och lämnar över till TicketService (DoD punkt 7).
+ * Vem som anropar läses från headern X-User-Id (beslut 10).
+ */
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
+
     private final TicketService ticketService;
 
     public TicketController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
 
+    /** Skapar ett ärende med den valda användaren som anmälare. Svarar 201. */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid @RequestBody CreateTicketRequest ticket,
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-
+  
+    /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets() {
         return ticketService.getAllTickets();
     }
 
+    /** Ärenden som den valda användaren har anmält, nyaste först (TB-24). */
     @GetMapping("/mine")
     public List<TicketSummaryResponse> getMyTickets(@RequestHeader("X-User-Id") Long userId) {
         return ticketService.getMyTickets(userId);
     }
 
+    /** Ett ärende med alla detaljer. Svarar 404 om det inte finns. */
     @GetMapping("/{id}")
     public TicketDetailResponse findById(@PathVariable Long id) {
         return ticketService.findById(id);
     }
 
+    /** Tilldelar ärendet till en IT-ansvarig, eller tar bort tilldelningen om assignedToUserId är null. */
     @PutMapping("/{id}/assign")
     public TicketDetailResponse assignTicket(
         @PathVariable Long id,
@@ -48,6 +57,7 @@ public class TicketController {
         return ticketService.assignTicket(id, request, userId);
     }
 
+    /** Ändrar status på ärendet. Bara IT-ansvariga får göra det (TB-27). */
     @PutMapping("/{id}/status")
     public TicketDetailResponse updateStatus(
         @PathVariable Long id,
@@ -61,6 +71,12 @@ public class TicketController {
         @Valid @RequestBody UpdatePriorityRequest request,
         @RequestHeader("X-User-Id") Long userId) {
         return ticketService.updatePriority(id, request, userId);
+    }
+
+    /** Ärenden som är tilldelade den valda IT-ansvariga (TB-49). */
+    @GetMapping("/assigned-to-me")
+    public List<TicketSummaryResponse> getMyAssignedTickets(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getMyAssignedTickets(userId);
     }
 
 }

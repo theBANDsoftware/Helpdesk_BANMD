@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { categoryLabels, getAllTickets, priorityLabels, statusLabels } from './ticketsApi';
 import { formatDate } from '../../shared/formatDate';
@@ -11,7 +12,7 @@ const priorityOrder: Record<TicketPriority, number> = {
 	LOW: 2,
 };
 
-/** Alla ärenden från alla anmälare, nyaste först. För IT-ansvariga */
+/** Alla ärenden från alla anmälare, nyaste först, filtrerade på status. För IT-ansvariga (TB-25, TB-31). */
 export default function AllTickets() {
   const query = useQuery({
     queryKey: ['tickets', 'all'],
@@ -27,9 +28,28 @@ export default function AllTickets() {
         return b.createdAt.localeCompare(a.createdAt);
       })
       : [];
+  const [filter, setFilter] = useState('OPEN');
+
+  const visibleTickets = (query.data ?? []).filter((ticket) => {
+    if (filter === 'ALL') return true;
+    if (filter === 'OPEN') return ticket.status !== 'RESOLVED';
+    return ticket.status === filter;
+  });
+
   return (
     <section className="card">
       <h2>Alla ärenden</h2>
+
+      <label className="status-filter">
+        Visa
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="ALL">Alla</option>
+          <option value="OPEN">Ej lösta</option>
+          <option value="NEW">{statusLabels.NEW}</option>
+          <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
+          <option value="RESOLVED">{statusLabels.RESOLVED}</option>
+        </select>
+      </label>
 
       {query.isPending && <p>Hämtar ärenden …</p>}
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
@@ -57,6 +77,25 @@ export default function AllTickets() {
             ))}
           </ul>
         </>
+      {query.isSuccess && query.data.length > 0 && visibleTickets.length === 0 && (
+        <p>Inga ärenden med den statusen</p>
+      )}
+
+      {visibleTickets.length > 0 && (
+        <ul className="ticket-list">
+          {visibleTickets.map((ticket) => (
+            <li key={ticket.id}>
+             <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
+              <span className="ticket-meta">
+                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} ·{' '}
+                {formatDate(ticket.createdAt)}
+              </span>
+              <span className="ticket-meta">
+                Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
+              </span>
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   );
