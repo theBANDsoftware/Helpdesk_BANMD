@@ -5,5 +5,5 @@ import com.thebanmd.helpdesk.enums.Status;
 
 import java.time.Instant;
 
-public record TicketDetailResponse(Long id, String title, String description, Category category, Status status, String createdBy, String assignedTo, Instant createdAt, Instant updatedAt) {
+public record TicketDetailResponse(Long id, String title, String description, Category category, Status status, Long createdById, String createdBy, String assignedTo, Instant createdAt, Instant updatedAt) {
 }
