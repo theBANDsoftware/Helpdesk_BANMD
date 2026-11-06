@@ -11,6 +11,7 @@ export type CreateTicket = {
 
 
 export type TicketStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED';
+export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 // datatype för detaljer till ärende
 export type TicketDetail = {
@@ -19,6 +20,7 @@ export type TicketDetail = {
   description: string;
   category: categoryTicket;
   status: TicketStatus;
+  priority: TicketPriority;
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;

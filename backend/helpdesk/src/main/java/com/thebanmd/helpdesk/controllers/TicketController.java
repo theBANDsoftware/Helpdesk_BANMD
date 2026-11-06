@@ -1,10 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
-import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
-import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
-import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
-import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
-import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
+import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.services.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,7 +24,7 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-    
+
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets() {
         return ticketService.getAllTickets();
@@ -58,6 +54,13 @@ public class TicketController {
         @Valid @RequestBody UpdateStatusRequest request,
         @RequestHeader("X-User-Id") Long userId) {
         return ticketService.updateStatus(id, request, userId);
+    }
+    @PutMapping("/{id}/priority")
+    public TicketDetailResponse updatePriority(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdatePriorityRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.updatePriority(id, request, userId);
     }
 
 }

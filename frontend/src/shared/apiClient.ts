@@ -49,3 +49,17 @@ export async function apiPost<T>(path: string, requestBody: unknown): Promise<T>
   }
   return body as T;
 }
+
+export async function apiRequest<T>(path: string, method: string, requestBody: unknown = []): Promise<T> {
+  const response = await fetch(`/api${path}`, {
+    headers: withSelectedUser({ Accept: 'application/json', 'Content-Type': 'application/json' }),
+    method: method,
+    body: requestBody !== undefined ? JSON.stringify(requestBody): undefined,
+  });
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new ApiError(response.status, body);
+  }
+  return body as T;
+}

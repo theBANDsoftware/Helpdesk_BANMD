@@ -1,10 +1,6 @@
 package com.thebanmd.helpdesk.services;
 
-import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
-import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
-import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
-import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
-import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
+import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Role;
@@ -87,6 +83,23 @@ public class TicketService {
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
 
         ticket.setStatus(request.status());
+        Ticket updated = ticketRepository.save(ticket);
+        return ticketMapper.toDetailResponse(updated);
+    }
+
+    @Transactional
+    public TicketDetailResponse updatePriority(Long ticketId, UpdatePriorityRequest request, Long performedByUserId) {
+        User performingUser = userRepository.findById(performedByUserId)
+            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
+
+        if (performingUser.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan ändra prioritet");
+        }
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        ticket.setPriority(request.priority());
         Ticket updated = ticketRepository.save(ticket);
         return ticketMapper.toDetailResponse(updated);
     }

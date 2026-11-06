@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ticketColumns,
@@ -8,24 +8,27 @@ import {
   statusLabels,
   assignTicket,
   updateTicketStatus,
+  updateTicketPriority,
+  priorityLabels,
   type StatusTicket,
 } from './ticketsApi';
 import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
+import type { TicketPriority, TicketStatus } from '../../Types';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
   const { id } = useParams();
   const ticketId = Number(id);
   const navigate = useNavigate();
-  const backTo: string = "/tickets/mine";
 
   const { user: currentUser } = useSelectedUser();
   const queryClient = useQueryClient();
   const [assignError, setAssignError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [priorityError, setPriorityError] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ['tickets', ticketId],
@@ -93,6 +96,31 @@ export default function TicketDetail() {
     },
   });
 
+  // Mutation till prioritering
+  const priorityMutation = useMutation({
+    mutationFn: (priority: TicketPriority) => {
+      if (!currentUser) throw new Error('Ingen användare är vald');
+      return updateTicketPriority(ticketId, priority, currentUser.id);
+    },
+    onSuccess: (updatedTicket) => {
+      setPriorityError(null);
+      queryClient.setQueryData(['tickets', ticketId], updatedTicket);
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        typeof error.body === 'object' &&
+        error.body &&
+        'error' in error.body
+      ) {
+        setPriorityError((error.body as { error: string }).error);
+      } else {
+        setPriorityError('Kunde inte ändra status.');
+      }
+    },
+  });
+
   if (!Number.isInteger(ticketId)) {
     return (
       <section className="card">
@@ -114,6 +142,10 @@ export default function TicketDetail() {
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     statusMutation.mutate(e.target.value as StatusTicket);
+  }
+
+  function handlePriorityChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    priorityMutation.mutate(e.target.value as TicketPriority);
   }
 
   return (
@@ -166,6 +198,35 @@ export default function TicketDetail() {
               </select>
               {statusMutation.isPending && <span> Sparar …</span>}
               {statusError && <p className="error">{statusError}</p>}
+            </div>
+          )}
+
+          {/* Val för prioritet */}
+          {isItAdmin && (
+            <div
+              className="status-control"
+              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+            >
+              <label
+                htmlFor="prioritySelect"
+                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+              >
+                Prioritet
+              </label>
+              <select
+                id="prioritySelect"
+                value={query.data.priority}
+                onChange={handlePriorityChange}
+                disabled={priorityMutation.isPending}
+              >
+                {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
+                  <option key={priority} value={priority}>
+                    {priorityLabels[priority]}
+                  </option>
+                ))}
+              </select>
+              {priorityMutation.isPending && <span> Sparar …</span>}
+              {priorityError && <p className="error">{priorityError}</p>}
             </div>
           )}
 
