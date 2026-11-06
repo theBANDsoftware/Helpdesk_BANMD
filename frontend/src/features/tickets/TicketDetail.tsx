@@ -18,6 +18,7 @@ import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
 import type { TicketPriority, TicketStatus } from '../../Types';
 import TicketComments from '../comments/TicketComments';
+import TicketAttachments from '../attachments/TicketAttachments';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -184,6 +185,12 @@ export default function TicketDetail() {
                 ['title', 'description'],
               )}
             ></DataTable>
+
+            {/* Bifogade skärmdumpar (TB-35). Anmälaren och IT-ansvariga får ladda upp. */}
+            <TicketAttachments
+              ticketId={ticketId}
+              canUpload={isItAdmin || currentUser?.name === query.data.createdBy}
+            />
 
             {/* Val för status – visas bara för IT-ansvariga (TB-27, AK 3) */}
             {isItAdmin && (

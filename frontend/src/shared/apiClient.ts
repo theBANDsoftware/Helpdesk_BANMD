@@ -50,6 +50,15 @@ export async function apiPost<T>(path: string, requestBody: unknown): Promise<T>
   return body as T;
 }
 
+/**
+ * Skickar ett formulär med filer (multipart/form-data), t.ex. en bifogad bild (TB-35).
+ * Content-Type sätts inte här, eftersom webbläsaren själv lägger till rätt gräns (boundary).
+ */
+export async function apiPostForm<T>(path: string, formData: FormData): Promise<T> {
+  const response = await fetch(`/api${path}`, {
+    headers: withSelectedUser({ Accept: 'application/json' }),
+    method: 'POST',
+    body: formData,
 export async function apiRequest<T>(path: string, method: string, requestBody: unknown = []): Promise<T> {
   const response = await fetch(`/api${path}`, {
     headers: withSelectedUser({ Accept: 'application/json', 'Content-Type': 'application/json' }),
