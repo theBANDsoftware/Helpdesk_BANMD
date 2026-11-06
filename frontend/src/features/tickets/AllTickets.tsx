@@ -50,6 +50,10 @@ export default function AllTickets() {
           <option value="RESOLVED">{statusLabels.RESOLVED}</option>
         </select>
       </label>
+      <p>Sortera efter: <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
+        <option value="time">Tid</option>
+        <option value="priority">Prioritet</option>
+      </select></p>
 
       {query.isPending && <p>Hämtar ärenden …</p>}
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
@@ -59,33 +63,13 @@ export default function AllTickets() {
       {query.isSuccess && query.data.length > 0 && visibleTickets.length === 0 && (
         <p>Inga ärenden med den statusen</p>
       )}
-        <>
-          <p>Sortera efter: <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
-            <option value="time">Tid</option>
-            <option value="priority">Prioritet</option>
-          </select></p>
-          <ul className="ticket-list">
-            {sortedTickets.map((ticket) => (
-              <li key={ticket.id}>
-              <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
-                <span className="ticket-meta">
-                  {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet: {priorityLabels[ticket.priority]} ·{' '}
-                  {formatDate(ticket.createdAt)}
-                </span>
-                <span className="ticket-meta">
-                  Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </>
       {visibleTickets.length > 0 && (
         <ul className="ticket-list">
-          {visibleTickets.map((ticket) => (
+          {sortedTickets.map((ticket) => (
             <li key={ticket.id}>
-             <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
+            <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
               <span className="ticket-meta">
-                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} ·{' '}
+                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet: {priorityLabels[ticket.priority]} ·{' '}
                 {formatDate(ticket.createdAt)}
               </span>
               <span className="ticket-meta">

@@ -16,5 +16,5 @@ export function getComments(ticketId: number): Promise<CommentResponse[]> {
 // Funktion för att posta en ny kommentar
 export function addComment(ticketId: number, body: string): Promise<CommentResponse> {
   // Vi skickar in { body } eftersom vår CreateCommentRequest i backend förväntar sig ett fält som heter just "body"
-  return apiRequest<CommentResponse>(`/tickets/${ticketId}/comments`, "POST", body);
+  return apiRequest<CommentResponse>(`/tickets/${ticketId}/comments`, "POST", { body });
 }

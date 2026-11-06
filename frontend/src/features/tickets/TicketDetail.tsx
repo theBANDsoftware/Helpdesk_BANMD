@@ -16,7 +16,7 @@ import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
-import type { TicketPriority, TicketStatus } from '../../Types';
+import type { TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 
@@ -223,7 +223,7 @@ export default function TicketDetail() {
 
           {/* Val för prioritet */}
           {isItAdmin && (
-            <div
+            <><div
               className="status-control"
               style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
             >
@@ -248,7 +248,6 @@ export default function TicketDetail() {
               {priorityMutation.isPending && <span> Sparar …</span>}
               {priorityError && <p className="error">{priorityError}</p>}
             </div>
-          )}
 
           {/* Val för tilldelad – visas bara för IT-ansvariga */}
             <div
@@ -277,6 +276,8 @@ export default function TicketDetail() {
               {assignMutation.isPending && <span> Sparar …</span>}
               {assignError && <p className="error">{assignError}</p>}
             </div>
+            </>
+          )}
           </>
         )}
       </section>

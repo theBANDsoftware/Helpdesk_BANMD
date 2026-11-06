@@ -1,6 +1,5 @@
-import { apiRequest, ApiError } from '../../shared/apiClient';
+import { apiRequest } from '../../shared/apiClient';
 import type { categoryTicket, TicketPriority, TicketSummary } from '../../Types';
-import { readSelectedUserId } from '../../shared/selectedUserStorage';
 
 // Återanvänder eller definierar status- och kategorityper
 export type StatusTicket = 'NEW' | 'IN_PROGRESS' | 'RESOLVED';
