@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ticketColumns,
@@ -21,7 +21,6 @@ export default function TicketDetail() {
   const { id } = useParams();
   const ticketId = Number(id);
   const navigate = useNavigate();
-  const backTo: string = '/tickets/mine';
 
   const { user: currentUser } = useSelectedUser();
   const queryClient = useQueryClient();
