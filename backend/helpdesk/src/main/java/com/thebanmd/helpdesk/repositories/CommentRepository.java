@@ -7,8 +7,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    // Hämtar alla kommentarer för ett ärende, äldst först.
-    // @EntityGraph gör att vi hämtar författarens (User) information i samma databasanrop.
+    /** Kommentarer på ett ärende, äldst först. Författaren hämtas i samma SQL-fråga (EntityGraph). */
     @EntityGraph(attributePaths = {"author"})
     List<Comment> findByTicketIdOrderByCreatedAtAscIdAsc(Long ticketId);
 }

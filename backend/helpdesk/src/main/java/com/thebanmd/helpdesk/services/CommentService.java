@@ -28,7 +28,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
 
-    // Hämtar alla kommentarer för ett visst ärende
+    /** Hämtar alla kommentarer på ett ärende, äldst först. Kastar TicketNotFoundException om ärendet inte finns. */
     public List<CommentResponse> getComments(Long ticketId) {
         if (!ticketRepository.existsById(ticketId)) {
             throw new TicketNotFoundException(ticketId);
@@ -40,7 +40,7 @@ public class CommentService {
             .toList();
     }
 
-    // Skapar en ny kommentar
+    /** Skapar en ny kommentar. IT-ansvariga får kommentera alla ärenden, anmälaren bara sitt eget (TB-30). */
     @Transactional
     public CommentResponse createComment(Long ticketId, Long authorId, CreateCommentRequest request) {
         // 1. Hämta den inloggade användaren
