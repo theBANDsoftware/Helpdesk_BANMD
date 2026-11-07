@@ -36,7 +36,9 @@ Allt är granskat, mergat till develop och därefter till main.
 1. Maria Nordin (IT-ansvarig) kan kommentera på ett/flera ärende som en anställd/IT-ansvarig kan see.
 2. Anna Lind(anställd) kan svara på kommentarerna IT-ansvariga har skickat.
 3. Maria Nordin (IT-ansvarig) kan filtrera på de olika ärendenas status.
-4. 
+4. Maria Nordin (IT-ansvarig) kan ange hur bråttom ett ärende är (ju bråttom det är desto högre upp är det i listan)
+och sortera i tidsordning.
+5. 
 1. Anna Lind (anställd) väljer vem hon är. (Adli, TB-22)
 2. Anna anmäler ett fel. (David, TB-23)
 3. Anna ser ärendet i "Mina ärenden" och öppnar detaljvyn. (Bleart TB-24, David TB-26/TB-42)
