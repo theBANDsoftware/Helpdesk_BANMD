@@ -24,51 +24,40 @@ function withSelectedUser(headers: Record<string, string>): Record<string, strin
   return userId === null ? headers : { ...headers, 'X-User-Id': String(userId) };
 }
 
-export async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`/api${path}`, {
-    headers: withSelectedUser({ Accept: 'application/json' }),
+// Metod som hanterar alla HTTP-requests (GET, POST, PUT osv)
+export async function apiRequest<T>(
+  path: string,
+  method: string = 'GET',
+  requestBody?: unknown,
+  customHeaders: Record<string, string> = {}
+): Promise<T> {
+  const isFormData = requestBody instanceof FormData;
+
+  const headers = withSelectedUser({
+    Accept: 'application/json',
+    ...(!isFormData && requestBody !== undefined && {
+      'Content-Type': 'application/json'
+    }),
+    ...customHeaders,
   });
+
+  const response = await fetch(`/api${path}`, {
+    method,
+    headers,
+    body: requestBody === undefined
+      ? undefined
+      : isFormData
+        ? requestBody
+        : method.toUpperCase() === 'GET'
+          ? undefined
+          : JSON.stringify(requestBody),
+  });
+
   const body: unknown = await response.json().catch(() => null);
 
   if (!response.ok) {
     throw new ApiError(response.status, body);
   }
-  return body as T;
-}
 
-export async function apiPost<T>(path: string, requestBody: unknown): Promise<T> {
-  const response = await fetch(`/api${path}`, {
-    headers: withSelectedUser({ Accept: 'application/json', 'Content-Type': 'application/json' }),
-    method: "POST",
-    body: requestBody !== undefined ? JSON.stringify(requestBody): undefined,
-  });
-  const body: unknown = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new ApiError(response.status, body);
-  }
-  return body as T;
-}
-
-/**
- * Skickar ett formulär med filer (multipart/form-data), t.ex. en bifogad bild (TB-35).
- * Content-Type sätts inte här, eftersom webbläsaren själv lägger till rätt gräns (boundary).
- */
-export async function apiPostForm<T>(path: string, formData: FormData): Promise<T> {
-  const response = await fetch(`/api${path}`, {
-    headers: withSelectedUser({ Accept: 'application/json' }),
-    method: 'POST',
-    body: formData,
-export async function apiRequest<T>(path: string, method: string, requestBody: unknown = []): Promise<T> {
-  const response = await fetch(`/api${path}`, {
-    headers: withSelectedUser({ Accept: 'application/json', 'Content-Type': 'application/json' }),
-    method: method,
-    body: requestBody !== undefined ? JSON.stringify(requestBody): undefined,
-  });
-  const body: unknown = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new ApiError(response.status, body);
-  }
   return body as T;
 }
