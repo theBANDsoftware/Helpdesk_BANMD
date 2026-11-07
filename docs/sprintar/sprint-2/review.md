@@ -38,13 +38,9 @@ Allt är granskat, mergat till develop och därefter till main.
 3. Maria Nordin (IT-ansvarig) kan filtrera på de olika ärendenas status.
 4. Maria Nordin (IT-ansvarig) kan ange hur bråttom ett ärende är (ju bråttom det är desto högre upp är det i listan)
 och sortera i tidsordning.
-5. 
-1. Anna Lind (anställd) väljer vem hon är. (Adli, TB-22)
-2. Anna anmäler ett fel. (David, TB-23)
-3. Anna ser ärendet i "Mina ärenden" och öppnar detaljvyn. (Bleart TB-24, David TB-26/TB-42)
-4. Maria Nordin (IT-ansvarig) ser "Alla ärenden" och tilldelar ärendet. (Bleart TB-25, Noah TB-28)
-5. Maria ändrar status till Pågående. (Mustafa, TB-27)
-6. Anna öppnar ärendet igen och ser den nya statusen, men kan inte ändra den. (Mustafa, TB-27)
+5. Både IT-ansvariga och anställda kan ladda upp bilder i sina skapade ärende.
+6. Maria Nordin (IT-ansvarig) kan öppna ett ärende.
+7. Maria Nordin (IT-ansvarig) Kan see vilka ärende som är tilldelade till sig själv.
 
 ### Frågor till läraren
 
