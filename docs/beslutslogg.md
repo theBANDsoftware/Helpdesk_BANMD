@@ -40,6 +40,26 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 12. Ingen Jira-nyckel i commits
+
+**Datum: 2026-11-06**
+**Status: Gäller** 
+
+**Bakgrund:** Enligt beslut 4 ska varje commit börja med Jira-nyckeln. Branchnamnet och PR-titeln har redan nyckeln, så vi behövde bestämma om den också behövs i varje commit.
+
+**Alternativ:**
+- Jira-nyckeln först i varje commit, som i beslut 4
+- Jira-nyckeln bara i branchnamnet och PR-titeln, aldrig i commits
+
+**Beslut:** Commit-meddelanden innehåller ingen Jira-nyckel. Branchnamnet och PR-titeln börjar fortfarande med den, t.ex. branchen `TB-8-skapa-arende-via-mejl` och PR:en `TB-8 Skapa ärende via mejl`.
+
+**Varför:** Det räcker med branchen och PR:en. Jira kopplar ihop kortet med koden genom dem, så nyckeln i varje commit ger inget extra.
+
+**Konsekvenser:**
+- Ersätter den del av beslut 4 som gäller commits.
+- DoD punkt 2, PR-mallen och gruppkontraktet är ändrade.
+- Commit-meddelandet beskriver bara vad som ändrats, t.ex. `Lägg till sortering på prioritet`.
+
 ## 11. Bifogade bilder sparas i Backblaze B2, inte i databasen
 
 **Datum: 2026-11-06**
@@ -188,7 +208,7 @@ Kopiera den här för varje nytt beslut:
 ## 4. Jira-nyckel i branches, commits och pull requests
 
 **Datum: 2026-10-19**
-**Status: Gäller** 
+**Status: Gäller, utom för commits. Delen om commits är ersatt av #11.** 
 
 **Bakgrund:** När vi bytte till Jira (beslut 3) behövde korten i Jira kopplas till koden i GitHub.
 

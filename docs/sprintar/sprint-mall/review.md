@@ -2,7 +2,7 @@
 
 <!--
   INSTRUKTION
-  Del 1 fylls i INNAN reviewn, senast söndag kväll. Det är ert manus.
+  Del 1 fylls i INNAN reviewn, senast fredag kväll. Det är ert manus.
   Del 2 fylls i UNDER eller DIREKT EFTER reviewn.
 
   Reviewn med läraren är ungefär 20 minuter:

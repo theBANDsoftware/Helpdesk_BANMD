@@ -20,7 +20,7 @@
 **Innan du ber om granskning (den som skrivit koden)**
 
 - [ ] Alla acceptanskriterier i storyn är uppfyllda och testade för hand
-- [ ] Branchnamnet, alla commits och PR-titeln börjar med Jira-nyckeln
+- [ ] Branchnamnet och PR-titeln börjar med Jira-nyckeln, och inga commits innehåller den
 - [ ] Ingen kvarglömd felsökningskod: inga `console.log` eller `System.out.println`, ingen utkommenterad kod och inga TODO
 - [ ] Inga lösenord eller andra hemligheter i koden
 - [ ] Backendkoden följer controller → service → repository

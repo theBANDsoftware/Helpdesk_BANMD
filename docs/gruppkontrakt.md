@@ -56,7 +56,7 @@
 ## Kod och kvalitet
 
 - Ingen pushar direkt till `main` eller `develop`. All kod går via en branch och en pull request.
-- Branches och commits börjar med Jira-nyckeln: branchen heter t.ex. `TB-8-skapa-arende-via-mejl` och commiten `TB-8 Skapa ärende via mejl`.
+- Branches och pull requests börjar med Jira-nyckeln: branchen heter t.ex. `TB-8-skapa-arende-via-mejl` och PR:en `TB-8 Skapa ärende via mejl`. Commits innehåller ingen Jira-nyckel (beslut 11).
 - En pull request innehåller en story eller uppgift.
 - Pull requests granskas inom 24 timmar (vardagar).
 - Alla ska kunna förklara den kod de lämnar in, även kod som tagits fram med hjälp av AI.
@@ -93,3 +93,4 @@ Vi har läst kontraktet och är överens om det.
 | 2026-10-21 | "Kod och kvalitet": regler för granskning, PR-storlek och vem som mergar | Läxan i pass 3. Ett godkännande ska betyda att PR:en faktiskt är granskad och testad. |
 | 2026-10-26 | "Närvaro och frånvaro": daily standup kl. 20.00–20.15, och Scrum Master loggar den | Läxan i pass 4. |
 | 2026-10-26 | "Arbetsfördelning": PO och SM roterar varje sprint, med lottad ordning för sprint 1–5 | Läxan i pass 4. Alla får prova båda rollerna, och det är bestämt i förväg vem som har vilken. |
+| 2026-11-08 | "Kod och kvalitet": commits innehåller ingen Jira-nyckel, bara branches och pull requests | Beslut 11. Jira kopplar ihop kortet med koden genom branchen och PR:en. |
