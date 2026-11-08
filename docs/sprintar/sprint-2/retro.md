@@ -1,4 +1,4 @@
-# Retrospektiv: sprint 1
+# Retrospektiv: sprint 2
 
 <!--
   INSTRUKTION
@@ -11,30 +11,28 @@
   Skriv ärligt. Det här är bra underlag för er individuella reflektion.
 -->
 
-**Datum:** 2026-11-02
+**Datum:** 2026-11-09
 **Deltagare:** Adli Anabtawi, Bleart Rama, David Andersson, Noah Fältman, Mustafa Samir
-**Leds av:** Adli Anabtawi (Scrum Master sprint 1)
+**Leds av:** David Andersson (Scrum Master sprint 2)
 
 ## Förra retrons åtgärder
 
-Inga. Det här var första sprinten.
+| Åtgärd | Blev den av? | Hjälpte den? |
+|---|---|---|
+| Allt mergas till `develop` senast fredag kväll, och `develop` mergas till `main` samma kväll. | Delvis. Alla stories mergades till `develop` på fredagen, men mergarna krockade och `develop` gick inte att bygga förrän TB-58 mergades på lördagen. `develop` mergades inte till `main` samma kväll. | Delvis. Vi upptäckte krockarna före reviewn, men inte i tid till fredag kväll. |
+| Standupen loggas i `standup.md` samma kväll. | Nej. Loggen fylldes i efterhand i slutet av sprinten. | Nej. Vad var och en gjorde fick återskapas från commits och minne. |
+| Vi skriver en lista över vad Scrum Master gör och lägger den i gruppkontraktet. | Nej. `gruppkontrakt.md` ändrades inte under sprinten. | – |
 
 ## Vad gick bra?
 
-- Vi hade standup nästan varje dag. Den låg på kvällen, så att alla kunde vara med, även de som jobbar.
-- TB-23 byggdes tillsammans. På backend delade David skärm, och på frontend delade Noah och David. Resten följde med, så alla har sett hur en story går genom alla lager.
-- Den som fastnade sa till, antingen i Discord eller på standupen.
-- Arbetet var relativt jämnt fördelat. Bleart tog både TB-24 och TB-25, eftersom de hörde ihop och rörde samma filer, som planeringen föreslog.
-- Nya behov som upptäcktes under sprinten blev egna kort i Jira (TB-42–TB-52) i stället för att byggas in i pågående stories.
+- Alla kort i sprinten blev klara i tid till reviewn.
+- Närvaron på standupen var hög. Alla fem var med varje dag utom tisdag, då Bleart och Mustafa saknades.
+- När `develop` gick sönder efter fredagens mergar fick det ett eget kort (TB-58), som fixades på lördagen. Ingen behövde lappa i någon annans branch.
 
 ## Vad gick mindre bra?
 
-- Standupen loggades inte under sprinten. Närvaron fick återskapas i efterhand från Discord, men vad var och en gjorde och vilka hinder som fanns gick inte att få fram.
-- En branch blev försenad till helgen. Söndag kväll fungerade inte för alla, så `develop` mergades till `main` först på måndagen, strax före reviewn. DoD säger söndag kväll.
-- Granskningen av PR:er varierade. Vissa granskade noggrant, andra mindre.
-- Rollen som Scrum Master var otydlig. Ingen av oss hade sett någon i rollen förut, så det var svårt att veta vad som förväntades.
-- TB-24 och TB-28 krockade i samma filer, och det behövdes ett eget kort (TB-43) för att lösa merge-konflikten. Risken stod i `planning.md`, men vi följde inte upp den.
-- 13 av 49 commits saknar Jira-nyckel (DoD punkt 2), och ansvariga fylldes aldrig i i `planning.md`.
+- TB-31, TB-32 och TB-35 ändrade samma filer och mergades samma fredagseftermiddag. Mergarna krockade, och `develop` gick inte att bygga förrän TB-58 var klar på lördagen.
+- Standupen loggades inte samma kväll, trots att det var en åtgärd från förra retron. Loggen fylldes i efterhand i slutet av sprinten.
 
 ## Åtgärder till nästa sprint
 
@@ -42,11 +40,9 @@ Inga. Det här var första sprinten.
 
 | Åtgärd | Ansvarig |
 |---|---|
-| Allt som ska visas på reviewn är mergat till `develop` senast fredag kväll, och `develop` mergas till `main` samma kväll. | Alla. Scrum Master påminner på onsdagens standup och gör PR:en till `main`. |
-| Standupen loggas i `standup.md` direkt efter standupen, samma kväll. | Scrum Master (David i sprint 2) |
-| Vi skriver en kort lista över vad Scrum Master gör varje dag och varje vecka, och lägger den i gruppkontraktet. | Adli, och lämnar över till David |
+| Standupen loggas i `standup.md` direkt efter standupen, samma kväll. | Scrum Master (Mustafa i sprint 3) |
 
 ## Ändringar i Definition of Done eller gruppkontrakt
 
-- **DoD, "Inför sprint review":** `develop` mergas till `main` fredag kväll i stället för söndag kväll. Fredag passar gruppen bäst, och på söndagen har inte alla tid.
-- **Gruppkontraktet:** en lista över vad Scrum Master gör, se åtgärd 3.
+- **DoD, "Inför sprint review":** `develop` mergas till `main` fredag kväll i stället för söndag kväll. Det beslutades redan på retron i sprint 1 men fördes aldrig in i `docs/definition-of-done.md`. Nu är det gjort.
+- **DoD punkt 2, PR-mallen och gruppkontraktet:** commits innehåller ingen Jira-nyckel längre. Branchnamn och PR-titel har den fortfarande (beslut 11).

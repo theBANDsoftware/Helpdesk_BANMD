@@ -1,4 +1,4 @@
-# Daily standup: sprint 1
+# Daily standup: sprint 2
 
 <!--
   INSTRUKTION
@@ -9,74 +9,74 @@
   Närvaro: Ja / Nej / Sen / Distans.
 -->
 
-> **Loggen är gjord i efterhand.** Standupen loggades inte under sprinten. Datum, tid och närvaro är hämtade från röstsamtalen i Discord-kanalen. Vad var och en gjorde och vilka hinder som fanns går inte att återskapa, så de kolumnerna är tomma. Tiden är hur länge samtalet pågick, inte bara standupen. Lördag och söndag hade vi ingen standup.
+
+## Måndag 2026-11-02
+
+Samtalet startade kl. 18.59 och pågick ca 1 h.
+
+| Namn | Närvaro | Igår | Idag |
+|---|---|---|---|
+| Adli Anabtawi | Ja | – | Review, retro och planning |
+| Bleart Rama | Ja | – | Review, retro och planning |
+| David Andersson | Ja | – | Review, retro och planning |
+| Noah Fältman | Ja | – | Review, retro och planning |
+| Mustafa Samir | Ja | – | Review, retro och planning |
 
 ---
 
-## Måndag 2026-10-26
+## Tisdag 2026-11-03
 
-Samtalet startade kl. 19.00 och pågick ca 3 h.
+Samtalet startade kl. 19.02 och pågick ca 1 h.
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| Adli Anabtawi | Ja | – | – | – |
-| Bleart Rama | Ja | – | – | – |
-| David Andersson | Ja | – | – | – |
-| Noah Fältman | Ja | – | – | – |
-| Mustafa Samir | Ja | – | – | – |
-
----
-
-## Tisdag 2026-10-27
-
-Samtalet startade kl. 19.00 och pågick ca 3 h.
-
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| Adli Anabtawi | Ja | – | – | – |
-| Bleart Rama | Ja | – | – | – |
-| David Andersson | Ja | – | – | – |
-| Noah Fältman | Ja | – | – | – |
-| Mustafa Samir | Ja | – | – | – |
+| Namn | Närvaro | Igår | Idag |
+|---|---|---|---|
+| Adli Anabtawi | Ja | Review, retro och planning | |
+| Bleart Rama | Nej | Review, retro och planning | |
+| David Andersson | Ja | Review, retro och planning | TB-44 Länk från Alla ärenden till detaljvyn |
+| Noah Fältman | Ja | Review, retro och planning | TB-29 Kommentera ärende, backend och frontend |
+| Mustafa Samir | Nej | Review, retro och planning | |
 
 ---
 
-## Onsdag 2026-10-28
+## Onsdag 2026-11-04
 
-Samtalet startade kl. 11.16 och pågick ca 1 h.
+Samtalet startade kl. 19.02 och pågick 26 min.
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| Adli Anabtawi | Ja | – | – | – |
-| Bleart Rama | Ja | – | – | – |
-| David Andersson | Ja | – | – | – |
-| Noah Fältman | Ja | – | – | – |
-| Mustafa Samir | Nej | – | – | – |
-
----
-
-## Torsdag 2026-10-29
-
-Samtalet startade kl. 20.00 och pågick ca 1 h.
-
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| Adli Anabtawi | Ja | – | – | – |
-| Bleart Rama | Ja | – | – | – |
-| David Andersson | Ja | – | – | – |
-| Noah Fältman | Ja | – | – | – |
-| Mustafa Samir | Ja | – | – | – |
+| Namn | Närvaro | Igår | Idag |
+|---|---|---|---|
+| Adli Anabtawi | Ja | | TB-53 Retro och standup-logg för sprint 1 |
+| Bleart Rama | Ja | | |
+| David Andersson | Ja | TB-44 Länk till detaljvyn | |
+| Noah Fältman | Ja | TB-29 Kommentera ärende | TB-29 Flyttade kommentar-API:t till CommentController |
+| Mustafa Samir | Ja | | TB-54 Review för sprint 1 |
 
 ---
 
-## Fredag 2026-10-30
+## Torsdag 2026-11-05
 
-Samtalet startade kl. 20.00 och pågick ca 1 h.
+Samtalet startade kl. 20.40 och pågick ca 1 h.
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| Adli Anabtawi | Ja | – | – | – |
-| Bleart Rama | Ja | – | – | – |
-| David Andersson | Ja | – | – | – |
-| Noah Fältman | Ja | – | – | – |
-| Mustafa Samir | Ja | – | – | – |
+| Namn | Närvaro | Igår | Idag |
+|---|---|---|---|
+| Adli Anabtawi | Ja | TB-53 Retro sprint 1 | TB-30 Svara på kommentarer |
+| Bleart Rama | Ja | | TB-31 Statusfilter i Alla ärenden |
+| David Andersson | Ja | | |
+| Noah Fältman | Ja | TB-29 CommentController | TB-49 Mina tilldelade ärenden |
+| Mustafa Samir | Ja | TB-54 Review sprint 1 | |
+
+---
+
+## Fredag 2026-11-06
+
+Samtalet startade kl. 17.00 och varade i ca 1 h.
+
+| Namn | Närvaro | Igår | Idag |
+|---|---|---|---|
+| Adli Anabtawi | Ja | TB-30 Svara på kommentarer | |
+| Bleart Rama | Ja | TB-31 Statusfilter | TB-45 Städa kod |
+| David Andersson | Ja | | TB-32 Prioritet på ärenden |
+| Noah Fältman | Ja | TB-49 Mina tilldelade ärenden | |
+| Mustafa Samir | Ja | | TB-35 Bifoga skärmdump |
+
+Löste merg konflikter.
+Skapade kort för fixa konflikter.
