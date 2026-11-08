@@ -19,13 +19,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // Hämtar alla kommentarer för ett specifikt ärende
+    /** Alla kommentarer på ett ärende, äldst först. */
     @GetMapping("/{id}/comments")
     public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long id) {
         return ResponseEntity.ok(commentService.getComments(id));
     }
 
-    // Skapar en ny kommentar på ett ärende
+    /** Skapar en ny kommentar på ett ärende. Svarar 201 med den nya kommentaren. */
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentResponse> addComment(
         @PathVariable Long id,

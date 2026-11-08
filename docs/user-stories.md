@@ -380,9 +380,17 @@ Kräver e-postadress på användare och utskick av mejl. Acceptanskriterier skri
 **vill jag** bifoga en skärmdump till mitt ärende
 **så att** IT ser exakt vilket felmeddelande jag får.
 
+#### Acceptanskriterier
+
+- [ ] Den som anmält ärendet och IT-ansvariga kan bifoga en bild i ärendevyn
+- [ ] Bara PNG och JPG, max 5 MB, högst 3 bilder per ärende. Annars visas ett tydligt felmeddelande
+- [ ] Bilderna visas som miniatyrer i ärendet och kan öppnas i full storlek
+- [ ] Andra anställda kan inte bifoga bilder i ärenden som inte är deras
+- [ ] Bilderna sparas utanför databasen, och alla i gruppen ser samma bilder (beslut 11)
+
 #### Anteckningar
 
-Kräver filuppladdning och lagring av filer. Acceptanskriterier skrivs om storyn flyttas upp.
+Kräver filuppladdning och lagring av filer. Se beslut 11.
 
 ---
 

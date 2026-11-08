@@ -14,6 +14,8 @@ erDiagram
     USERS |o--o{ TICKETS : "tilldelas (assigned_to)"
     TICKETS ||--o{ COMMENTS : har
     USERS ||--o{ COMMENTS : skriver
+    TICKETS ||--o{ ATTACHMENTS : har
+    USERS ||--o{ ATTACHMENTS : "laddar upp"
 
     USERS {
         bigint id PK
@@ -38,6 +40,16 @@ erDiagram
         text body "NOT NULL"
         datetime created_at
     }
+    ATTACHMENTS {
+        bigint id PK
+        bigint ticket_id FK "NOT NULL"
+        bigint uploaded_by FK "NOT NULL"
+        varchar original_filename "NOT NULL"
+        varchar storage_key "NOT NULL, unik, nyckel i B2"
+        varchar content_type "image/png | image/jpeg"
+        bigint size_bytes "NOT NULL"
+        datetime created_at
+    }
 ```
 
 ## Tabeller
@@ -47,6 +59,7 @@ erDiagram
 | `users` | En person som använder appen, med rollen anställd (`EMPLOYEE`) eller IT-ansvarig (`IT_ADMIN`). Fylls med testdata från start, eftersom MVP:n inte har inloggning. |
 | `tickets` | Ett ärende. Har alltid en anmälare (`created_by`) och kan vara tilldelat en IT-ansvarig (`assigned_to`) eller ingen. |
 | `comments` | En kommentar i ett ärende, skriven av en anställd eller en IT-ansvarig. |
+| `attachments` | En bifogad bild i ett ärende (TB-35). Själva bilden ligger i Backblaze B2 under `storage_key`, inte i databasen (beslut 11). |
 
 Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i flera databaser.
 
@@ -61,6 +74,7 @@ Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i fler
 | Ändra status | `tickets.status`, `tickets.updated_at` |
 | Tilldela ett ärende | `tickets.assigned_to` |
 | Kommentera / Svara på kommentarer | `comments` |
+| Bifoga skärmdump | `attachments`, plus bildfilen i B2 |
 
 ## Designval
 
@@ -79,7 +93,7 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 | Ange hur bråttom det är (Should) | Kolumnen `urgency` i `tickets`, standardvärde Normal | Lägger till |
 | Logga in med lösenord (Should) | `email` och `password_hash` i `users` | Lägger till |
 | Mejl när ärendet är löst (Could) | `email` i `users` (samma som ovan) | Lägger till |
-| Bifoga skärmdump (Could) | Ny tabell `attachments` kopplad till `tickets` | Lägger till |
+| Bifoga skärmdump (Could) | Ny tabell `attachments` kopplad till `tickets` | Klar i sprint 2 (`V3__skapa_attachments.sql`) |
 | Statistik per kategori (Could) | Inget nytt. Räknas fram ur befintlig data. | Ingen |
 
 ## Hur tabellerna skapas

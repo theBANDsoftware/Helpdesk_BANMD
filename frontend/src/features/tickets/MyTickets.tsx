@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { categoryLabels, getMyTickets, statusLabels } from './ticketsApi';
+import { categoryLabels, getMyTickets, priorityLabels, statusLabels } from './ticketsApi';
 import { formatDate } from '../../shared/formatDate';
 
 /** Den valda användarens egna ärenden, nyaste först (TB-24). */
@@ -31,7 +31,7 @@ export default function MyTickets() {
               <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span>
               </Link>
               <span className="ticket-meta">
-                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} ·{' '}
+                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet: {priorityLabels[ticket.priority]} ·{' '}
                 {formatDate(ticket.createdAt)}
               </span>
             </li>

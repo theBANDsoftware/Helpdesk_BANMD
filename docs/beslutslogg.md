@@ -40,7 +40,7 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
-## 11. Ingen Jira-nyckel i commits
+## 12. Ingen Jira-nyckel i commits
 
 **Datum: 2026-11-06**
 **Status: Gäller** 
@@ -59,6 +59,29 @@ Kopiera den här för varje nytt beslut:
 - Ersätter den del av beslut 4 som gäller commits.
 - DoD punkt 2, PR-mallen och gruppkontraktet är ändrade.
 - Commit-meddelandet beskriver bara vad som ändrats, t.ex. `Lägg till sortering på prioritet`.
+
+## 11. Bifogade bilder sparas i Backblaze B2, inte i databasen
+
+**Datum: 2026-11-06**
+**Status: Gäller**
+
+**Bakgrund:** TB-35 (Bifoga skärmdump) behöver lagra bildfiler. Vi delar en databas på VPS:en men kör backend lokalt var för sig, så filerna måste ligga på ett ställe som alla når.
+
+**Alternativ:**
+- Bilderna i databasen (BLOB)
+- En mapp på disken där backend körs
+- S3-kompatibel lagring på VPS:en (t.ex. Garage)
+- Molnlagring: Backblaze B2
+
+**Beslut:** Bilderna sparas i en privat bucket i Backblaze B2 (region EU Central). Databasen sparar bara information om varje bild i tabellen `attachments`. Backend når B2 med AWS S3-klienten, via interfacet `FileStorageService` och klassen `S3FileStorageService`. Uppgifterna ligger i `.env` (`S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`).
+
+**Varför:** Bilder i databasen gör den stor och långsam. En mapp på disken fungerar inte när alla kör backend lokalt, för då ser bara den som laddade upp bilden den. Egen lagring på VPS:en kräver att någon sätter upp och sköter en tjänst till. B2 är gratis upp till 10 GB, data ligger i EU och ingen behöver sköta någon server.
+
+**Konsekvenser:**
+- Alla behöver S3-raderna i sin `.env`. Nycklarna delas privat, aldrig i Git eller i chattar. Saknas de startar backend ändå, men uppladdning svarar 503.
+- Bilderna hämtas alltid via backend. Bucketen är privat och nyckeln gäller bara den bucketen.
+- Max 5 MB per bild, bara PNG och JPG, högst 3 bilder per ärende. Bara den som anmält ärendet och IT-ansvariga får ladda upp.
+- Vill vi byta lagring skriver vi en ny klass som implementerar `FileStorageService`. Resten av koden ändras inte.
 
 ## 10. Vald användare skickas i headern `X-User-Id`
 

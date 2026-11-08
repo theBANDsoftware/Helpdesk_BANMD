@@ -9,7 +9,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CommentMapper {
 
-    // Berättar att fältet "author" i CommentResponse ska hämta sitt värde från "author.name" i Comment-entiteten
+    /** Gör om en kommentar till CommentResponse. Författarens namn hämtas från author.name. */
     @Mapping(target = "author", source = "author.name")
     CommentResponse toResponse(Comment comment);
 }

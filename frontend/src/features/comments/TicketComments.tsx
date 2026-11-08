@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getComments,addComment } from './CommentsApi';
-import type{ CommentResponse } from './CommentsApi';
+import { getComments, addComment } from './CommentsApi';
+import type { CommentResponse } from './CommentsApi';
 
 interface TicketCommentsProps {
   ticketId: number;
@@ -78,7 +78,7 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
             disabled={!commentBody.trim() || commentMutation.isPending}
             className="bg-blue-600 text-white py-2 px-4 rounded-md w-fit font-medium disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
           >
-            {commentMutation.isPending ? 'Skickar...' : 'Skicka '}
+            {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
           </button>
         </form>
       )}
