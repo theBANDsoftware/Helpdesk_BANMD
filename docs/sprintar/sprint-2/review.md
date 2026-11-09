@@ -1,4 +1,4 @@
-# Sprint review: sprint 1
+# Sprint review: sprint 2
 
 **Datum:** 2026-11-04
 **Deltagare:** Mustafa Samir, Adli Anabtawi, David Andersson (SM), Bleart Rama, Noah Fältman (PO), läraren
@@ -51,9 +51,9 @@ och sortera i tidsordning.
 
 ### Feedback
 
--
--
+- Vi kan använda ett tredje party till bilaga
+- Kanske skapa något linkande FAQ
 
 ### Ändringar i backloggen
 
--
+- Historik finns på Jira

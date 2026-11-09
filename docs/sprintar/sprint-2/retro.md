@@ -45,4 +45,4 @@
 ## Ändringar i Definition of Done eller gruppkontrakt
 
 - **DoD, "Inför sprint review":** `develop` mergas till `main` fredag kväll i stället för söndag kväll. Det beslutades redan på retron i sprint 1 men fördes aldrig in i `docs/definition-of-done.md`. Nu är det gjort.
-- **DoD punkt 2, PR-mallen och gruppkontraktet:** commits innehåller ingen Jira-nyckel längre. Branchnamn och PR-titel har den fortfarande (beslut 11).
+- **DoD punkt 2, PR-mallen och gruppkontraktet:** commits innehåller ingen Jira-nyckel längre. Branchnamn och PR-titel har den fortfarande (beslut 12).

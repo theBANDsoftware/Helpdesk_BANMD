@@ -40,6 +40,26 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 13. Fyra godkännanden räcker för en PR till `main`
+
+**Datum: 2026-11-09**
+**Status: Gäller**
+
+**Bakgrund:** En pull request till `main` krävde fem godkännanden. Vi är fem i gruppen och ingen kan godkänna sin egen pull request, så det gick aldrig att nå fem.
+
+**Alternativ:**
+- Fem godkännanden, som tidigare
+- Fyra godkännanden, alltså alla utom den som skapat pull requesten
+
+**Beslut:** En pull request till `main` behöver fyra godkännanden.
+
+**Varför:** Fyra är det högsta antal som går att få när den som skapat pull requesten inte kan godkänna den. Alla andra i gruppen har ändå granskat det som går till `main`.
+
+**Konsekvenser:**
+- Inställningen för `main` i GitHub ändras från fem till fyra godkännanden.
+- Alla utom den som skapat pull requesten måste godkänna den, så en frånvarande person stoppar mergen till `main`.
+- Pull requests till `develop` påverkas inte. Där räcker ett godkännande (DoD punkt 3).
+
 ## 12. Ingen Jira-nyckel i commits
 
 **Datum: 2026-11-06**
@@ -208,7 +228,7 @@ Kopiera den här för varje nytt beslut:
 ## 4. Jira-nyckel i branches, commits och pull requests
 
 **Datum: 2026-10-19**
-**Status: Gäller, utom för commits. Delen om commits är ersatt av #11.** 
+**Status: Gäller, utom för commits. Delen om commits är ersatt av #12.** 
 
 **Bakgrund:** När vi bytte till Jira (beslut 3) behövde korten i Jira kopplas till koden i GitHub.
 
