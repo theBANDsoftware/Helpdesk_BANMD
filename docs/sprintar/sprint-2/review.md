@@ -51,9 +51,9 @@ och sortera i tidsordning.
 
 ### Feedback
 
-- Vi kan använda ett tredje party till till bilaga
+- Vi kan använda ett tredje party till bilaga
 - Kanske skapa något linkande FAQ
 
 ### Ändringar i backloggen
 
--
+- Historik finns på Jira
