@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 /**
  * Gemensam felhantering för alla controllers. Når backend inte databasen
@@ -48,14 +50,45 @@ public class ApiExceptionHandler {
                 .body(Map.of("error", "Ingen användare är vald. Headern " + e.getHeaderName() + " saknas."));
     }
 
+    /** Ärendet finns inte. Svarar 404. */
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleTicketNotFound(TicketNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
 
-    /** Användaren har fel roll, t.ex. en anställd som försöker ändra status (TB-27). */
+    /** Användaren har fel roll, t.ex. En anställd som försöker ändra status (TB-27). */
     @ExceptionHandler(ForbiddenActionException.class)
     public ResponseEntity<Map<String, String>> handleForbiddenAction(ForbiddenActionException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
+    }
+
+    /** Bilden finns inte (TB-35). */
+    @ExceptionHandler(AttachmentNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleAttachmentNotFound(AttachmentNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+    }
+
+    /** Fel filtyp, för stor fil eller för många bilder (TB-35). */
+    @ExceptionHandler(InvalidAttachmentException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidAttachment(InvalidAttachmentException e) {
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+    }
+
+    /** Anropet saknar fältet "file" (TB-35). */
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<Map<String, String>> handleMissingFile(MissingServletRequestPartException e) {
+        return ResponseEntity.badRequest().body(Map.of("error", "Ingen fil skickades."));
+    }
+
+    /** Filen är större än spring.servlet.multipart.max-file-size (TB-35). */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, String>> handleTooLarge(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE).body(Map.of("error", "Filen är för stor. Max 5 MB."));
+    }
+
+    /** B2-bucketen svarar inte eller saknas i .env (TB-35, beslut 11). */
+    @ExceptionHandler(StorageUnavailableException.class)
+    public ResponseEntity<Map<String, String>> handleStorageUnavailable(StorageUnavailableException e) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of("error", e.getMessage()));
     }
 }

@@ -9,60 +9,74 @@
   Närvaro: Ja / Nej / Sen / Distans.
 -->
 
-> **Exempel (Sysslo, sprint 1):**
->
-> ### Tisdag 2026-11-03
->
-> | Namn | Närvaro | Igår | Idag | Hinder |
-> |---|---|---|---|---|
-> | Amir | Ja | Sprint planning | Projektskelett #9 | – |
-> | Sara | Ja | Sprint planning | Skapa hushåll #3, backend | – |
-> | Jonas | Distans | Sprint planning | Lista sysslor #7 | – |
-> | Lina | Ja | Sprint planning | Formulär ny syssla #4 | Vet inte hur datum ska skickas. Jonas hjälper efter standup. |
+> **Loggen är gjord i efterhand.** Standupen loggades inte under sprinten. Datum, tid och närvaro är hämtade från röstsamtalen i Discord-kanalen. Vad var och en gjorde och vilka hinder som fanns går inte att återskapa, så de kolumnerna är tomma. Tiden är hur länge samtalet pågick, inte bara standupen. Lördag och söndag hade vi ingen standup.
 
 ---
 
-## Måndag ÅÅÅÅ-MM-DD
+## Måndag 2026-10-26
+
+Samtalet startade kl. 19.00 och pågick ca 3 h.
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
-| | | | | |
-| | | | | |
+| Adli Anabtawi | Ja | – | – | – |
+| Bleart Rama | Ja | – | – | – |
+| David Andersson | Ja | – | – | – |
+| Noah Fältman | Ja | – | – | – |
+| Mustafa Samir | Ja | – | – | – |
 
-## Tisdag ÅÅÅÅ-MM-DD
+---
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| | | | | |
-| | | | | |
-| | | | | |
-| | | | | |
+## Tisdag 2026-10-27
 
-## Onsdag ÅÅÅÅ-MM-DD
+Samtalet startade kl. 19.00 och pågick ca 3 h.
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
-| | | | | |
-| | | | | |
+| Adli Anabtawi | Ja | – | – | – |
+| Bleart Rama | Ja | – | – | – |
+| David Andersson | Ja | – | – | – |
+| Noah Fältman | Ja | – | – | – |
+| Mustafa Samir | Ja | – | – | – |
 
-## Torsdag ÅÅÅÅ-MM-DD
+---
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-|---|---|---|---|---|
-| | | | | |
-| | | | | |
-| | | | | |
-| | | | | |
+## Onsdag 2026-10-28
 
-## Fredag ÅÅÅÅ-MM-DD
+Samtalet startade kl. 11.16 och pågick ca 1 h.
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
-| | | | | |
-| | | | | |
+| Adli Anabtawi | Ja | – | – | – |
+| Bleart Rama | Ja | – | – | – |
+| David Andersson | Ja | – | – | – |
+| Noah Fältman | Ja | – | – | – |
+| Mustafa Samir | Nej | – | – | – |
+
+---
+
+## Torsdag 2026-10-29
+
+Samtalet startade kl. 20.00 och pågick ca 1 h.
+
+| Namn | Närvaro | Igår | Idag | Hinder |
+|---|---|---|---|---|
+| Adli Anabtawi | Ja | – | – | – |
+| Bleart Rama | Ja | – | – | – |
+| David Andersson | Ja | – | – | – |
+| Noah Fältman | Ja | – | – | – |
+| Mustafa Samir | Ja | – | – | – |
+
+---
+
+## Fredag 2026-10-30
+
+Samtalet startade kl. 20.00 och pågick ca 1 h.
+
+| Namn | Närvaro | Igår | Idag | Hinder |
+|---|---|---|---|---|
+| Adli Anabtawi | Ja | – | – | – |
+| Bleart Rama | Ja | – | – | – |
+| David Andersson | Ja | – | – | – |
+| Noah Fältman | Ja | – | – | – |
+| Mustafa Samir | Ja | – | – | – |

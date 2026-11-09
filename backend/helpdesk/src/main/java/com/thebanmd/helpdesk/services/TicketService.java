@@ -1,10 +1,6 @@
 package com.thebanmd.helpdesk.services;
 
-import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
-import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
-import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
-import com.thebanmd.helpdesk.dtos.TicketSummaryResponse;
-import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
+import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Role;
@@ -29,6 +25,7 @@ public class TicketService {
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
 
+    /** Skapar ett ärende med status NEW och den valda användaren som anmälare. */
     public void create(CreateTicketRequest ticket, Long createdById) {
         Ticket newTicket = ticketMapper.toEntity(ticket);
         newTicket.setStatus(Status.NEW);
@@ -37,6 +34,7 @@ public class TicketService {
         ticketRepository.save(newTicket);
     }
 
+    /** Hämtar ett ärende med alla detaljer. Kastar TicketNotFoundException om det inte finns. */
     @Transactional(readOnly = true)
     public TicketDetailResponse findById(Long id) {
         Ticket ticket = ticketRepository.findById(id)
@@ -44,6 +42,10 @@ public class TicketService {
         return ticketMapper.toDetailResponse(ticket);
     }
 
+    /**
+     * Tilldelar ärendet till en IT-ansvarig, eller tar bort tilldelningen om assignedToUserId är null.
+     * Bara IT-ansvariga får tilldela, och bara IT-ansvariga kan bli tilldelade (docs/databasschema.md).
+     */
     @Transactional
     public TicketDetailResponse assignTicket(Long ticketId, AssignTicketRequest request, Long performedByUserId) {
         User performingUser = userRepository.findById(performedByUserId)
@@ -91,6 +93,24 @@ public class TicketService {
         return ticketMapper.toDetailResponse(updated);
     }
 
+    @Transactional
+    public TicketDetailResponse updatePriority(Long ticketId, UpdatePriorityRequest request, Long performedByUserId) {
+        User performingUser = userRepository.findById(performedByUserId)
+            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
+
+        if (performingUser.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan ändra prioritet");
+        }
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        ticket.setPriority(request.priority());
+        Ticket updated = ticketRepository.save(ticket);
+        return ticketMapper.toDetailResponse(updated);
+    }
+
+    /** Ärenden som användaren har anmält, nyaste först (TB-24). Kastar UserNotFoundException om användaren inte finns. */
     @Transactional(readOnly = true)
     public List<TicketSummaryResponse> getMyTickets(Long userId) {
         if (!userRepository.existsById(userId)) {
@@ -100,10 +120,25 @@ public class TicketService {
         return ticketMapper.toSummaryResponseList(tickets);
     }
 
-
+    /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
     @Transactional(readOnly = true)
     public List<TicketSummaryResponse> getAllTickets() {
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
+        return ticketMapper.toSummaryResponseList(tickets);
+    }
+
+    /** Ärenden som är tilldelade användaren (TB-49). Bara IT-ansvariga har tilldelade ärenden. */
+    @Transactional(readOnly = true)
+    public List<TicketSummaryResponse> getMyAssignedTickets(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Endast IT-ansvariga har tilldelade ärenden.");
+        }
+
+        List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
+
         return ticketMapper.toSummaryResponseList(tickets);
     }
 }

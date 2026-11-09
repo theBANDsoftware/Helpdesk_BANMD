@@ -14,12 +14,14 @@ public interface TicketMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "priority", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "assignedTo", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Ticket toEntity(CreateTicketRequest request);
 
+    @Mapping(target = "createdById", source = "createdBy.id")
     @Mapping(target = "createdBy", source = "createdBy.name")
     @Mapping(target = "assignedTo", source = "assignedTo.name")
     TicketDetailResponse toDetailResponse(Ticket ticket);

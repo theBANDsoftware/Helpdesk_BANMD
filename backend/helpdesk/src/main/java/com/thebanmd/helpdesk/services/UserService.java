@@ -20,6 +20,8 @@ public class UserService {
     public List<UserResponse> listUsers() {
         return userMapper.toResponseList(userRepository.findAllByOrderByNameAsc());
     }
+
+    /** En användare. Kastar UserNotFoundException om den inte finns. */
     public UserResponse findById(Long id) {
         return userMapper.toResponse(userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException(id)));
