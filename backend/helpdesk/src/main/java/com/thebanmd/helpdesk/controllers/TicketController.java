@@ -29,7 +29,7 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-  
+
     /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets() {
@@ -79,5 +79,10 @@ public class TicketController {
         return ticketService.getMyAssignedTickets(userId);
     }
 
+    /** Statistik över öppna ärenden (TB-36). */
+    @GetMapping("/ticketspercategory")
+    public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getNumberOfTicketsPerCategory(userId);
+    }
 }
 

@@ -3,6 +3,7 @@ package com.thebanmd.helpdesk.services;
 import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
+import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -140,5 +143,30 @@ public class TicketService {
         List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
 
         return ticketMapper.toSummaryResponseList(tickets);
+    }
+
+    /** Hämta alla öppna ärenden och räkna per kategori */
+    @Transactional(readOnly = true)
+    public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Endast IT-ansvariga kan se statistik.");
+        }
+
+        List<Ticket> openTickets = ticketRepository.findByStatusIn(List.of(Status.NEW, Status.IN_PROGRESS));
+        List<TicketCategoryCountResponse> result = new ArrayList<>();
+        for (Category category : Category.values()) {
+            long count = 0;
+            for (Ticket ticket : openTickets) {
+                if (ticket.getCategory() == category) {
+                    count++;
+                }
+            }
+            result.add(new TicketCategoryCountResponse(category, count));
+        }
+        result.sort(Comparator.comparingLong(TicketCategoryCountResponse::count).reversed());
+        return result;
     }
 }
