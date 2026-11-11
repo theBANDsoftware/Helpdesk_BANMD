@@ -139,3 +139,12 @@ export function getAllTickets(): Promise<TicketSummary[]> {
 export function getMyAssignedTickets(): Promise<TicketSummary[]> {
   return apiRequest<TicketSummary[]>('/tickets/assigned-to-me');
 }
+
+// Hämta räknare för alla ärenden utifrån kategori
+export type TicketCategoryCount = {
+	category: categoryTicket;
+	count: number;
+};
+export function getTicketcountByCategory(): Promise<TicketCategoryCount[]> {
+	return apiRequest<TicketCategoryCount[]>('/tickets/ticketspercategory');
+}
