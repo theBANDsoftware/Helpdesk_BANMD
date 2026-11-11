@@ -5,6 +5,7 @@ import { formatDate } from '../../shared/formatDate';
 import { Link } from 'react-router';
 import type { TicketPriority } from '../../Types';
 import TicketSearch from './TicketSearch';
+import { useSelectedUser } from '../users/selectedUserContext';
 
 const priorityOrder: Record<TicketPriority, number> = {
   HIGH: 0,
@@ -21,6 +22,14 @@ export default function AllTickets() {
   const [sortBy, setSortBy] = useState<'time' | 'priority'>('priority');
   const [filter, setFilter] = useState('OPEN');
   const [searchTerm, setSearchTerm] = useState('');
+  const { user } = useSelectedUser();
+  const isItAdmin = user?.role === 'IT_ADMIN';
+
+  // Ej tilldelade ärenden räknas på hela listan, oavsett statusfilter och sökning.
+  // Lösta ärenden räknas inte (TB-52).
+  const unassignedCount = (query.data ?? []).filter(
+    (ticket) => ticket.status !== 'RESOLVED' && !ticket.assignedTo,
+  ).length;
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
@@ -52,6 +61,12 @@ export default function AllTickets() {
   return (
     <section className="card">
       <h2>Alla ärenden</h2>
+
+      {query.isSuccess && isItAdmin && (
+        <p className={unassignedCount > 0 ? 'unassigned-count has-unassigned' : 'unassigned-count'}>
+          {unassignedText(unassignedCount)}
+        </p>
+      )}
 
       {/* Sökkomponent */}
       <TicketSearch value={searchTerm} onChange={setSearchTerm} />
@@ -107,4 +122,10 @@ export default function AllTickets() {
       )}
     </section>
   );
+}
+
+function unassignedText(count: number): string {
+  if (count === 0) return 'Alla ärenden är tilldelade';
+  if (count === 1) return '1 ärende är inte tilldelat';
+  return `${count} ärenden är inte tilldelade`;
 }
