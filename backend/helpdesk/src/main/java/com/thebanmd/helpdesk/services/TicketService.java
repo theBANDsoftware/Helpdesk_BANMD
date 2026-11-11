@@ -52,7 +52,7 @@ public class TicketService {
             .orElseThrow(() -> new UserNotFoundException(performedByUserId));
 
         if (performingUser.getRole() != Role.IT_ADMIN) {
-            throw new IllegalArgumentException("Bara IT-ansvariga kan tilldela ärenden");
+            throw new ForbiddenActionException("Bara IT-ansvariga kan tilldela ärenden");
         }
 
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -65,7 +65,7 @@ public class TicketService {
                 .orElseThrow(() -> new UserNotFoundException(request.assignedToUserId()));
 
             if (assignee.getRole() != Role.IT_ADMIN) {
-                throw new IllegalArgumentException("Endast IT-ansvariga kan tilldelas ärenden");
+                throw new ForbiddenActionException("Endast IT-ansvariga kan tilldelas ärenden");
             }
 
             ticket.setAssignedTo(assignee);
