@@ -36,7 +36,7 @@ export default function AllTickets() {
   // Filtrera på status
   const statusFilteredTickets = (query.data ?? []).filter((ticket) => {
     if (filter === 'ALL') return true;
-    if (filter === 'OPEN') return ticket.status !== 'RESOLVED';
+    if (filter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
     return ticket.status === filter;
   });
 
@@ -78,6 +78,7 @@ export default function AllTickets() {
           <option value="NEW">{statusLabels.NEW}</option>
           <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
           <option value="RESOLVED">{statusLabels.RESOLVED}</option>
+          <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
         </select>
       </label>
       <p>

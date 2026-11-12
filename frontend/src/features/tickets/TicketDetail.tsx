@@ -19,6 +19,7 @@ import { getUsers } from '../users/usersApi';
 import type { TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
+import TicketOwnerActions from './TicketOwnerActions';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -192,6 +193,11 @@ export default function TicketDetail() {
               )}
             ></DataTable>
 
+            {/* Ändra eller ta tillbaka. Bara anmälaren, och bara när status är Ny (TB-51). */}
+            {query.data.createdById === currentUser?.id && query.data.status === 'NEW' && (
+              <TicketOwnerActions ticket={query.data} />
+            )}
+
             {/* Bifogade skärmdumpar (TB-35). Anmälaren och IT-ansvariga får ladda upp. */}
             <TicketAttachments
               ticketId={ticketId}
@@ -216,11 +222,15 @@ export default function TicketDetail() {
                   onChange={handleStatusChange}
                   disabled={statusMutation.isPending}
                 >
-                  {(Object.keys(statusLabels) as StatusTicket[]).map((status) => (
-                    <option key={status} value={status}>
-                      {statusLabels[status]}
-                    </option>
-                  ))}
+                  {/* Återkallad kan IT inte välja, bara anmälaren kan ta tillbaka (TB-51).
+                      Den visas bara när ärendet redan är återkallat. */}
+                  {(Object.keys(statusLabels) as StatusTicket[])
+                    .filter((status) => status !== 'WITHDRAWN' || query.data.status === 'WITHDRAWN')
+                    .map((status) => (
+                      <option key={status} value={status} disabled={status === 'WITHDRAWN'}>
+                        {statusLabels[status]}
+                      </option>
+                    ))}
                 </select>
                 {statusMutation.isPending && <span> Sparar …</span>}
                 {statusError && <p className="error">{statusError}</p>}

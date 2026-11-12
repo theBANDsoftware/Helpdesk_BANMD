@@ -27,7 +27,7 @@ erDiagram
         varchar title "NOT NULL, max 120"
         text description "NOT NULL"
         enum category "COMPUTER | PRINTER | NETWORK | ACCOUNT | OTHER"
-        enum status "NEW | IN_PROGRESS | RESOLVED"
+        enum status "NEW | IN_PROGRESS | RESOLVED | WITHDRAWN"
         bigint created_by FK "NOT NULL"
         bigint assigned_to FK "NULL = ej tilldelad"
         datetime created_at

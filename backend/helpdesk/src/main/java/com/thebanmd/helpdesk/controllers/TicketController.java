@@ -50,6 +50,23 @@ public class TicketController {
         return ticketService.findById(id, userId);
     }
 
+    /** Anmälaren ändrar rubrik, beskrivning och kategori medan ärendet har status Ny (TB-51). */
+    @PutMapping("/{id}")
+    public TicketDetailResponse updateTicket(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateTicketRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.updateTicket(id, request, userId);
+    }
+
+    /** Anmälaren tar tillbaka ärendet medan det har status Ny. Det får status Återkallad (TB-51). */
+    @PostMapping("/{id}/withdraw")
+    public TicketDetailResponse withdrawTicket(
+        @PathVariable Long id,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.withdrawTicket(id, userId);
+    }
+
     /** Tilldelar ärendet till en IT-ansvarig, eller tar bort tilldelningen om assignedToUserId är null. */
     @PutMapping("/{id}/assign")
     public TicketDetailResponse assignTicket(
