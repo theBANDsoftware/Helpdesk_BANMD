@@ -7,6 +7,7 @@ import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
+import com.thebanmd.helpdesk.exceptions.TicketNotEditableException;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -86,6 +88,10 @@ public class TicketService {
 
         if (performingUser.getRole() != Role.IT_ADMIN) {
             throw new ForbiddenActionException("Bara IT-ansvariga kan ändra status");
+        }
+        // Återkallad sätts bara när anmälaren tar tillbaka sitt ärende (TB-51)
+        if (request.status() == Status.WITHDRAWN) {
+            throw new ForbiddenActionException("Bara anmälaren kan ta tillbaka ett ärende");
         }
 
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -168,5 +174,47 @@ public class TicketService {
         }
         result.sort(Comparator.comparingLong(TicketCategoryCountResponse::count).reversed());
         return result;
+    }
+
+    /**
+     * Anmälaren ändrar rubrik, beskrivning och kategori (TB-51).
+     * Bara anmälaren får göra det, och bara medan ärendet har status NEW.
+     */
+    @Transactional
+    public TicketDetailResponse updateTicket(Long ticketId, UpdateTicketRequest request, Long performedByUserId) {
+        Ticket ticket = findEditableByCreator(ticketId, performedByUserId, "ändra");
+        ticket.setTitle(request.title().strip());
+        ticket.setDescription(request.description().strip());
+        ticket.setCategory(request.category());
+        return ticketMapper.toDetailResponse(ticketRepository.save(ticket));
+    }
+
+    /**
+     * Anmälaren tar tillbaka sitt ärende, som då får status WITHDRAWN (TB-51, beslut 14).
+     * Bara anmälaren får göra det, och bara medan ärendet har status NEW.
+     */
+    @Transactional
+    public TicketDetailResponse withdrawTicket(Long ticketId, Long performedByUserId) {
+        Ticket ticket = findEditableByCreator(ticketId, performedByUserId, "ta tillbaka");
+        ticket.setStatus(Status.WITHDRAWN);
+        return ticketMapper.toDetailResponse(ticketRepository.save(ticket));
+    }
+
+    /** Gemensamma kontroller för updateTicket och withdrawTicket (TB-51). */
+    private Ticket findEditableByCreator(Long ticketId, Long performedByUserId, String action) {
+        if (!userRepository.existsById(performedByUserId)) {
+            throw new UserNotFoundException(performedByUserId);
+        }
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        if (!Objects.equals(ticket.getCreatedBy().getId(), performedByUserId)) {
+            throw new ForbiddenActionException("Bara den som anmält ärendet kan " + action + " det");
+        }
+        // Har IT hunnit ändra status medan anmälaren redigerade får hen ett fel (409) och inget ändras
+        if (ticket.getStatus() != Status.NEW) {
+            throw new TicketNotEditableException();
+        }
+        return ticket;
     }
 }
