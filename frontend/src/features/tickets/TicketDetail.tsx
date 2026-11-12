@@ -155,12 +155,14 @@ export default function TicketDetail() {
 
   return (
     <>
-      <section>
-        <TicketComments
-          ticketId={ticketId}
-          canComment={isItAdmin || query.data?.createdById === currentUser?.id}
-        />
-      </section>
+      {query.isSuccess && (
+        <section>
+          <TicketComments
+            ticketId={ticketId}
+            canComment={isItAdmin || query.data.createdById === currentUser?.id}
+          />
+        </section>
+      )}
       <section className="card">
         <a href="#" onClick={() => navigate(-1)} className="link">
           &lt; Tillbaka
