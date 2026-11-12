@@ -37,11 +37,23 @@ public class TicketService {
         ticketRepository.save(newTicket);
     }
 
-    /** Hämtar ett ärende med alla detaljer. Kastar TicketNotFoundException om det inte finns. */
+    /**
+     * Hämtar ett ärende med alla detaljer. Bara den som anmält ärendet och IT-ansvariga får se det (TB-46).
+     * Kastar TicketNotFoundException om ärendet inte finns.
+     */
     @Transactional(readOnly = true)
-    public TicketDetailResponse findById(Long id) {
+    public TicketDetailResponse findById(Long id, Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new TicketNotFoundException(id));
+
+        boolean isCreator = ticket.getCreatedBy().getId().equals(userId);
+        if (user.getRole() != Role.IT_ADMIN && !isCreator) {
+            throw new ForbiddenActionException("Du har inte behörighet att se det här ärendet");
+        }
+
         return ticketMapper.toDetailResponse(ticket);
     }
 
@@ -123,9 +135,16 @@ public class TicketService {
         return ticketMapper.toSummaryResponseList(tickets);
     }
 
-    /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
+    /** Alla ärenden från alla anmälare, nyaste först (TB-25). Bara IT-ansvariga får se dem (TB-46). */
     @Transactional(readOnly = true)
-    public List<TicketSummaryResponse> getAllTickets() {
+    public List<TicketSummaryResponse> getAllTickets(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan se alla ärenden");
+        }
+
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
         return ticketMapper.toSummaryResponseList(tickets);
     }

@@ -35,9 +35,10 @@ export default function TicketDetail() {
   const query = useQuery({
     queryKey: ['tickets', ticketId],
     queryFn: () => getTicket(ticketId),
-    retry: (failureCount, error) =>
-      !(error instanceof ApiError && error.status === 404) && failureCount < 3,
-    enabled: Number.isInteger(ticketId),
+        retry: (failureCount, error) =>
+      !(error instanceof ApiError && (error.status === 404 || error.status === 403)) &&
+      failureCount < 3,
+      enabled: Number.isInteger(ticketId),
   });
 
   // Hämta listan med användare om den inloggade är IT_ADMIN
@@ -154,19 +155,24 @@ export default function TicketDetail() {
 
   return (
     <>
-      <section>
-        <TicketComments
-          ticketId={ticketId}
-          canComment={isItAdmin || query.data?.createdById === currentUser?.id}
-        />
-      </section>
+      {query.isSuccess && (
+        <section>
+          <TicketComments
+            ticketId={ticketId}
+            canComment={isItAdmin || query.data.createdById === currentUser?.id}
+          />
+        </section>
+      )}
       <section className="card">
         <a href="#" onClick={() => navigate(-1)} className="link">
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
-        {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
+                {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
+        )}
+        {query.isError && query.error instanceof ApiError && query.error.status === 403 && (
+          <p className="error">Du har inte behörighet att se det här ärendet</p>
         )}
         {query.isSuccess && (
           <>
