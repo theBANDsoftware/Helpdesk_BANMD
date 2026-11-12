@@ -31,9 +31,10 @@ public class TicketController {
     }
 
     /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
+    /** Alla ärenden från alla anmälare, nyaste först. Bara för IT-ansvariga (TB-25, TB-46). */
     @GetMapping
-    public List<TicketSummaryResponse> getAllTickets() {
-        return ticketService.getAllTickets();
+    public List<TicketSummaryResponse> getAllTickets(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getAllTickets(userId);
     }
 
     /** Ärenden som den valda användaren har anmält, nyaste först (TB-24). */
@@ -42,10 +43,11 @@ public class TicketController {
         return ticketService.getMyTickets(userId);
     }
 
-    /** Ett ärende med alla detaljer. Svarar 404 om det inte finns. */
+    /** Ett ärende med alla detaljer. 403 om man varken är anmälare eller IT-ansvarig, 404 om det inte finns. */
     @GetMapping("/{id}")
-    public TicketDetailResponse findById(@PathVariable Long id) {
-        return ticketService.findById(id);
+    public TicketDetailResponse findById(@PathVariable Long id,
+                                         @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.findById(id, userId);
     }
 
     /** Tilldelar ärendet till en IT-ansvarig, eller tar bort tilldelningen om assignedToUserId är null. */
