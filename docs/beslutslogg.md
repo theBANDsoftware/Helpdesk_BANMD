@@ -40,6 +40,48 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 14. Ett återtaget ärende får status Återkallad
+
+**Datum: 2026-11-12**
+**Status: Gäller**
+
+**Bakgrund:** I TB-51 kan anmälaren ta tillbaka sitt ärende medan det har status Ny. Storyn säger att vi måste bestämma vad "ta tillbaka" betyder i databasen innan den påbörjas.
+
+**Alternativ:**
+- Ärendet får status `RESOLVED` (Löst)
+- En ny status `WITHDRAWN` (Återkallad)
+- Ärendet tas bort
+
+**Beslut:** En ny status, `WITHDRAWN`, som visas som "Återkallad". Bara anmälaren kan sätta den, och bara när ärendet har status `NEW`. IT-ansvariga kan inte välja den i statuslistan. Skriptet `V4__status_aterkallad.sql` lägger till värdet i `chk_tickets_status`.
+
+**Varför:** Med `RESOLVED` ser det ut som att IT har löst ärendet, och det går inte att se skillnad på lösta och återkallade ärenden. Tas ärendet bort försvinner historiken, kommentarerna och bilderna, och filerna i B2 blir kvar utan koppling. En egen status är tydlig och behåller allt.
+
+**Konsekvenser:**
+- `V4__status_aterkallad.sql` måste köras i develop-databasen innan TB-51 testas (beslut 8).
+- `Status.java`, `StatusTicket` i frontend och `statusLabels` har fått värdet `WITHDRAWN`.
+- Filtret "Ej lösta" i Alla ärenden visar bara Ny och Pågående. Återkallade ärenden har ett eget val i filtret.
+- Statistiken (TB-36) räknar redan bara `NEW` och `IN_PROGRESS`, så den påverkas inte.
+
+## 13. Fyra godkännanden räcker för en PR till `main`
+
+**Datum: 2026-11-09**
+**Status: Gäller**
+
+**Bakgrund:** En pull request till `main` krävde fem godkännanden. Vi är fem i gruppen och ingen kan godkänna sin egen pull request, så det gick aldrig att nå fem.
+
+**Alternativ:**
+- Fem godkännanden, som tidigare
+- Fyra godkännanden, alltså alla utom den som skapat pull requesten
+
+**Beslut:** En pull request till `main` behöver fyra godkännanden.
+
+**Varför:** Fyra är det högsta antal som går att få när den som skapat pull requesten inte kan godkänna den. Alla andra i gruppen har ändå granskat det som går till `main`.
+
+**Konsekvenser:**
+- Inställningen för `main` i GitHub ändras från fem till fyra godkännanden.
+- Alla utom den som skapat pull requesten måste godkänna den, så en frånvarande person stoppar mergen till `main`.
+- Pull requests till `develop` påverkas inte. Där räcker ett godkännande (DoD punkt 3).
+
 ## 12. Ingen Jira-nyckel i commits
 
 **Datum: 2026-11-06**
@@ -208,7 +250,7 @@ Kopiera den här för varje nytt beslut:
 ## 4. Jira-nyckel i branches, commits och pull requests
 
 **Datum: 2026-10-19**
-**Status: Gäller, utom för commits. Delen om commits är ersatt av #11.** 
+**Status: Gäller, utom för commits. Delen om commits är ersatt av #12.** 
 
 **Bakgrund:** När vi bytte till Jira (beslut 3) behövde korten i Jira kopplas till koden i GitHub.
 

@@ -19,6 +19,7 @@ import { getUsers } from '../users/usersApi';
 import type { TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
+import TicketOwnerActions from './TicketOwnerActions';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -35,9 +36,10 @@ export default function TicketDetail() {
   const query = useQuery({
     queryKey: ['tickets', ticketId],
     queryFn: () => getTicket(ticketId),
-    retry: (failureCount, error) =>
-      !(error instanceof ApiError && error.status === 404) && failureCount < 3,
-    enabled: Number.isInteger(ticketId),
+        retry: (failureCount, error) =>
+      !(error instanceof ApiError && (error.status === 404 || error.status === 403)) &&
+      failureCount < 3,
+      enabled: Number.isInteger(ticketId),
   });
 
   // Hämta listan med användare om den inloggade är IT_ADMIN
@@ -154,19 +156,24 @@ export default function TicketDetail() {
 
   return (
     <>
-      <section>
-        <TicketComments
-          ticketId={ticketId}
-          canComment={isItAdmin || query.data?.createdById === currentUser?.id}
-        />
-      </section>
+      {query.isSuccess && (
+        <section>
+          <TicketComments
+            ticketId={ticketId}
+            canComment={isItAdmin || query.data.createdById === currentUser?.id}
+          />
+        </section>
+      )}
       <section className="card">
         <a href="#" onClick={() => navigate(-1)} className="link">
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
-        {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
+                {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
+        )}
+        {query.isError && query.error instanceof ApiError && query.error.status === 403 && (
+          <p className="error">Du har inte behörighet att se det här ärendet</p>
         )}
         {query.isSuccess && (
           <>
@@ -185,6 +192,11 @@ export default function TicketDetail() {
                 ['title', 'description'],
               )}
             ></DataTable>
+
+            {/* Ändra eller ta tillbaka. Bara anmälaren, och bara när status är Ny (TB-51). */}
+            {query.data.createdById === currentUser?.id && query.data.status === 'NEW' && (
+              <TicketOwnerActions ticket={query.data} />
+            )}
 
             {/* Bifogade skärmdumpar (TB-35). Anmälaren och IT-ansvariga får ladda upp. */}
             <TicketAttachments
@@ -210,11 +222,15 @@ export default function TicketDetail() {
                   onChange={handleStatusChange}
                   disabled={statusMutation.isPending}
                 >
-                  {(Object.keys(statusLabels) as StatusTicket[]).map((status) => (
-                    <option key={status} value={status}>
-                      {statusLabels[status]}
-                    </option>
-                  ))}
+                  {/* Återkallad kan IT inte välja, bara anmälaren kan ta tillbaka (TB-51).
+                      Den visas bara när ärendet redan är återkallat. */}
+                  {(Object.keys(statusLabels) as StatusTicket[])
+                    .filter((status) => status !== 'WITHDRAWN' || query.data.status === 'WITHDRAWN')
+                    .map((status) => (
+                      <option key={status} value={status} disabled={status === 'WITHDRAWN'}>
+                        {statusLabels[status]}
+                      </option>
+                    ))}
                 </select>
                 {statusMutation.isPending && <span> Sparar …</span>}
                 {statusError && <p className="error">{statusError}</p>}

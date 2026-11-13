@@ -29,11 +29,12 @@ public class TicketController {
                        @RequestHeader("X-User-Id") Long userId) {
         ticketService.create(ticket, userId);
     }
-  
+
     /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
+    /** Alla ärenden från alla anmälare, nyaste först. Bara för IT-ansvariga (TB-25, TB-46). */
     @GetMapping
-    public List<TicketSummaryResponse> getAllTickets() {
-        return ticketService.getAllTickets();
+    public List<TicketSummaryResponse> getAllTickets(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getAllTickets(userId);
     }
 
     /** Ärenden som den valda användaren har anmält, nyaste först (TB-24). */
@@ -42,10 +43,28 @@ public class TicketController {
         return ticketService.getMyTickets(userId);
     }
 
-    /** Ett ärende med alla detaljer. Svarar 404 om det inte finns. */
+    /** Ett ärende med alla detaljer. 403 om man varken är anmälare eller IT-ansvarig, 404 om det inte finns. */
     @GetMapping("/{id}")
-    public TicketDetailResponse findById(@PathVariable Long id) {
-        return ticketService.findById(id);
+    public TicketDetailResponse findById(@PathVariable Long id,
+                                         @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.findById(id, userId);
+    }
+
+    /** Anmälaren ändrar rubrik, beskrivning och kategori medan ärendet har status Ny (TB-51). */
+    @PutMapping("/{id}")
+    public TicketDetailResponse updateTicket(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateTicketRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.updateTicket(id, request, userId);
+    }
+
+    /** Anmälaren tar tillbaka ärendet medan det har status Ny. Det får status Återkallad (TB-51). */
+    @PostMapping("/{id}/withdraw")
+    public TicketDetailResponse withdrawTicket(
+        @PathVariable Long id,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.withdrawTicket(id, userId);
     }
 
     /** Tilldelar ärendet till en IT-ansvarig, eller tar bort tilldelningen om assignedToUserId är null. */
@@ -79,5 +98,10 @@ public class TicketController {
         return ticketService.getMyAssignedTickets(userId);
     }
 
+    /** Statistik över öppna ärenden (TB-36). */
+    @GetMapping("/ticketspercategory")
+    public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(@RequestHeader("X-User-Id") Long userId) {
+        return ticketService.getNumberOfTicketsPerCategory(userId);
+    }
 }
 

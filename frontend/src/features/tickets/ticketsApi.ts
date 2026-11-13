@@ -2,7 +2,7 @@ import { apiRequest } from '../../shared/apiClient';
 import type { categoryTicket, TicketPriority, TicketSummary } from '../../Types';
 
 // Återanvänder eller definierar status- och kategorityper
-export type StatusTicket = 'NEW' | 'IN_PROGRESS' | 'RESOLVED';
+export type StatusTicket = 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'WITHDRAWN';
 
 // Svenska visningstexter för kategorier (synkade med Category.java i backend)
 export const categoryLabels: Record<categoryTicket, string> = {
@@ -18,6 +18,7 @@ export const statusLabels: Record<StatusTicket, string> = {
   NEW: 'Ny',
   IN_PROGRESS: 'Pågående',
   RESOLVED: 'Löst',
+  WITHDRAWN: 'Återkallad', // Anmälaren har tagit tillbaka ärendet (TB-51)
 };
 // Svenska visningstexter för ärendeprioritering
 export const priorityLabels: Record<TicketPriority, string> = {
@@ -81,6 +82,19 @@ export async function createTicket(
   );
 }
 
+/** Anmälaren ändrar rubrik, beskrivning och kategori medan ärendet har status Ny (TB-51). */
+export async function updateTicket(
+  ticketId: number,
+  ticket: CreateTicketDTO
+): Promise<TicketDetailResponse> {
+  return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}`, 'PUT', ticket);
+}
+
+/** Anmälaren tar tillbaka ärendet medan det har status Ny. Det får status Återkallad (TB-51). */
+export async function withdrawTicket(ticketId: number): Promise<TicketDetailResponse> {
+  return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}/withdraw`, 'POST');
+}
+
 /** Tilldelar ärendet till en IT-ansvarig eller tar bort tilldelningen (null) */
 export async function assignTicket(
   ticketId: number,
@@ -138,4 +152,13 @@ export function getAllTickets(): Promise<TicketSummary[]> {
  */
 export function getMyAssignedTickets(): Promise<TicketSummary[]> {
   return apiRequest<TicketSummary[]>('/tickets/assigned-to-me');
+}
+
+// Hämta räknare för alla ärenden utifrån kategori
+export type TicketCategoryCount = {
+	category: categoryTicket;
+	count: number;
+};
+export function getTicketcountByCategory(): Promise<TicketCategoryCount[]> {
+	return apiRequest<TicketCategoryCount[]>('/tickets/ticketspercategory');
 }

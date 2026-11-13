@@ -4,12 +4,13 @@ import { CurrentUser } from './features/users/CurrentUser';
 import { RequireUser } from './features/users/RequireUser';
 import { SelectedUserProvider } from './features/users/SelectedUserProvider';
 import { StartPage } from './features/start/StartPage';
+import { NavMenu } from './features/users/NavMenu';
 import NewTicketForm from './features/tickets/NewTicketForm';
 import TicketDetail from './features/tickets/TicketDetail';
 import MyTickets from './features/tickets/MyTickets';
 import AllTickets from './features/tickets/AllTickets';
-import { NavMenu } from './features/users/NavMenu';
 import MyAssignedTickets from './features/tickets/MyAssignedTickets';
+import TicketStatistics from './features/tickets/TicketStatistics';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -37,6 +38,7 @@ export default function App() {
               <Route path="/tickets/new" element={<NewTicketForm />} />
               <Route path="/tickets/:id" element={<TicketDetail />} />
               <Route path="/tickets/assigned" element={<MyAssignedTickets />} />
+              <Route path="/tickets/statistics" element={<TicketStatistics />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

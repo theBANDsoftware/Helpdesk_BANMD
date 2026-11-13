@@ -3,12 +3,14 @@ package com.thebanmd.helpdesk.services;
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
+import com.thebanmd.helpdesk.dtos.UpdateTicketRequest;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
+import com.thebanmd.helpdesk.exceptions.TicketNotEditableException;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
@@ -27,6 +29,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /** Testar TicketService utan databas. Repositoryna ersätts med Mockito-mockar. */
 class TicketServiceTest {
@@ -108,6 +111,100 @@ class TicketServiceTest {
 
         assertThatThrownBy(() -> service.updateStatus(99L, new UpdateStatusRequest(Status.RESOLVED), 5L))
                 .isInstanceOf(TicketNotFoundException.class);
+        verify(ticketRepository, never()).save(any());
+    }
+
+    // ---- TB-51: anmälaren ändrar eller tar tillbaka sitt ärende ----
+
+    private final UpdateTicketRequest changes =
+            new UpdateTicketRequest("  Skrivaren på plan 2  ", "Den blinkar rött och piper", Category.PRINTER);
+
+    /** Annas ärende (id 10) med status NEW. Anna har id 1, Omar id 2. */
+    private Ticket annasNyaArende() {
+        User anna = userWithId(1L, "Anna Lind", Role.EMPLOYEE);
+        Ticket ticket = new Ticket("Skrivaren", "Den blinkar", Category.OTHER, anna);
+        ticket.setStatus(Status.NEW);
+        when(userRepository.existsById(1L)).thenReturn(true);
+        when(userRepository.existsById(2L)).thenReturn(true);
+        when(ticketRepository.findById(10L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+        return ticket;
+    }
+
+    private static User userWithId(Long id, String name, Role role) {
+        User user = new User(name, role);
+        ReflectionTestUtils.setField(user, "id", id);
+        return user;
+    }
+
+    @Test
+    void updateTicketAndrarRubrikBeskrivningOchKategoriForAnmalaren() {
+        Ticket ticket = annasNyaArende();
+
+        TicketDetailResponse response = service.updateTicket(10L, changes, 1L);
+
+        assertThat(ticket.getTitle()).isEqualTo("Skrivaren på plan 2");
+        assertThat(ticket.getDescription()).isEqualTo("Den blinkar rött och piper");
+        assertThat(ticket.getCategory()).isEqualTo(Category.PRINTER);
+        assertThat(response.title()).isEqualTo("Skrivaren på plan 2");
+    }
+
+    @Test
+    void updateTicketNekasForAnnanAnvandare() {
+        Ticket ticket = annasNyaArende();
+
+        assertThatThrownBy(() -> service.updateTicket(10L, changes, 2L))
+                .isInstanceOf(ForbiddenActionException.class);
+        assertThat(ticket.getTitle()).isEqualTo("Skrivaren");
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void updateTicketNekasOmItHarHunnitAndraStatus() {
+        Ticket ticket = annasNyaArende();
+        ticket.setStatus(Status.IN_PROGRESS);
+
+        assertThatThrownBy(() -> service.updateTicket(10L, changes, 1L))
+                .isInstanceOf(TicketNotEditableException.class);
+        assertThat(ticket.getTitle()).isEqualTo("Skrivaren");
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void withdrawTicketSatterStatusAterkallad() {
+        Ticket ticket = annasNyaArende();
+
+        TicketDetailResponse response = service.withdrawTicket(10L, 1L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.WITHDRAWN);
+        assertThat(response.status()).isEqualTo(Status.WITHDRAWN);
+    }
+
+    @Test
+    void withdrawTicketNekasNarArendetArLost() {
+        Ticket ticket = annasNyaArende();
+        ticket.setStatus(Status.RESOLVED);
+
+        assertThatThrownBy(() -> service.withdrawTicket(10L, 1L))
+                .isInstanceOf(TicketNotEditableException.class);
+        assertThat(ticket.getStatus()).isEqualTo(Status.RESOLVED);
+    }
+
+    @Test
+    void withdrawTicketNekasForAnnanAnvandare() {
+        Ticket ticket = annasNyaArende();
+
+        assertThatThrownBy(() -> service.withdrawTicket(10L, 2L))
+                .isInstanceOf(ForbiddenActionException.class);
+        assertThat(ticket.getStatus()).isEqualTo(Status.NEW);
+    }
+
+    @Test
+    void updateStatusKanInteSattaAterkallad() {
+        when(userRepository.findById(5L)).thenReturn(Optional.of(new User("Maria Nordin", Role.IT_ADMIN)));
+
+        assertThatThrownBy(() -> service.updateStatus(1L, new UpdateStatusRequest(Status.WITHDRAWN), 5L))
+                .isInstanceOf(ForbiddenActionException.class);
         verify(ticketRepository, never()).save(any());
     }
 }

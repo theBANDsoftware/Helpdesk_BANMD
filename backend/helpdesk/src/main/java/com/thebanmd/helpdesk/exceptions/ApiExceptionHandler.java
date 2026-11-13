@@ -62,6 +62,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
     }
 
+    /** Ärendet har inte längre status Ny och kan inte ändras eller tas tillbaka (TB-51). */
+    @ExceptionHandler(TicketNotEditableException.class)
+    public ResponseEntity<Map<String, String>> handleTicketNotEditable(TicketNotEditableException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
+    }
+
     /** Bilden finns inte (TB-35). */
     @ExceptionHandler(AttachmentNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleAttachmentNotFound(AttachmentNotFoundException e) {

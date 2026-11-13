@@ -3,9 +3,11 @@ package com.thebanmd.helpdesk.services;
 import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
+import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
+import com.thebanmd.helpdesk.exceptions.TicketNotEditableException;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
@@ -15,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -34,11 +39,23 @@ public class TicketService {
         ticketRepository.save(newTicket);
     }
 
-    /** Hämtar ett ärende med alla detaljer. Kastar TicketNotFoundException om det inte finns. */
+    /**
+     * Hämtar ett ärende med alla detaljer. Bara den som anmält ärendet och IT-ansvariga får se det (TB-46).
+     * Kastar TicketNotFoundException om ärendet inte finns.
+     */
     @Transactional(readOnly = true)
-    public TicketDetailResponse findById(Long id) {
+    public TicketDetailResponse findById(Long id, Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new TicketNotFoundException(id));
+
+        boolean isCreator = ticket.getCreatedBy().getId().equals(userId);
+        if (user.getRole() != Role.IT_ADMIN && !isCreator) {
+            throw new ForbiddenActionException("Du har inte behörighet att se det här ärendet");
+        }
+
         return ticketMapper.toDetailResponse(ticket);
     }
 
@@ -52,7 +69,7 @@ public class TicketService {
             .orElseThrow(() -> new UserNotFoundException(performedByUserId));
 
         if (performingUser.getRole() != Role.IT_ADMIN) {
-            throw new IllegalArgumentException("Bara IT-ansvariga kan tilldela ärenden");
+            throw new ForbiddenActionException("Bara IT-ansvariga kan tilldela ärenden");
         }
 
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -65,7 +82,7 @@ public class TicketService {
                 .orElseThrow(() -> new UserNotFoundException(request.assignedToUserId()));
 
             if (assignee.getRole() != Role.IT_ADMIN) {
-                throw new IllegalArgumentException("Endast IT-ansvariga kan tilldelas ärenden");
+                throw new ForbiddenActionException("Endast IT-ansvariga kan tilldelas ärenden");
             }
 
             ticket.setAssignedTo(assignee);
@@ -83,6 +100,10 @@ public class TicketService {
 
         if (performingUser.getRole() != Role.IT_ADMIN) {
             throw new ForbiddenActionException("Bara IT-ansvariga kan ändra status");
+        }
+        // Återkallad sätts bara när anmälaren tar tillbaka sitt ärende (TB-51)
+        if (request.status() == Status.WITHDRAWN) {
+            throw new ForbiddenActionException("Bara anmälaren kan ta tillbaka ett ärende");
         }
 
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -120,9 +141,16 @@ public class TicketService {
         return ticketMapper.toSummaryResponseList(tickets);
     }
 
-    /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
+    /** Alla ärenden från alla anmälare, nyaste först (TB-25). Bara IT-ansvariga får se dem (TB-46). */
     @Transactional(readOnly = true)
-    public List<TicketSummaryResponse> getAllTickets() {
+    public List<TicketSummaryResponse> getAllTickets(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan se alla ärenden");
+        }
+
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
         return ticketMapper.toSummaryResponseList(tickets);
     }
@@ -140,5 +168,72 @@ public class TicketService {
         List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
 
         return ticketMapper.toSummaryResponseList(tickets);
+    }
+
+    /** Hämta alla öppna ärenden och räkna per kategori */
+    @Transactional(readOnly = true)
+    public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Endast IT-ansvariga kan se statistik.");
+        }
+
+        List<Ticket> openTickets = ticketRepository.findByStatusIn(List.of(Status.NEW, Status.IN_PROGRESS));
+        List<TicketCategoryCountResponse> result = new ArrayList<>();
+        for (Category category : Category.values()) {
+            long count = 0;
+            for (Ticket ticket : openTickets) {
+                if (ticket.getCategory() == category) {
+                    count++;
+                }
+            }
+            result.add(new TicketCategoryCountResponse(category, count));
+        }
+        result.sort(Comparator.comparingLong(TicketCategoryCountResponse::count).reversed());
+        return result;
+    }
+
+    /**
+     * Anmälaren ändrar rubrik, beskrivning och kategori (TB-51).
+     * Bara anmälaren får göra det, och bara medan ärendet har status NEW.
+     */
+    @Transactional
+    public TicketDetailResponse updateTicket(Long ticketId, UpdateTicketRequest request, Long performedByUserId) {
+        Ticket ticket = findEditableByCreator(ticketId, performedByUserId, "ändra");
+        ticket.setTitle(request.title().strip());
+        ticket.setDescription(request.description().strip());
+        ticket.setCategory(request.category());
+        return ticketMapper.toDetailResponse(ticketRepository.save(ticket));
+    }
+
+    /**
+     * Anmälaren tar tillbaka sitt ärende, som då får status WITHDRAWN (TB-51, beslut 14).
+     * Bara anmälaren får göra det, och bara medan ärendet har status NEW.
+     */
+    @Transactional
+    public TicketDetailResponse withdrawTicket(Long ticketId, Long performedByUserId) {
+        Ticket ticket = findEditableByCreator(ticketId, performedByUserId, "ta tillbaka");
+        ticket.setStatus(Status.WITHDRAWN);
+        return ticketMapper.toDetailResponse(ticketRepository.save(ticket));
+    }
+
+    /** Gemensamma kontroller för updateTicket och withdrawTicket (TB-51). */
+    private Ticket findEditableByCreator(Long ticketId, Long performedByUserId, String action) {
+        if (!userRepository.existsById(performedByUserId)) {
+            throw new UserNotFoundException(performedByUserId);
+        }
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        if (!Objects.equals(ticket.getCreatedBy().getId(), performedByUserId)) {
+            throw new ForbiddenActionException("Bara den som anmält ärendet kan " + action + " det");
+        }
+        // Har IT hunnit ändra status medan anmälaren redigerade får hen ett fel (409) och inget ändras
+        if (ticket.getStatus() != Status.NEW) {
+            throw new TicketNotEditableException();
+        }
+        return ticket;
     }
 }
