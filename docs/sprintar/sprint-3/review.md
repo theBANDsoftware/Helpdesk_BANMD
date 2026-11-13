@@ -14,56 +14,52 @@
   Demot ska köras på riktigt, inte med skärmdumpar. Testa det innan.
 -->
 
-**Datum:**
-**Deltagare:**
+**Datum: 2026-11-16**
+**Deltagare: Adli Anabtawi, Bleart Rama (PO), David Andersson, Noah Fältman, Mustafa Samir (SM), läraren**
 
 ## Del 1: Förberedelse
 
 ### Sprintmål
-
-<!-- Kopiera från planning.md. -->
-
+Varje roll kan bara göra det den får och får tydliga svar när något inte är tillåtet, och IT-ansvariga får bättre överblick över ärendena.
 
 
-**Uppnåddes sprintmålet?** Ja / Delvis / Nej
+
+**Uppnåddes sprintmålet?** Ja
 
 ### Blev klart
 
-> **Exempel:**
->
-> | Issue | Story | Visas av |
-> |---|---|---|
-> | #3 | Skapa ett hushåll | Sara |
-> | #4 | Lägga till en syssla | Lina |
-> | #7 | Visa lista med sysslor | Jonas |
-
-| Issue | Story | Visas av |
-|---|---|---|
-| | | |
-| | | |
+| Issue | Story | Storlek | Ansvarig |
+|---|---|---|---|
+|TB-47 |Samma felkod för otillåtna åtgärd |S |Adli |
+|TB-48 |Validering av tilldelning |S |Noah |
+|TB-46 |Anställd ser bara sina egna ärenden |M |Bleart |
+|TB-57|Dölj formulär för anställd som inte är anmälare|S|Bleart|
+|TB-36|Statistik över öppna ärenden per kategori|M|David|
+|TB-50|Söka på rubrik eller anmälare|S|Noah|
+|TB-51|Ändra eller ta tillbaka ett ärende med status Ny|M|Mustafa|
+|TB-52|Antal ej tilldelade ärenden|S|Adli|
 
 ### Blev inte klart
 
-<!-- Vad och varför? Det är inget misslyckande, men det ska förklaras. -->
-
-> **Exempel:** #9 Projektskelett blev klart, men databasen körs bara lokalt hos Amir. Vi underskattade hur lång tid Docker-uppsättningen tog.
-
-| Issue | Story | Varför inte klar | Vad händer med den? |
-|---|---|---|---|
-| | | | |
+Alla stories i sprinten blev klara.
 
 ### Demoplan
 
-<!-- I vilken ordning visar ni? Vem gör vad? Berätta det som en användares väg genom appen, inte story för story. -->
+1. Anna Lind (anställd) öppnar Mina ärenden och ser bara sina egna ärenden. (TB-46)
 
-> **Exempel:**
-> 1. Sara skapar hushållet "Korridor 4B".
-> 2. Lina lägger till tre sysslor.
-> 3. Jonas visar att sysslorna finns kvar efter omladdning.
+2. Anna Lind öppnar ett av sina ärenden. Formuläret för status, tilldelning och prioritet syns inte. (TB-57)
 
-1.
-2.
-3.
+3. Anna Lind klistrar in länken till någon annans ärende och får "Du har inte behörighet att se det här ärendet" i stället för ett serverfel. (TB-46)
+
+4. Anna Lind rättar ett fel i ett ärende som har status Ny, och tar sedan tillbaka ett annat eftersom problemet har löst sig. (TB-51)
+
+5. Maria Nordin (IT-ansvarig) öppnar Alla ärenden och söker på rubrik och på anmälare. (TB-50)
+
+6. Maria Nordin ser hur många ärenden som inte är tilldelade (TB-52) och statistiken över öppna ärenden per kategori. (TB-36)
+
+7. Maria Nordin försöker tilldela ett ärende till en anställd och får ett begripligt felmeddelande. (TB-48)
+
+8. Byt till Anna Lind och försök göra en åtgärd som bara IT-ansvariga får, till exempel via Swagger. Svaret är samma felkod och ett begripligt meddelande, inte 500. (TB-47)
 
 ### Frågor till läraren
 
