@@ -48,12 +48,13 @@ Allt är granskat, mergat till `develop` och vidare till `main` (PR #67, fredag 
 
 ### Demoplan
 
-1. Anna Lind (anställd) anmäler ett fel och ser det i "Mina ärenden". Hon ser bara sina egna ärenden. (Bleart, TB-46)
-2. Anna öppnar sitt ärende med status Ny, ändrar rubriken och tar sedan tillbaka ett annat ärende, som får status Återkallad. (Mustafa, TB-51)
-3. Omar Haddad öppnar Annas ärende: han ser innehållet men inga formulär eller knappar, eftersom han inte är anmälare. (Bleart, TB-57)
-4. Maria Nordin (IT-ansvarig) öppnar "Alla ärenden" och ser antalet ej tilldelade ärenden och statistik per kategori. (Adli TB-52, David TB-36)
-5. Maria söker fram ett ärende på rubrik och på anmälare. (Noah, TB-50)
-6. Maria tilldelar ärendet. Om någon försöker tilldela till en anställd svarar backend 403 i stället för 500, som tidigare. (Noah, TB-48 och TB-47)
+1. Anna Lind (anställd) anmäler ett fel och ser det i "Mina ärenden". Hon ser bara sina egna ärenden, inte de andra anställdas. (Bleart, TB-46)
+2. Anna öppnar sitt ärende med status Ny, ändrar rubriken och sparar. Hon tar sedan tillbaka ett annat ärende, som får status Återkallad. (Mustafa, TB-51)
+3. Omar Haddad öppnar Annas ärende och får "Du har inte behörighet att se det här ärendet". Backend svarar 403, och formulären för kommentarer och bilagor döljs för den som varken är anmälare eller IT. (Bleart, TB-46 och TB-57)
+4. Maria Nordin (IT-ansvarig) öppnar "Alla ärenden" och ser högst upp hur många ärenden som inte är tilldelade. (Adli, TB-52)
+5. Maria går till fliken "Statistik" och visar antalet öppna ärenden per kategori. (David, TB-36)
+6. Maria söker i "Alla ärenden" på en rubrik och sedan på en anmälare. En sökning utan träff ger "Inga ärenden matchar sökningen". (Noah, TB-50)
+7. Maria tilldelar ett ärende. Bara IT-ansvariga går att välja i listan, och försöker man ändå tilldela till en anställd svarar backend 403 i stället för 500, som tidigare. (Noah, TB-48 och TB-47)
 
 ### Frågor till läraren
 
