@@ -1,14 +1,11 @@
-export type categoryTicket = "COMPUTER"|"PRINTER"|"NETWORK"|"ACCOUNT"|"OTHER"
+export type categoryTicket = 'COMPUTER' | 'PRINTER' | 'NETWORK' | 'ACCOUNT' | 'OTHER';
 
 export type CreateTicket = {
-
-    title: string
-    description: string
-    category: categoryTicket
-    createdBy: number
-
+  title: string;
+  description: string;
+  category: categoryTicket;
+  createdBy: number;
 };
-
 
 export type TicketStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'WITHDRAWN';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH';
@@ -36,4 +33,4 @@ export type TicketSummary = {
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;
-};
+};
