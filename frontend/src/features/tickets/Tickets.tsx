@@ -20,7 +20,8 @@ export default function AllTickets() {
     queryFn: getAllTickets,
   });
   const [sortBy, setSortBy] = useState<'time' | 'priority'>('priority');
-  const [filter, setFilter] = useState('OPEN');
+  const [typeFilter, setTypeFilter] = useState('OPEN');
+  const [assignedFilter, setAssignedFilter] = useState("mine");
   const [searchTerm, setSearchTerm] = useState('');
   const { user } = useSelectedUser();
   const isItAdmin = user?.role === 'IT_ADMIN';
@@ -34,14 +35,23 @@ export default function AllTickets() {
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
   // Filtrera på status
-  const statusFilteredTickets = (query.data ?? []).filter((ticket) => {
-    if (filter === 'ALL') return true;
-    if (filter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
-    return ticket.status === filter;
+  let filteredTickets = (query.data ?? []).filter((ticket) => {
+    "WITHDRAWN"
+    if (typeFilter === 'ALL') return true;
+    if (typeFilter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
+    return ticket.status === typeFilter;
   });
+  
+  if(isItAdmin) {
+    filteredTickets = filteredTickets.filter((ticket) => {
+      if (assignedFilter === "mine") return ticket.assignedToId === user?.id;
+      if (assignedFilter === "unassigned") return ticket.assignedToId === null;
+      return true;
+    });
+  }
 
   // Filtrera på rubrik eller anmälare (skiftlägesokänsligt)
-  const visibleTickets = statusFilteredTickets.filter((ticket) => {
+  const visibleTickets = filteredTickets.filter((ticket) => {
     if (!normalizedSearch) return true;
     const titleMatch = ticket.title.toLowerCase().includes(normalizedSearch);
     const creatorMatch = ticket.createdBy.toLowerCase().includes(normalizedSearch);
@@ -60,7 +70,7 @@ export default function AllTickets() {
 
   return (
     <section className="card">
-      <h2>Alla ärenden</h2>
+      <h2>Ärenden</h2>
 
       {query.isSuccess && isItAdmin && (
         <p className={unassignedCount > 0 ? 'unassigned-count has-unassigned' : 'unassigned-count'}>
@@ -72,7 +82,7 @@ export default function AllTickets() {
       <TicketSearch value={searchTerm} onChange={setSearchTerm} />
       <label className="status-filter">
         Visa
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
           <option value="ALL">Alla</option>
           <option value="OPEN">Ej lösta</option>
           <option value="NEW">{statusLabels.NEW}</option>
@@ -81,6 +91,16 @@ export default function AllTickets() {
           <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
         </select>
       </label>
+      {isItAdmin && (
+      <div className="filterCategory">
+        <h3>Tilldelning</h3>
+        {[["all", "Alla"], ["mine", "Mina"], ["unassigned", "Ingen"]].map(type => {
+          return <label key={type[0]}>{type[1]}
+          <input type="radio" name="personal" value={type[0]} checked={assignedFilter === type[0]} onChange={(e) => setAssignedFilter(e.target.value)} />
+        </label>
+        })}
+      </div>
+      )}
       <p>
         Sortera efter:{' '}
         <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
@@ -94,12 +114,12 @@ export default function AllTickets() {
 
       {query.isSuccess && query.data.length === 0 && <p>Det finns inga ärenden än</p>}
 
-      {query.isSuccess && query.data.length > 0 && statusFilteredTickets.length === 0 && (
+      {query.isSuccess && query.data.length > 0 && filteredTickets.length === 0 && (
         <p>Inga ärenden med den statusen</p>
       )}
 
       {query.isSuccess &&
-        statusFilteredTickets.length > 0 &&
+        filteredTickets.length > 0 &&
         visibleTickets.length === 0 &&
         normalizedSearch !== '' && <p>Inga ärenden matchar sökningen</p>}
 
@@ -114,9 +134,11 @@ export default function AllTickets() {
                 {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
                 {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
               </span>
-              <span className="ticket-meta">
-                Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
-              </span>
+              {isItAdmin && (
+                <span className="ticket-meta">
+                  Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
+                </span>
+              )}
             </li>
           ))}
         </ul>

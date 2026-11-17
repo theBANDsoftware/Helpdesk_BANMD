@@ -148,7 +148,9 @@ public class TicketService {
             .orElseThrow(() -> new UserNotFoundException(userId));
 
         if (user.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Bara IT-ansvariga kan se alla ärenden");
+            List<Ticket> tickets = ticketRepository.findByCreatedByIdOrderByCreatedAtDescIdDesc(userId);
+            return ticketMapper.toSummaryResponseList(tickets);
+            // throw new ForbiddenActionException("Bara IT-ansvariga kan se alla ärenden");
         }
 
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
@@ -156,19 +158,19 @@ public class TicketService {
     }
 
     /** Ärenden som är tilldelade användaren (TB-49). Bara IT-ansvariga har tilldelade ärenden. */
-    @Transactional(readOnly = true)
-    public List<TicketSummaryResponse> getMyAssignedTickets(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException(userId));
-
-        if (user.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Endast IT-ansvariga har tilldelade ärenden.");
-        }
-
-        List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
-
-        return ticketMapper.toSummaryResponseList(tickets);
-    }
+//    @Transactional(readOnly = true)
+//    public List<TicketSummaryResponse> getMyAssignedTickets(Long userId) {
+//        User user = userRepository.findById(userId)
+//            .orElseThrow(() -> new UserNotFoundException(userId));
+//
+//        if (user.getRole() != Role.IT_ADMIN) {
+//            throw new ForbiddenActionException("Endast IT-ansvariga har tilldelade ärenden.");
+//        }
+//
+//        List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
+//
+//        return ticketMapper.toSummaryResponseList(tickets);
+//    }
 
     /** Hämta alla öppna ärenden och räkna per kategori */
     @Transactional(readOnly = true)

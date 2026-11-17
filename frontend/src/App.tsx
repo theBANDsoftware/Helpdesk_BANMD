@@ -8,7 +8,7 @@ import { NavMenu } from './features/users/NavMenu';
 import NewTicketForm from './features/tickets/NewTicketForm';
 import TicketDetail from './features/tickets/TicketDetail';
 import MyTickets from './features/tickets/MyTickets';
-import AllTickets from './features/tickets/AllTickets';
+import AllTickets from './features/tickets/Tickets';
 import MyAssignedTickets from './features/tickets/MyAssignedTickets';
 import TicketStatistics from './features/tickets/TicketStatistics';
 
@@ -34,10 +34,10 @@ export default function App() {
             <Route element={<RequireUser />}>
               <Route path="/start" element={<StartPage />} />
               <Route path="/tickets" element={<AllTickets />} />
-              <Route path="/tickets/mine" element={<MyTickets />} />
+              <Route path="/tickets/mine" element={<AllTickets />} />
               <Route path="/tickets/new" element={<NewTicketForm />} />
               <Route path="/tickets/:id" element={<TicketDetail />} />
-              <Route path="/tickets/assigned" element={<MyAssignedTickets />} />
+              {/* <Route path="/tickets/assigned" element={<MyAssignedTickets />} /> */}
               <Route path="/tickets/statistics" element={<TicketStatistics />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

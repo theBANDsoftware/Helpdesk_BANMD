@@ -30,18 +30,17 @@ public class TicketController {
         ticketService.create(ticket, userId);
     }
 
-    /** Alla ärenden från alla anmälare, nyaste först (TB-25). */
     /** Alla ärenden från alla anmälare, nyaste först. Bara för IT-ansvariga (TB-25, TB-46). */
     @GetMapping
     public List<TicketSummaryResponse> getAllTickets(@RequestHeader("X-User-Id") Long userId) {
         return ticketService.getAllTickets(userId);
     }
 
-    /** Ärenden som den valda användaren har anmält, nyaste först (TB-24). */
-    @GetMapping("/mine")
-    public List<TicketSummaryResponse> getMyTickets(@RequestHeader("X-User-Id") Long userId) {
-        return ticketService.getMyTickets(userId);
-    }
+//    /** Ärenden som den valda användaren har anmält, nyaste först (TB-24). */
+//    @GetMapping("/mine")
+//    public List<TicketSummaryResponse> getMyTickets(@RequestHeader("X-User-Id") Long userId) {
+//        return ticketService.getMyTickets(userId);
+//    }
 
     /** Ett ärende med alla detaljer. 403 om man varken är anmälare eller IT-ansvarig, 404 om det inte finns. */
     @GetMapping("/{id}")
@@ -93,10 +92,10 @@ public class TicketController {
     }
 
     /** Ärenden som är tilldelade den valda IT-ansvariga (TB-49). */
-    @GetMapping("/assigned-to-me")
-    public List<TicketSummaryResponse> getMyAssignedTickets(@RequestHeader("X-User-Id") Long userId) {
-        return ticketService.getMyAssignedTickets(userId);
-    }
+//    @GetMapping("/assigned-to-me")
+//    public List<TicketSummaryResponse> getMyAssignedTickets(@RequestHeader("X-User-Id") Long userId) {
+//        return ticketService.getMyAssignedTickets(userId);
+//    }
 
     /** Statistik över öppna ärenden (TB-36). */
     @GetMapping("/ticketspercategory")
