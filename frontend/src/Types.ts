@@ -10,7 +10,7 @@ export type CreateTicket = {
 };
 
 
-export type TicketStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED';
+export type TicketStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'WITHDRAWN';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 // datatype för detaljer till ärende
@@ -36,4 +36,4 @@ export type TicketSummary = {
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;
-};
+};

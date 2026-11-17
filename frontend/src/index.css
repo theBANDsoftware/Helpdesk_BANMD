@@ -169,6 +169,18 @@ body {
   font-size: 0.9rem;
 }
 
+.unassigned-count {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background-color: #f6f8fa;
+  font-weight: 600;
+}
+
+.unassigned-count.has-unassigned {
+  background-color: #fff8c5;
+}
+
 .status-filter {
   display: flex;
   flex-wrap: wrap;

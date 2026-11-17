@@ -1,9 +1,11 @@
 package com.thebanmd.helpdesk.repositories;
 
 import com.thebanmd.helpdesk.entities.Ticket;
+import com.thebanmd.helpdesk.enums.Status;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
@@ -17,4 +19,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findAllByOrderByCreatedAtDescIdDesc();
 
     List<Ticket> findByAssignedToIdOrderByCreatedAtDesc(Long assignedToId);
+
+    List<Ticket> findByStatusIn(Collection<Status> statuses);
 }

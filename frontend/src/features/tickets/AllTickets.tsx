@@ -4,11 +4,13 @@ import { categoryLabels, getAllTickets, priorityLabels, statusLabels } from './t
 import { formatDate } from '../../shared/formatDate';
 import { Link } from 'react-router';
 import type { TicketPriority } from '../../Types';
+import TicketSearch from './TicketSearch';
+import { useSelectedUser } from '../users/selectedUserContext';
 
 const priorityOrder: Record<TicketPriority, number> = {
-	HIGH: 0,
-	MEDIUM: 1,
-	LOW: 2,
+  HIGH: 0,
+  MEDIUM: 1,
+  LOW: 2,
 };
 
 /** Alla ärenden från alla anmälare, nyaste först, filtrerade på status. För IT-ansvariga (TB-25, TB-31). */
@@ -19,27 +21,55 @@ export default function AllTickets() {
   });
   const [sortBy, setSortBy] = useState<'time' | 'priority'>('priority');
   const [filter, setFilter] = useState('OPEN');
+  const [searchTerm, setSearchTerm] = useState('');
+  const { user } = useSelectedUser();
+  const isItAdmin = user?.role === 'IT_ADMIN';
 
-  const visibleTickets = (query.data ?? []).filter((ticket) => {
+  // Ej tilldelade ärenden räknas på hela listan, oavsett statusfilter och sökning.
+  // Lösta ärenden räknas inte (TB-52).
+  const unassignedCount = (query.data ?? []).filter(
+    (ticket) => ticket.status !== 'RESOLVED' && !ticket.assignedTo,
+  ).length;
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+
+  // Filtrera på status
+  const statusFilteredTickets = (query.data ?? []).filter((ticket) => {
     if (filter === 'ALL') return true;
-    if (filter === 'OPEN') return ticket.status !== 'RESOLVED';
+    if (filter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
     return ticket.status === filter;
   });
 
+  // Filtrera på rubrik eller anmälare (skiftlägesokänsligt)
+  const visibleTickets = statusFilteredTickets.filter((ticket) => {
+    if (!normalizedSearch) return true;
+    const titleMatch = ticket.title.toLowerCase().includes(normalizedSearch);
+    const creatorMatch = ticket.createdBy.toLowerCase().includes(normalizedSearch);
+    return titleMatch || creatorMatch;
+  });
+
   const sortedTickets = query.isSuccess
-      ? [...visibleTickets].sort((a, b) => {
+    ? [...visibleTickets].sort((a, b) => {
         if (sortBy === 'priority') {
           const diff = priorityOrder[a.priority] - priorityOrder[b.priority];
           if (diff !== 0) return diff;
         }
         return b.createdAt.localeCompare(a.createdAt);
       })
-      : [];
+    : [];
 
   return (
     <section className="card">
       <h2>Alla ärenden</h2>
 
+      {query.isSuccess && isItAdmin && (
+        <p className={unassignedCount > 0 ? 'unassigned-count has-unassigned' : 'unassigned-count'}>
+          {unassignedText(unassignedCount)}
+        </p>
+      )}
+
+      {/* Sökkomponent */}
+      <TicketSearch value={searchTerm} onChange={setSearchTerm} />
       <label className="status-filter">
         Visa
         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
@@ -48,29 +78,41 @@ export default function AllTickets() {
           <option value="NEW">{statusLabels.NEW}</option>
           <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
           <option value="RESOLVED">{statusLabels.RESOLVED}</option>
+          <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
         </select>
       </label>
-      <p>Sortera efter: <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
-        <option value="time">Tid</option>
-        <option value="priority">Prioritet</option>
-      </select></p>
-
+      <p>
+        Sortera efter:{' '}
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
+          <option value="time">Tid</option>
+          <option value="priority">Prioritet</option>
+        </select>
+      </p>
       {query.isPending && <p>Hämtar ärenden …</p>}
+
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
 
       {query.isSuccess && query.data.length === 0 && <p>Det finns inga ärenden än</p>}
 
-      {query.isSuccess && query.data.length > 0 && visibleTickets.length === 0 && (
+      {query.isSuccess && query.data.length > 0 && statusFilteredTickets.length === 0 && (
         <p>Inga ärenden med den statusen</p>
       )}
+
+      {query.isSuccess &&
+        statusFilteredTickets.length > 0 &&
+        visibleTickets.length === 0 &&
+        normalizedSearch !== '' && <p>Inga ärenden matchar sökningen</p>}
+
       {visibleTickets.length > 0 && (
         <ul className="ticket-list">
           {sortedTickets.map((ticket) => (
             <li key={ticket.id}>
-            <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span></Link>
+              <Link to={'/tickets/' + ticket.id}>
+                <span className="ticket-title">{ticket.title}</span>
+              </Link>
               <span className="ticket-meta">
-                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet: {priorityLabels[ticket.priority]} ·{' '}
-                {formatDate(ticket.createdAt)}
+                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
+                {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
               </span>
               <span className="ticket-meta">
                 Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
@@ -81,4 +123,10 @@ export default function AllTickets() {
       )}
     </section>
   );
+}
+
+function unassignedText(count: number): string {
+  if (count === 0) return 'Alla ärenden är tilldelade';
+  if (count === 1) return '1 ärende är inte tilldelat';
+  return `${count} ärenden är inte tilldelade`;
 }

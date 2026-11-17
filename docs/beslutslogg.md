@@ -40,6 +40,28 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 14. Ett återtaget ärende får status Återkallad
+
+**Datum: 2026-11-12**
+**Status: Gäller**
+
+**Bakgrund:** I TB-51 kan anmälaren ta tillbaka sitt ärende medan det har status Ny. Storyn säger att vi måste bestämma vad "ta tillbaka" betyder i databasen innan den påbörjas.
+
+**Alternativ:**
+- Ärendet får status `RESOLVED` (Löst)
+- En ny status `WITHDRAWN` (Återkallad)
+- Ärendet tas bort
+
+**Beslut:** En ny status, `WITHDRAWN`, som visas som "Återkallad". Bara anmälaren kan sätta den, och bara när ärendet har status `NEW`. IT-ansvariga kan inte välja den i statuslistan. Skriptet `V4__status_aterkallad.sql` lägger till värdet i `chk_tickets_status`.
+
+**Varför:** Med `RESOLVED` ser det ut som att IT har löst ärendet, och det går inte att se skillnad på lösta och återkallade ärenden. Tas ärendet bort försvinner historiken, kommentarerna och bilderna, och filerna i B2 blir kvar utan koppling. En egen status är tydlig och behåller allt.
+
+**Konsekvenser:**
+- `V4__status_aterkallad.sql` måste köras i develop-databasen innan TB-51 testas (beslut 8).
+- `Status.java`, `StatusTicket` i frontend och `statusLabels` har fått värdet `WITHDRAWN`.
+- Filtret "Ej lösta" i Alla ärenden visar bara Ny och Pågående. Återkallade ärenden har ett eget val i filtret.
+- Statistiken (TB-36) räknar redan bara `NEW` och `IN_PROGRESS`, så den påverkas inte.
+
 ## 13. Fyra godkännanden räcker för en PR till `main`
 
 **Datum: 2026-11-09**
