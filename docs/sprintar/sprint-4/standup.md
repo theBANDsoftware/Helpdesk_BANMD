@@ -37,12 +37,13 @@ Samtal startade 14:24 till 16:24
 
 ## Tisdag ÅÅÅÅ-MM-DD
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-| ---- | ------- | ---- | ---- | ------ |
-|      |         |      |      |        |
-|      |         |      |      |        |
-|      |         |      |      |        |
-|      |         |      |      |        |
+| Namn            | Närvaro | Igår                       | Idag                                  | Hinder |
+| --------------- | ------- | -------------------------- | ------------------------------------- | ------ |
+| Adli Anabtawi   | Ja      | Review, retro och planning | -                                     |
+| Bleart Rama     | Ja      | Review, retro och planning | -                                     |
+| David Andersson | Ja      | Review, retro och planning | -                                     |
+| Noah Fältman    | Ja      | Review, retro och planning | TB-66 Gemensam formatering i frontend |
+| Mustafa Samir   | Ja      | Review, retro och planning | -                                     |
 
 ## Onsdag ÅÅÅÅ-MM-DD
 
