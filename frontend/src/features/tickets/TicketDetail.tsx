@@ -9,6 +9,7 @@ import {
   assignTicket,
   updateTicketStatus,
   updateTicketPriority,
+  updateTicketCategory,
   priorityLabels,
   type StatusTicket,
 } from './ticketsApi';
@@ -16,7 +17,7 @@ import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
-import type { TicketPriority } from '../../Types';
+import type { categoryTicket, TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
@@ -32,14 +33,15 @@ export default function TicketDetail() {
   const [assignError, setAssignError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [priorityError, setPriorityError] = useState<string | null>(null);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ['tickets', ticketId],
     queryFn: () => getTicket(ticketId),
-        retry: (failureCount, error) =>
+    retry: (failureCount, error) =>
       !(error instanceof ApiError && (error.status === 404 || error.status === 403)) &&
       failureCount < 3,
-      enabled: Number.isInteger(ticketId),
+    enabled: Number.isInteger(ticketId),
   });
 
   // Hämta listan med användare om den inloggade är IT_ADMIN
@@ -100,6 +102,31 @@ export default function TicketDetail() {
     },
   });
 
+  // Mutation för att ändra kategori (TB-81). Samma mönster som prioriteten nedan.
+  const categoryMutation = useMutation({
+    mutationFn: (category: categoryTicket) => {
+      if (!currentUser) throw new Error('Ingen användare är vald');
+      return updateTicketCategory(ticketId, category, currentUser.id);
+    },
+    onSuccess: (updatedTicket) => {
+      setCategoryError(null);
+      queryClient.setQueryData(['tickets', ticketId], updatedTicket);
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        typeof error.body === 'object' &&
+        error.body &&
+        'error' in error.body
+      ) {
+        setCategoryError((error.body as { error: string }).error);
+      } else {
+        setCategoryError('Kunde inte ändra kategori.');
+      }
+    },
+  });
+
   // Mutation till prioritering
   const priorityMutation = useMutation({
     mutationFn: (priority: TicketPriority) => {
@@ -150,6 +177,10 @@ export default function TicketDetail() {
     statusMutation.mutate(e.target.value as StatusTicket);
   }
 
+  function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    categoryMutation.mutate(e.target.value as categoryTicket);
+  }
+
   function handlePriorityChange(e: React.ChangeEvent<HTMLSelectElement>) {
     priorityMutation.mutate(e.target.value as TicketPriority);
   }
@@ -169,7 +200,7 @@ export default function TicketDetail() {
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
-                {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
+        {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
         )}
         {query.isError && query.error instanceof ApiError && query.error.status === 403 && (
@@ -237,63 +268,90 @@ export default function TicketDetail() {
               </div>
             )}
 
-          {/* Val för prioritet */}
-          {isItAdmin && (
-            <><div
-              className="status-control"
-              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-              <label
-                htmlFor="prioritySelect"
-                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-              >
-                Prioritet
-              </label>
-              <select
-                id="prioritySelect"
-                value={query.data.priority}
-                onChange={handlePriorityChange}
-                disabled={priorityMutation.isPending}
-              >
-                {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
-                  <option key={priority} value={priority}>
-                    {priorityLabels[priority]}
-                  </option>
-                ))}
-              </select>
-              {priorityMutation.isPending && <span> Sparar …</span>}
-              {priorityError && <p className="error">{priorityError}</p>}
-            </div>
+            {/* Val för prioritet, kategori och tilldelad – visas bara för IT-ansvariga */}
+            {isItAdmin && (
+              <>
+                <div
+                  className="status-control"
+                  style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+                >
+                  <label
+                    htmlFor="prioritySelect"
+                    style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+                  >
+                    Prioritet
+                  </label>
+                  <select
+                    id="prioritySelect"
+                    value={query.data.priority}
+                    onChange={handlePriorityChange}
+                    disabled={priorityMutation.isPending}
+                  >
+                    {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
+                      <option key={priority} value={priority}>
+                        {priorityLabels[priority]}
+                      </option>
+                    ))}
+                  </select>
+                  {priorityMutation.isPending && <span> Sparar …</span>}
+                  {priorityError && <p className="error">{priorityError}</p>}
+                </div>
 
-          {/* Val för tilldelad – visas bara för IT-ansvariga */}
-            <div
-              className="assign-control"
-              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-            <label
-              htmlFor="assignSelect"
-              style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-            >
-              Tilldelad
-            </label>
-              <select
-                id="assignSelect"
-                value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
-                onChange={handleAssignChange}
-                disabled={assignMutation.isPending}
-              >
-                <option value="">Ej tilldelad</option>
-                {itAdmins.map((admin) => (
-                  <option key={admin.id} value={admin.id}>
-                    {admin.name}
-                  </option>
-                ))}
-              </select>
-              {assignMutation.isPending && <span> Sparar …</span>}
-              {assignError && <p className="error">{assignError}</p>}
-            </div>
-            </>
-          )}
+                <div
+                  className="status-control"
+                  style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+                >
+                  <label
+                    htmlFor="categorySelect"
+                    style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+                  >
+                    Kategori
+                  </label>
+                  <select
+                    id="categorySelect"
+                    value={query.data.category}
+                    onChange={handleCategoryChange}
+                    disabled={categoryMutation.isPending}
+                  >
+                    {(Object.keys(categoryLabels) as categoryTicket[]).map((category) => (
+                      <option key={category} value={category}>
+                        {categoryLabels[category]}
+                      </option>
+                    ))}
+                  </select>
+                  {categoryMutation.isPending && <span> Sparar …</span>}
+                  {categoryError && <p className="error">{categoryError}</p>}
+                </div>
+
+                {/* Val för tilldelad – visas bara för IT-ansvariga */}
+                <div
+                  className="assign-control"
+                  style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
+                >
+                  <label
+                    htmlFor="assignSelect"
+                    style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
+                  >
+                    Tilldelad
+                  </label>
+                  <select
+                    id="assignSelect"
+                    value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
+                    onChange={handleAssignChange}
+                    disabled={assignMutation.isPending}
+                  >
+                    <option value="">Ej tilldelad</option>
+                    {itAdmins.map((admin) => (
+                      <option key={admin.id} value={admin.id}>
+                        {admin.name}
+                      </option>
+                    ))}
+                  </select>
+                  {assignMutation.isPending && <span> Sparar …</span>}
+                  {assignError && <p className="error">{assignError}</p>}
+                </div>
+              </>
+            )}
           </>
         )}
       </section>
