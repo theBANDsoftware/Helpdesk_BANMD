@@ -12,26 +12,28 @@ export default function MyTickets() {
 
   return (
     <section className="card">
-      <h2>Mina ärenden</h2>
-      <p>
-        <Link to="/tickets/new" className="button">
+      <h2 className="section-title">Mina ärenden</h2>
+      <div className="btn-row">
+        <Link to="/tickets/new" className="btn btn-primary">
           Anmäl ett fel
         </Link>
-      </p>
+      </div>
 
       {query.isPending && <p>Hämtar ärenden …</p>}
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
 
-      {query.isSuccess && query.data.length === 0 && <p>Du har inga ärenden än</p>}
+      {query.isSuccess && query.data.length === 0 && (
+        <p className="empty-state">Du har inga ärenden än</p>
+      )}
 
       {query.isSuccess && query.data.length > 0 && (
-        <ul className="ticket-list">
+        <ul className="list">
           {query.data.map((ticket) => (
-            <li key={ticket.id}>
-              <Link to={'/tickets/' + ticket.id}>
-                <span className="ticket-title">{ticket.title}</span>
+            <li key={ticket.id} className="list-item">
+              <Link to={'/tickets/' + ticket.id} className="item-link">
+                <span className="item-title">{ticket.title}</span>
               </Link>
-              <span className="ticket-meta">
+              <span className="item-meta">
                 {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
                 {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
               </span>

@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useSelectedUser } from './selectedUserContext';
 import { roleLabels } from './usersApi';
-import "./CurrentUser.css"
 
 /** Namn, roll och "Byt användare" i sidhuvudet (AK 2 och 4). Visas bara när någon är vald. */
 export function CurrentUser() {
@@ -18,11 +17,11 @@ export function CurrentUser() {
   }
 
   return (
-    <div className="current-user">
+    <div className="inline-field">
       <span>
-        {user.name} <span className="current-user-role">({roleLabels[user.role]})</span>
+        {user.name} <span className="pill">{roleLabels[user.role]}</span>
       </span>
-      <button type="button" onClick={switchUser}>
+      <button type="button" className="btn" onClick={switchUser}>
         Byt användare
       </button>
     </div>

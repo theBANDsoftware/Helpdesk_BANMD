@@ -20,7 +20,6 @@ import type { TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
-import './TicketDetail.css';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -129,7 +128,7 @@ export default function TicketDetail() {
   if (!Number.isInteger(ticketId)) {
     return (
       <section className="card ticket-detail-pane">
-        <a href="#" onClick={() => navigate(-1)} className="ticket-back-link">
+        <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
         <p className="error">Ärendet hittades inte</p>
@@ -166,7 +165,7 @@ export default function TicketDetail() {
         </section>
       )}
       <section className="card ticket-detail-pane">
-        <a href="#" onClick={() => navigate(-1)} className="ticket-back-link">
+        <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
@@ -178,9 +177,9 @@ export default function TicketDetail() {
         )}
         {query.isSuccess && (
           <>
-            <h2 className="ticket-detail-title">{query.data.title}</h2>
-            <p className="ticket-detail-description">{query.data.description}</p>
-            <div className="ticket-detail-table">
+            <h2 className="section-title">{query.data.title}</h2>
+            <p className="text-block">{query.data.description}</p>
+            <div className="data-table ticket-detail-table">
               <DataTable
                 data={setColumns(
                   {
@@ -209,7 +208,7 @@ export default function TicketDetail() {
 
             {/* Val för status – visas bara för IT-ansvariga (TB-27, AK 3) */}
             {isItAdmin && (
-              <div className="status-control">
+              <div className="section-divider inline-field">
                 <label htmlFor="statusSelect">Status</label>
                 <select
                   id="statusSelect"
@@ -217,8 +216,6 @@ export default function TicketDetail() {
                   onChange={handleStatusChange}
                   disabled={statusMutation.isPending}
                 >
-                  {/* Återkallad kan IT inte välja, bara anmälaren kan ta tillbaka (TB-51).
-                      Den visas bara när ärendet redan är återkallat. */}
                   {(Object.keys(statusLabels) as StatusTicket[])
                     .filter((status) => status !== 'WITHDRAWN' || query.data.status === 'WITHDRAWN')
                     .map((status) => (
@@ -227,15 +224,15 @@ export default function TicketDetail() {
                       </option>
                     ))}
                 </select>
-                {statusMutation.isPending && <span> Sparar …</span>}
+                {statusMutation.isPending && <span className="helper-text">Sparar …</span>}
                 {statusError && <p className="error">{statusError}</p>}
               </div>
             )}
 
-            {/* Val för prioritet */}
+            {/* Val för prioritet & tilldelad – visas bara för IT-ansvariga */}
             {isItAdmin && (
               <>
-                <div className="status-control">
+                <div className="section-divider inline-field">
                   <label htmlFor="prioritySelect">Prioritet</label>
                   <select
                     id="prioritySelect"
@@ -249,12 +246,11 @@ export default function TicketDetail() {
                       </option>
                     ))}
                   </select>
-                  {priorityMutation.isPending && <span> Sparar …</span>}
+                  {priorityMutation.isPending && <span className="helper-text">Sparar …</span>}
                   {priorityError && <p className="error">{priorityError}</p>}
                 </div>
 
-                {/* Val för tilldelad – visas bara för IT-ansvariga */}
-                <div className="assign-control">
+                <div className="section-divider inline-field">
                   <label htmlFor="assignSelect">Tilldelad</label>
                   <select
                     id="assignSelect"
@@ -269,7 +265,7 @@ export default function TicketDetail() {
                       </option>
                     ))}
                   </select>
-                  {assignMutation.isPending && <span> Sparar …</span>}
+                  {assignMutation.isPending && <span className="helper-text">Sparar …</span>}
                   {assignError && <p className="error">{assignError}</p>}
                 </div>
               </>

@@ -25,22 +25,18 @@ export default function AllTickets() {
   const { user } = useSelectedUser();
   const isItAdmin = user?.role === 'IT_ADMIN';
 
-  // Ej tilldelade ärenden räknas på hela listan, oavsett statusfilter och sökning.
-  // Lösta ärenden räknas inte (TB-52).
   const unassignedCount = (query.data ?? []).filter(
     (ticket) => ticket.status !== 'RESOLVED' && !ticket.assignedTo,
   ).length;
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
-  // Filtrera på status
   const statusFilteredTickets = (query.data ?? []).filter((ticket) => {
     if (filter === 'ALL') return true;
     if (filter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
     return ticket.status === filter;
   });
 
-  // Filtrera på rubrik eller anmälare (skiftlägesokänsligt)
   const visibleTickets = statusFilteredTickets.filter((ticket) => {
     if (!normalizedSearch) return true;
     const titleMatch = ticket.title.toLowerCase().includes(normalizedSearch);
@@ -60,61 +56,66 @@ export default function AllTickets() {
 
   return (
     <section className="card">
-      <h2>Alla ärenden</h2>
+      <h2 className="section-title">Alla ärenden</h2>
 
       {query.isSuccess && isItAdmin && (
-        <p className={unassignedCount > 0 ? 'unassigned-count has-unassigned' : 'unassigned-count'}>
+        <p className={unassignedCount > 0 ? 'badge badge-warning' : 'badge'}>
           {unassignedText(unassignedCount)}
         </p>
       )}
 
-      {/* Sökkomponent */}
       <TicketSearch value={searchTerm} onChange={setSearchTerm} />
-      <label className="status-filter">
-        Visa
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="ALL">Alla</option>
-          <option value="OPEN">Ej lösta</option>
-          <option value="NEW">{statusLabels.NEW}</option>
-          <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
-          <option value="RESOLVED">{statusLabels.RESOLVED}</option>
-          <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
-        </select>
-      </label>
-      <p>
-        Sortera efter:{' '}
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
-          <option value="time">Tid</option>
-          <option value="priority">Prioritet</option>
-        </select>
-      </p>
-      {query.isPending && <p>Hämtar ärenden …</p>}
 
+      <div className="inline-row">
+        <label className="inline-field">
+          Visa
+          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="ALL">Alla</option>
+            <option value="OPEN">Ej lösta</option>
+            <option value="NEW">{statusLabels.NEW}</option>
+            <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
+            <option value="RESOLVED">{statusLabels.RESOLVED}</option>
+            <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
+          </select>
+        </label>
+
+        <label className="inline-field">
+          Sortera efter
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
+            <option value="time">Tid</option>
+            <option value="priority">Prioritet</option>
+          </select>
+        </label>
+      </div>
+
+      {query.isPending && <p>Hämtar ärenden …</p>}
       {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
 
-      {query.isSuccess && query.data.length === 0 && <p>Det finns inga ärenden än</p>}
+      {query.isSuccess && query.data.length === 0 && (
+        <p className="empty-state">Det finns inga ärenden än</p>
+      )}
 
       {query.isSuccess && query.data.length > 0 && statusFilteredTickets.length === 0 && (
-        <p>Inga ärenden med den statusen</p>
+        <p className="empty-state">Inga ärenden med den statusen</p>
       )}
 
       {query.isSuccess &&
         statusFilteredTickets.length > 0 &&
         visibleTickets.length === 0 &&
-        normalizedSearch !== '' && <p>Inga ärenden matchar sökningen</p>}
+        normalizedSearch !== '' && <p className="empty-state">Inga ärenden matchar sökningen</p>}
 
       {visibleTickets.length > 0 && (
-        <ul className="ticket-list">
+        <ul className="list">
           {sortedTickets.map((ticket) => (
-            <li key={ticket.id}>
-              <Link to={'/tickets/' + ticket.id}>
-                <span className="ticket-title">{ticket.title}</span>
+            <li key={ticket.id} className="list-item">
+              <Link to={'/tickets/' + ticket.id} className="item-link">
+                <span className="item-title">{ticket.title}</span>
               </Link>
-              <span className="ticket-meta">
+              <span className="item-meta">
                 {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
                 {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
               </span>
-              <span className="ticket-meta">
+              <span className="item-meta">
                 Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
               </span>
             </li>

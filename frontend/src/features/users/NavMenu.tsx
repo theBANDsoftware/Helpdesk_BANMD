@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router';
 import { useSelectedUser } from './selectedUserContext';
 import type { Role } from './usersApi';
-import "./NavMenu.css" 
 
 type MenuLink = {
   to: string;
@@ -34,7 +33,7 @@ export function NavMenu() {
   return (
     <nav className="nav-menu" aria-label="Huvudmeny">
       {visibleLinks.map((link) => (
-        <NavLink key={link.to} to={link.to} end>
+        <NavLink key={link.to} to={link.to} end className="nav-link">
           {link.label}
         </NavLink>
       ))}

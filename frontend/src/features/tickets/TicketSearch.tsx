@@ -1,5 +1,3 @@
-import './TicketSearch.css';
-
 interface TicketSearchProps {
   value: string;
   onChange: (value: string) => void;
@@ -12,9 +10,9 @@ export default function TicketSearch({
   placeholder = 'Sök på rubrik eller anmälare',
 }: TicketSearchProps) {
   return (
-    <div className="ticket-search">
+    <div className="search-box">
       <input
-        className="ticket-search-input"
+        className="search-input"
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}

@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import { categoryLabels, createTicket } from './ticketsApi';
 import { ApiError } from '../../shared/apiClient';
 import type { categoryTicket } from '../../Types';
-import "./NewTicketFrom.css"
 
 type Field = 'title' | 'description' | 'category';
 type FieldErrors = Partial<Record<Field, string>>;
@@ -42,9 +41,9 @@ export default function NewTicketForm() {
 
   return (
     <section className="card">
-      <h2>Anmäl ett fel</h2>
-      <form className="new-ticket-form" onSubmit={handleSubmit} noValidate>
-        <label>
+      <h2 className="section-title">Anmäl ett fel</h2>
+      <form className="form-stack" onSubmit={handleSubmit} noValidate>
+        <label className="form-field">
           Rubrik
           <input
             value={title}
@@ -55,7 +54,7 @@ export default function NewTicketForm() {
         </label>
         {fieldErrors.title && <p className="error">{fieldErrors.title}</p>}
 
-        <label>
+        <label className="form-field">
           Beskrivning
           <textarea
             value={description}
@@ -65,7 +64,7 @@ export default function NewTicketForm() {
         </label>
         {fieldErrors.description && <p className="error">{fieldErrors.description}</p>}
 
-        <label>
+        <label className="form-field">
           Kategori
           <select
             value={category}
@@ -81,9 +80,11 @@ export default function NewTicketForm() {
         </label>
         {fieldErrors.category && <p className="error">{fieldErrors.category}</p>}
 
-        <button type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? 'Skickar …' : 'Skicka'}
-        </button>
+        <div className="btn-row">
+          <button type="submit" className="btn btn-primary" disabled={mutation.isPending}>
+            {mutation.isPending ? 'Skickar …' : 'Skicka'}
+          </button>
+        </div>
       </form>
 
       {mutation.isSuccess && <p className="success-message">Ärendet är skapat.</p>}

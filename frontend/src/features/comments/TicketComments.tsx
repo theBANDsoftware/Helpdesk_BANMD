@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getComments, addComment } from './CommentsApi';
 import type { CommentResponse } from './CommentsApi';
-import './TicketComments.css';
 
 interface TicketCommentsProps {
   ticketId: number;
@@ -13,14 +12,12 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
   const queryClient = useQueryClient();
   const [commentBody, setCommentBody] = useState('');
 
-  // Hämta kommentarerna för detta ärende
   const { data: comments } = useQuery({
     queryKey: ['comments', ticketId],
     queryFn: () => getComments(ticketId),
     enabled: !!ticketId,
   });
 
-  // Skapa en mutation för att skicka en ny kommentar
   const commentMutation = useMutation({
     mutationFn: (newComment: string) => addComment(ticketId, newComment),
     onSuccess: () => {
@@ -36,19 +33,18 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
   };
 
   return (
-    <div className="ticket-comments">
-      <h3 className="ticket-comments-heading">Kommentarer</h3>
+    <div>
+      <h3 className="subsection-title">Kommentarer</h3>
 
-      {/* Lista alla befintliga kommentarer */}
-      <div className="comment-list">
+      <div className="card-list">
         {!comments || comments.length === 0 ? (
-          <p className="comment-empty">Inga kommentarer ännu.</p>
+          <p className="empty-state">Inga kommentarer ännu.</p>
         ) : (
           comments.map((comment: CommentResponse) => (
-            <article key={comment.id} className="comment-card">
-              <div className="comment-meta">
-                <span className="comment-author">{comment.author}</span>
-                <time className="comment-date" dateTime={comment.createdAt}>
+            <article key={comment.id} className="sub-card">
+              <div className="sub-card-header">
+                <span className="item-title">{comment.author}</span>
+                <time className="item-meta" dateTime={comment.createdAt}>
                   {new Date(comment.createdAt).toLocaleString('sv-SE', {
                     year: 'numeric',
                     month: '2-digit',
@@ -58,32 +54,35 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
                   })}
                 </time>
               </div>
-              <p className="comment-body">{comment.body}</p>
+              <p className="sub-card-body">{comment.body}</p>
             </article>
           ))
         )}
       </div>
 
-      {/* Formulär - visas för IT-ansvariga och för den som anmält ärendet (TB-30) */}
       {canComment && (
-        <form onSubmit={handleCommentSubmit} className="comment-form">
-          <p className="comment-guideline">
+        <form onSubmit={handleCommentSubmit} className="form-stack form-box">
+          <p className="helper-text">
             Håll en saklig och tydlig ton – beskriv relevanta detaljer för ärendet.
           </p>
-          <textarea
-            className="comment-textarea"
-            rows={3}
-            placeholder="Skriv en kommentar..."
-            value={commentBody}
-            onChange={(e) => setCommentBody(e.target.value)}
-          />
-          <button
-            type="submit"
-            disabled={!commentBody.trim() || commentMutation.isPending}
-            className="comment-submit"
-          >
-            {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
-          </button>
+          <label className="form-field">
+            <textarea
+              className="textarea-autogrow"
+              rows={3}
+              placeholder="Skriv en kommentar..."
+              value={commentBody}
+              onChange={(e) => setCommentBody(e.target.value)}
+            />
+          </label>
+          <div className="btn-row">
+            <button
+              type="submit"
+              disabled={!commentBody.trim() || commentMutation.isPending}
+              className="btn btn-primary"
+            >
+              {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
+            </button>
+          </div>
         </form>
       )}
     </div>

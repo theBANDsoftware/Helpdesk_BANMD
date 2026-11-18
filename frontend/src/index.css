@@ -1,37 +1,75 @@
-/* Gemensam grundstil & huvudlayout – PC-first */
+/* =========================================================
+   Design Tokens (Färger, typografi, mått & avstånd)
+   Mobile first: skriv för smal skärm först och lägg till
+   @media (min-width: ...) för större skärmar (DoD punkt 9).
+   ========================================================= */
 
 :root {
-  --bg-app: #ffffff;
-  --bg-page: #f8fafc;
-  --bg-sidebar: #f8fafc;
-  --bg-hover: #f1f5f9;
-  --bg-selected: #eff6ff;
-  --border-light: #e2e8f0;
-  --border-medium: #cbd5e1;
-  --text-main: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --success: #16a34a;
-  --warning-bg: #fef9c3;
-  --warning-border: #fde047;
-  --danger: #dc2626;
-  --danger-bg: #fef2f2;
-  --radius: 6px;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-
   font-family:
     system-ui,
     -apple-system,
     'Segoe UI',
     Roboto,
     sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
+
+  /* Färger (Ljust helpdesk-tema) */
+  --bg-page: #f8fafc;
+  --bg-app: #ffffff;
+  --bg-hover: #f1f5f9;
+  --bg-selected: #eff6ff;
+
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --success: #16a34a;
+  --success-hover: #15803d;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --danger-border: #fecaca;
+  --warning-text: #92400e;
+  --warning-bg: #fffbeb;
+  --warning-border: #fde68a;
+
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+
+  /* Typografi (fasta steg i hela appen) */
+  --font-size-xs: 0.8rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 0.95rem;
+  --font-size-lg: 1.1rem;
+  --font-size-xl: 1.3rem;
+  --line-height-base: 1.55;
+
+  /* Standardbredder */
+  --sidebar-width: 15rem;
+  --max-width-narrow: 32rem;
+  --max-width-form: 40rem;
+  --max-width-text: 65ch;
+
+  /* Avstånd */
+  --space-xs: 0.3rem;
+  --space-sm: 0.6rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+
+  /* Form & skuggor */
+  --radius: 6px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  line-height: var(--line-height-base);
   color: var(--text-main);
   background-color: var(--bg-app);
 }
+
+/* =========================================================
+   Grundläggande sidstruktur (Workspace & Login)
+   ========================================================= */
 
 *,
 *::before,
@@ -41,209 +79,707 @@
 
 body {
   margin: 0;
+  background-color: var(--bg-app);
+  color: var(--text-main);
 }
 
-/* =========================================================
-   1. HUVUDLAYOUT (App.tsx)
-   ========================================================= */
+.workspace-shell,
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-/* Gemensam ljus toppbar */
 .workspace-topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  height: 3rem;
-  padding: 0 1.25rem;
+  gap: var(--space-sm) var(--space-md);
+  min-height: 3.25rem;
+  padding: 0.6rem var(--space-lg);
   background-color: var(--bg-app);
   border-bottom: 1px solid var(--border-light);
-  flex-shrink: 0;
 }
 
 .workspace-brand {
-  font-weight: 700;
-  font-size: 1rem;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
   color: var(--text-main);
-  letter-spacing: -0.01em;
-}
-
-/* Startsida: Användarväljaren (/) */
-.login-shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bg-page);
-}
-
-.login-main {
-  width: 100%;
-  max-width: 36rem;
-  margin: 3rem auto;
-  padding: 0 1rem;
-}
-
-/* Inloggat läge: Helskärm med sidomeny + huvudyta */
-.workspace-shell {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  background-color: var(--bg-app);
 }
 
 .workspace-body {
-  display: flex;
   flex: 1;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .workspace-sidebar {
-  width: 14.5rem;
-  flex-shrink: 0;
-  background-color: var(--bg-sidebar);
-  border-right: 1px solid var(--border-light);
-  padding: 0.75rem;
-  overflow-y: auto;
+  padding: var(--space-md);
+  background-color: var(--bg-page);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .workspace-main {
   flex: 1;
   display: flex;
-  overflow: hidden;
+  flex-direction: column;
+  padding: var(--space-md);
+  background-color: var(--bg-app);
+}
+
+.login-main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+}
+
+.card {
+  width: 100%;
   background-color: var(--bg-app);
 }
 
 /* =========================================================
-   2. GEMENSAMMA KORT & RUBRIKER
+   Navigeringsmeny (Sidopanel till vänster)
    ========================================================= */
 
-.card {
-  width: 100%;
-  padding: 1.5rem 2rem;
-  background-color: var(--bg-app);
-  overflow-y: auto;
+.nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
 
-/* På startsidan (login-main) ser .card ut som ett inramat kort */
-.login-main .card {
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.card h2 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.15rem;
+.nav-link:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+}
+
+.nav-link.active {
+  background-color: var(--bg-selected);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* =========================================================
+   Rubriker, texter & avgränsare
+   ========================================================= */
+
+.section-title {
+  margin: 0 0 var(--space-md) 0;
+  font-size: var(--font-size-xl);
   font-weight: 600;
   color: var(--text-main);
 }
 
+.subsection-title {
+  margin: 0 0 var(--space-md) 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.section-divider {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-light);
+}
+
+.text-block {
+  margin: 0 0 var(--space-lg) 0;
+  padding: 0.85rem var(--space-md);
+  max-width: var(--max-width-text);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--text-secondary);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  white-space: pre-wrap;
+}
+
+.helper-text {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.empty-state {
+  margin: 0;
+  padding: var(--space-md);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  color: var(--text-muted);
+  background-color: var(--bg-page);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius);
+}
+
+.error {
+  color: var(--danger);
+  font-size: var(--font-size-sm);
+}
+
+.success-message {
+  max-width: var(--max-width-form);
+  margin: var(--space-md) 0 0 0;
+  padding: 0.75rem var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--success);
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: var(--radius);
+}
+
 /* =========================================================
-   3. FORMULÄR, KNAPPAR & LÄNKAR
+   Status-banners, etiketter & summering
    ========================================================= */
 
-input,
-select,
-textarea {
+.badge {
+  display: inline-block;
+  margin: 0 0 var(--space-md) 0;
+  padding: 0.45rem 0.8rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+.badge-warning {
+  color: var(--warning-text);
+  background-color: var(--warning-bg);
+  border-color: var(--warning-border);
+  font-weight: 600;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.summary-box {
+  max-width: var(--max-width-narrow);
+  margin: var(--space-md) 0 0 0;
+  padding: 0.75rem var(--space-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-main);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+/* =========================================================
+   Knappar & länkar
+   ========================================================= */
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
   font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-medium);
+  background-color: var(--bg-app);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  border-color: var(--text-muted);
+  color: var(--text-main);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #ffffff;
+}
+
+.btn-danger {
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
+
+/* =========================================================
+   Formulär, filter & sökfält
+   ========================================================= */
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: var(--max-width-form);
+}
+
+.form-box {
+  padding: var(--space-md);
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select,
+.inline-field select {
+  font: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  padding: 0.45rem 0.75rem;
   color: var(--text-main);
   background-color: var(--bg-app);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius);
-  padding: 0.4rem 0.65rem;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  width: 100%;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus,
+.inline-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+.form-field textarea {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: var(--line-height-base);
+}
+
+.form-field select {
+  max-width: 20rem;
+}
+
+.form-field [aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.textarea-autogrow {
+  min-height: 7.5rem;
+  max-height: 24rem;
+  field-sizing: content;
+  resize: none;
+  background-color: var(--bg-page);
+}
+
+.textarea-autogrow:focus {
+  background-color: var(--bg-app);
+}
+
+.inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-lg);
+  margin: var(--space-md) 0;
+}
+
+.inline-field {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.inline-field select {
+  padding: 0.35rem 0.65rem;
+  font-size: var(--font-size-sm);
+}
+
+.search-box {
+  width: 100%;
+  max-width: var(--max-width-form);
+  margin-bottom: var(--space-md);
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.85rem 0.5rem 2.4rem;
+  font: inherit;
+  font-size: var(--font-size-base);
+  color: var(--text-main);
+  background-color: var(--bg-page);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2364748b' stroke-width='1.75'%3E%3Ccircle cx='8.5' cy='8.5' r='5.75'/%3E%3Cpath d='M13 13l4.25 4.25' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 1.05rem 1.05rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
   transition:
     border-color 0.15s ease,
+    background-color 0.15s ease,
     box-shadow 0.15s ease;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  background-color: var(--bg-app);
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-}
-
-.button,
-button[type='submit'] {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
-  font: inherit;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: var(--accent);
-  border: none;
-  border-radius: var(--radius);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.button:hover,
-button[type='submit']:hover {
-  background-color: var(--accent-hover);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
 }
 
 /* =========================================================
-   4. MEDDELANDEN & STATUSINDIKATORER
+   Listor & klickbara listrader
    ========================================================= */
 
-.error {
-  padding: 0.6rem 0.85rem;
-  color: var(--danger);
-  background-color: var(--danger-bg);
-  border: 1px solid #fecaca;
-  border-radius: var(--radius);
-}
-
-/* =========================================================
-   5. GEMENSAM ÄRENDELISTA (AllTickets, MyTickets, MyAssignedTickets)
-   ========================================================= */
-
-.ticket-list {
-  margin: 0.75rem 0 0 0;
+.list {
+  margin: 0;
   padding: 0;
   list-style: none;
   border-top: 1px solid var(--border-light);
 }
 
-.ticket-list li {
+.list-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-xs);
   padding: 0.85rem 0.75rem;
   border-bottom: 1px solid var(--border-light);
   transition: background-color 0.15s ease;
 }
 
-.ticket-list li:hover {
+.list-item:hover {
   background-color: var(--bg-hover);
 }
 
-.ticket-list a {
-  color: var(--text-main);
+.list-row-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: 0.85rem 0.75rem;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.list-row-btn:hover,
+.list-row-btn:focus-visible {
+  background-color: var(--bg-hover);
+}
+
+.item-link {
   text-decoration: none;
+  color: inherit;
+  width: fit-content;
 }
 
-.ticket-list a:hover .ticket-title {
-  color: var(--accent);
-}
-
-.ticket-title {
+.item-title {
+  font-size: var(--font-size-base);
   font-weight: 600;
-  font-size: 0.975rem;
+  color: var(--text-main);
   overflow-wrap: anywhere;
 }
 
-.ticket-meta {
+.item-link:hover .item-title {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.item-meta {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   Kommentarstråd (Card-list)
+   ========================================================= */
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.sub-card {
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.sub-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: 0.4rem;
+}
+
+.sub-card-body {
+  margin: 0;
+  max-width: var(--max-width-text);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   Tabeller (DataTable)
+   ========================================================= */
+
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-base);
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table tr:last-child th,
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table-narrow {
+  max-width: var(--max-width-narrow);
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.data-table-narrow tr:hover {
+  background-color: var(--bg-hover);
+}
+
+.data-table-narrow td:last-child {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   Desktop-anpassning (min-width: 48rem)
+   ========================================================= */
+
+@media (min-width: 48rem) {
+  .workspace-body {
+    flex-direction: row;
+  }
+
+  .workspace-sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    border-bottom: none;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .nav-menu {
+    flex-direction: column;
+  }
+
+  .workspace-main {
+    padding: var(--space-lg) 2rem;
+  }
+
+  /* Tvåkolumns-vy när TicketDetail visas */
+  .workspace-main:has(.ticket-detail-pane) {
+    flex-direction: row;
+    padding: 0;
+  }
+}
+
+/* =========================================================
+   Tvåkolumns-layout för ärendedetaljer (Kommentarer till höger)
+   ========================================================= */
+
+.ticket-detail-pane {
+  order: 1;
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-lg) 2rem;
+}
+
+.ticket-comments-pane {
+  order: 2;
+  width: 100%;
+  padding: var(--space-lg);
+  background-color: var(--bg-page);
+  border-top: 1px solid var(--border-light);
+}
+
+.ticket-detail-table th {
+  width: 11rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.ticket-detail-pane .section-divider.inline-field {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ticket-detail-pane .section-divider.inline-field label {
+  min-width: 6.5rem;
+  font-weight: 600;
+}
+
+.ticket-detail-pane .section-divider.inline-field select {
+  min-width: 13rem;
+}
+
+.ticket-detail-pane .section-divider.inline-field .error {
+  width: 100%;
+  margin: var(--space-xs) 0 0 0;
+}
+
+@media (min-width: 48rem) {
+  .ticket-comments-pane {
+    width: 26rem;
+    flex-shrink: 0;
+    margin-left: auto;
+    border-top: none;
+    border-left: 1px solid var(--border-light);
+  }
+}
+
+/* =========================================================
+   Bifogade bilder (Miniatyrer)
+   ========================================================= */
+
+.media-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.media-card {
+  margin: 0;
+  width: 11rem;
+}
+
+.media-thumb {
+  width: 11rem;
+  height: 7.5rem;
+  object-fit: contain;
+  padding: var(--space-xs);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+.media-caption {
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  word-break: break-all;
 }
