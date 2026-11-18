@@ -128,8 +128,8 @@ export default function TicketDetail() {
 
   if (!Number.isInteger(ticketId)) {
     return (
-      <section className="card">
-        <a href="#" onClick={() => navigate(-1)} className="link">
+      <section className="card ticket-detail-pane">
+        <a href="#" onClick={() => navigate(-1)} className="ticket-back-link">
           &lt; Tillbaka
         </a>
         <p className="error">Ärendet hittades inte</p>
@@ -158,15 +158,15 @@ export default function TicketDetail() {
   return (
     <>
       {query.isSuccess && (
-        <section>
+        <section className="ticket-comments-pane">
           <TicketComments
             ticketId={ticketId}
             canComment={isItAdmin || query.data.createdById === currentUser?.id}
           />
         </section>
       )}
-      <section className="card">
-        <a href="#" onClick={() => navigate(-1)} className="link">
+      <section className="card ticket-detail-pane">
+        <a href="#" onClick={() => navigate(-1)} className="ticket-back-link">
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
@@ -178,21 +178,23 @@ export default function TicketDetail() {
         )}
         {query.isSuccess && (
           <>
-            <h2>{query.data.title}</h2>
-            <p>{query.data.description}</p>
-            <DataTable
-              data={setColumns(
-                {
-                  ...query.data,
-                  category: categoryLabels[query.data.category],
-                  status: statusLabels[query.data.status],
-                  priority: priorityLabels[query.data.priority],
-                  assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
-                },
-                ticketColumns,
-                ['title', 'description'],
-              )}
-            ></DataTable>
+            <h2 className="ticket-detail-title">{query.data.title}</h2>
+            <p className="ticket-detail-description">{query.data.description}</p>
+            <div className="ticket-detail-table">
+              <DataTable
+                data={setColumns(
+                  {
+                    ...query.data,
+                    category: categoryLabels[query.data.category],
+                    status: statusLabels[query.data.status],
+                    priority: priorityLabels[query.data.priority],
+                    assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
+                  },
+                  ticketColumns,
+                  ['title', 'description'],
+                )}
+              />
+            </div>
 
             {/* Ändra eller ta tillbaka. Bara anmälaren, och bara när status är Ny (TB-51). */}
             {query.data.createdById === currentUser?.id && query.data.status === 'NEW' && (

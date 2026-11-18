@@ -1,5 +1,12 @@
+.ticket-statistics .statistics-heading {
+  margin: 0 0 1.25rem 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
 /* Statistiktabell – begränsad bredd på PC så att kategori och antal hamnar nära varandra */
-.card > h2 + table {
+.statistics-table-wrapper table {
   width: 100%;
   max-width: 32rem;
   border-collapse: separate;
@@ -12,32 +19,32 @@
   overflow: hidden;
 }
 
-.card > h2 + table th,
-.card > h2 + table td {
+.statistics-table-wrapper th,
+.statistics-table-wrapper td {
   padding: 0.7rem 1rem;
   border-bottom: 1px solid var(--border-light);
   text-align: left;
 }
 
-.card > h2 + table tr:last-child th,
-.card > h2 + table tr:last-child td {
+.statistics-table-wrapper tr:last-child th,
+.statistics-table-wrapper tr:last-child td {
   border-bottom: none;
 }
 
-.card > h2 + table tr:hover {
+.statistics-table-wrapper tr:hover {
   background-color: var(--bg-hover);
 }
 
 /* Högerställ och framhäv antalet i sista kolumnen */
-.card > h2 + table td:last-child {
+.statistics-table-wrapper td:last-child {
   text-align: right;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text-main);
 }
 
-/* Summeringsraden under tabellen ("Totalt antal öppna ärenden: ...") */
-.card > h2 + table + p {
+/* Summeringsraden under tabellen */
+.statistics-total {
   max-width: 32rem;
   margin: 0;
   padding: 0.75rem 1rem;

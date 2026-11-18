@@ -18,17 +18,21 @@ export default function TicketStatistics() {
     return <Navigate to="/start" replace />;
   }
   return (
-    <section className="card">
-      <h2>Statistik</h2>
+    <section className="card ticket-statistics">
+      <h2 className="statistics-heading">Statistik</h2>
       {query.isPending && <p>Hämtar statistik …</p>}
       {query.isError && <p className="error">Kunde inte hämta statistik.</p>}
 
       {query.isSuccess && (
         <>
-          <DataTable
-            data={query.data.map(({ category, count }) => [categoryLabels[category], count])}
-          ></DataTable>
-          <p>Totalt antal öppna ärenden: {query.data.reduce((sum, c) => sum + c.count, 0)}</p>
+          <div className="statistics-table-wrapper">
+            <DataTable
+              data={query.data.map(({ category, count }) => [categoryLabels[category], count])}
+            />
+          </div>
+          <p className="statistics-total">
+            Totalt antal öppna ärenden: {query.data.reduce((sum, c) => sum + c.count, 0)}
+          </p>
         </>
       )}
     </section>

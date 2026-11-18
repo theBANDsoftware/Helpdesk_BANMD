@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getComments, addComment } from './CommentsApi';
 import type { CommentResponse } from './CommentsApi';
+import './TicketComments.css';
 
 interface TicketCommentsProps {
   ticketId: number;
@@ -35,19 +36,19 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
   };
 
   return (
-    <div className="mt-8 border-t pt-6">
-      <h3 className="text-xl font-bold mb-4">Kommentarer</h3>
+    <div className="ticket-comments">
+      <h3 className="ticket-comments-heading">Kommentarer</h3>
 
       {/* Lista alla befintliga kommentarer */}
-      <div className="space-y-4 mb-6">
+      <div className="comment-list">
         {!comments || comments.length === 0 ? (
-          <p className="text-gray-500 italic">Inga kommentarer ännu.</p>
+          <p className="comment-empty">Inga kommentarer ännu.</p>
         ) : (
           comments.map((comment: CommentResponse) => (
-            <div key={comment.id} className="bg-gray-50 p-4 rounded-md shadow-sm border">
-              <div className="flex justify-between text-sm text-gray-500 mb-2">
-                <span className="font-bold text-gray-700">{comment.author}</span>
-                <span>
+            <article key={comment.id} className="comment-card">
+              <div className="comment-meta">
+                <span className="comment-author">{comment.author}</span>
+                <time className="comment-date" dateTime={comment.createdAt}>
                   {new Date(comment.createdAt).toLocaleString('sv-SE', {
                     year: 'numeric',
                     month: '2-digit',
@@ -55,19 +56,22 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
-                </span>
+                </time>
               </div>
-              <p className="whitespace-pre-wrap">{comment.body}</p>
-            </div>
+              <p className="comment-body">{comment.body}</p>
+            </article>
           ))
         )}
       </div>
 
       {/* Formulär - visas för IT-ansvariga och för den som anmält ärendet (TB-30) */}
       {canComment && (
-        <form onSubmit={handleCommentSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleCommentSubmit} className="comment-form">
+          <p className="comment-guideline">
+            Håll en saklig och tydlig ton – beskriv relevanta detaljer för ärendet.
+          </p>
           <textarea
-            className="border border-gray-300 rounded-md p-3 w-full"
+            className="comment-textarea"
             rows={3}
             placeholder="Skriv en kommentar..."
             value={commentBody}
@@ -76,7 +80,7 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
           <button
             type="submit"
             disabled={!commentBody.trim() || commentMutation.isPending}
-            className="bg-blue-600 text-white py-2 px-4 rounded-md w-fit font-medium disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
+            className="comment-submit"
           >
             {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
           </button>
