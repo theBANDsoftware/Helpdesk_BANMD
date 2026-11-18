@@ -40,6 +40,27 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 15. Vanliga frågor tas in i MVP:n som en sida i frontend
+
+**Datum: 2026-11-18**
+**Status: Gäller**
+
+**Bakgrund:** Läraren föreslog på reviewn i sprint 2 att vi skulle ha något som liknar en FAQ. Det blev TB-77. "Kunskapsbank med vanliga problem och lösningar" stod under _Ingår inte i MVP:n_ i `docs/mvp.md`, så storyn krävde ett beslut innan den kunde påbörjas.
+
+**Alternativ:**
+- Låta den ligga kvar utanför MVP:n
+- Frågorna i databasen, med endpoints och redigering för IT
+- Frågorna skrivna direkt i frontend
+
+**Beslut:** Vi tar in storyn i MVP:n. Frågorna och svaren står i `frontend/src/features/faq/faqData.ts`. Ingen databas, inga endpoints och ingen redigering i appen.
+
+**Varför:** Själva nyttan är att en anställd kan lösa ett enkelt fel själv, och den nyttan får vi redan med texter i koden. En kunskapsbank som IT kan redigera kräver tabell, endpoints, behörigheter och ett eget gränssnitt, vilket är en egen story och mer än vad som ryms i en sprint.
+
+**Konsekvenser:**
+- Den som vill ändra en fråga ändrar i `faqData.ts` och skickar en PR, precis som med annan kod.
+- Punkten om kunskapsbank är borttagen från _Ingår inte i MVP:n_, och en ny punkt är tillagd under _Det här ska fungera_.
+- Att IT ska kunna redigera frågorna i appen blir ett eget kort om vi vill ha det senare.
+
 ## 14. Ett återtaget ärende får status Återkallad
 
 **Datum: 2026-11-12**
