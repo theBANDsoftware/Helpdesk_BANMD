@@ -20,7 +20,10 @@
   border: 1px solid var(--border-medium);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .ticket-owner-buttons button[type='button']:hover:not(:disabled) {
@@ -29,7 +32,7 @@
   color: var(--text-main);
 }
 
-/* Ta tillbaka-knappen (andra knappen i visningsläget) */
+/* Ta tillbaka-knappen */
 .ticket-owner-buttons .button-danger {
   color: var(--danger);
   border-color: #fecaca;
@@ -85,6 +88,10 @@
 
 .ticket-owner-form [aria-invalid='true'] {
   border-color: var(--danger);
+}
+
+.ticket-owner-form [aria-invalid='true']:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
 }
 
 .ticket-owner-form .error {
