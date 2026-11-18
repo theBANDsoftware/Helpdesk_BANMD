@@ -20,6 +20,7 @@ import type { TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
+import './TicketDetail.css';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -36,10 +37,10 @@ export default function TicketDetail() {
   const query = useQuery({
     queryKey: ['tickets', ticketId],
     queryFn: () => getTicket(ticketId),
-        retry: (failureCount, error) =>
+    retry: (failureCount, error) =>
       !(error instanceof ApiError && (error.status === 404 || error.status === 403)) &&
       failureCount < 3,
-      enabled: Number.isInteger(ticketId),
+    enabled: Number.isInteger(ticketId),
   });
 
   // Hämta listan med användare om den inloggade är IT_ADMIN
@@ -169,7 +170,7 @@ export default function TicketDetail() {
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
-                {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
+        {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
         )}
         {query.isError && query.error instanceof ApiError && query.error.status === 403 && (
@@ -206,16 +207,8 @@ export default function TicketDetail() {
 
             {/* Val för status – visas bara för IT-ansvariga (TB-27, AK 3) */}
             {isItAdmin && (
-              <div
-                className="status-control"
-                style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-              >
-                <label
-                  htmlFor="statusSelect"
-                  style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                >
-                  Status
-                </label>
+              <div className="status-control">
+                <label htmlFor="statusSelect">Status</label>
                 <select
                   id="statusSelect"
                   value={query.data.status}
@@ -237,63 +230,48 @@ export default function TicketDetail() {
               </div>
             )}
 
-          {/* Val för prioritet */}
-          {isItAdmin && (
-            <><div
-              className="status-control"
-              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-              <label
-                htmlFor="prioritySelect"
-                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-              >
-                Prioritet
-              </label>
-              <select
-                id="prioritySelect"
-                value={query.data.priority}
-                onChange={handlePriorityChange}
-                disabled={priorityMutation.isPending}
-              >
-                {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
-                  <option key={priority} value={priority}>
-                    {priorityLabels[priority]}
-                  </option>
-                ))}
-              </select>
-              {priorityMutation.isPending && <span> Sparar …</span>}
-              {priorityError && <p className="error">{priorityError}</p>}
-            </div>
+            {/* Val för prioritet */}
+            {isItAdmin && (
+              <>
+                <div className="status-control">
+                  <label htmlFor="prioritySelect">Prioritet</label>
+                  <select
+                    id="prioritySelect"
+                    value={query.data.priority}
+                    onChange={handlePriorityChange}
+                    disabled={priorityMutation.isPending}
+                  >
+                    {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
+                      <option key={priority} value={priority}>
+                        {priorityLabels[priority]}
+                      </option>
+                    ))}
+                  </select>
+                  {priorityMutation.isPending && <span> Sparar …</span>}
+                  {priorityError && <p className="error">{priorityError}</p>}
+                </div>
 
-          {/* Val för tilldelad – visas bara för IT-ansvariga */}
-            <div
-              className="assign-control"
-              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-            <label
-              htmlFor="assignSelect"
-              style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-            >
-              Tilldelad
-            </label>
-              <select
-                id="assignSelect"
-                value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
-                onChange={handleAssignChange}
-                disabled={assignMutation.isPending}
-              >
-                <option value="">Ej tilldelad</option>
-                {itAdmins.map((admin) => (
-                  <option key={admin.id} value={admin.id}>
-                    {admin.name}
-                  </option>
-                ))}
-              </select>
-              {assignMutation.isPending && <span> Sparar …</span>}
-              {assignError && <p className="error">{assignError}</p>}
-            </div>
-            </>
-          )}
+                {/* Val för tilldelad – visas bara för IT-ansvariga */}
+                <div className="assign-control">
+                  <label htmlFor="assignSelect">Tilldelad</label>
+                  <select
+                    id="assignSelect"
+                    value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
+                    onChange={handleAssignChange}
+                    disabled={assignMutation.isPending}
+                  >
+                    <option value="">Ej tilldelad</option>
+                    {itAdmins.map((admin) => (
+                      <option key={admin.id} value={admin.id}>
+                        {admin.name}
+                      </option>
+                    ))}
+                  </select>
+                  {assignMutation.isPending && <span> Sparar …</span>}
+                  {assignError && <p className="error">{assignError}</p>}
+                </div>
+              </>
+            )}
           </>
         )}
       </section>

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router';
 import { useSelectedUser } from './selectedUserContext';
 import type { Role } from './usersApi';
+import "./NavMenu.css" 
 
 type MenuLink = {
   to: string;

@@ -3,6 +3,7 @@ import { categoryLabels, getTicketcountByCategory } from './ticketsApi';
 import { DataTable } from '../../shared/DataTable';
 import { Navigate } from 'react-router';
 import { useSelectedUser } from '../users/selectedUserContext';
+import './TicketStatistics.css';
 
 /** Statistik över öppna ärenden (TB-36). */
 export default function TicketStatistics() {

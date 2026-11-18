@@ -1,16 +1,36 @@
-/* Gemensam grundstil. Mobile first: skriv för smal skärm först och lägg till
-   @media (min-width: ...) för större skärmar (DoD punkt 9). */
+/* Gemensam grundstil & huvudlayout – PC-first */
 
 :root {
+  --bg-app: #ffffff;
+  --bg-page: #f8fafc;
+  --bg-sidebar: #f8fafc;
+  --bg-hover: #f1f5f9;
+  --bg-selected: #eff6ff;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --success: #16a34a;
+  --warning-bg: #fef9c3;
+  --warning-border: #fde047;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --radius: 6px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+
   font-family:
     system-ui,
     -apple-system,
     'Segoe UI',
     Roboto,
     sans-serif;
+  font-size: 14px;
   line-height: 1.5;
-  color: #1f2328;
-  background-color: #f6f8fa;
+  color: var(--text-main);
+  background-color: var(--bg-app);
 }
 
 *,
@@ -23,198 +43,207 @@ body {
   margin: 0;
 }
 
-.app-header {
+/* =========================================================
+   1. HUVUDLAYOUT (App.tsx)
+   ========================================================= */
+
+/* Gemensam ljus toppbar */
+.workspace-topbar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem 1rem;
-  padding: 0.75rem 1rem;
-  background-color: #24292f;
-  color: #ffffff;
+  height: 3rem;
+  padding: 0 1.25rem;
+  background-color: var(--bg-app);
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
 }
 
-.current-user {
+.workspace-brand {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+/* Startsida: Användarväljaren (/) */
+.login-shell {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-page);
 }
 
-.current-user-role {
-  color: #d0d7de;
-}
-
-.current-user button {
-  padding: 0.25rem 0.75rem;
-  font: inherit;
-  color: #ffffff;
-  background: transparent;
-  border: 1px solid #8c959f;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.nav-menu {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  order: 3;
+.login-main {
   width: 100%;
+  max-width: 36rem;
+  margin: 3rem auto;
+  padding: 0 1rem;
 }
 
-.nav-menu a {
-  padding: 0.25rem 0;
-  color: #d0d7de;
-  text-decoration: none;
+/* Inloggat läge: Helskärm med sidomeny + huvudyta */
+.workspace-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-app);
 }
 
-.nav-menu a:hover,
-.nav-menu a.active {
-  color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 0.3rem;
+.workspace-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
 }
 
-.app-header h1 {
-  margin: 0;
-  font-size: 1.25rem;
+.workspace-sidebar {
+  width: 14.5rem;
+  flex-shrink: 0;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-light);
+  padding: 0.75rem;
+  overflow-y: auto;
 }
 
-.app-main {
-  padding: 1rem;
-  max-width: 60rem;
-  margin: 0 auto;
+.workspace-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background-color: var(--bg-app);
 }
+
+/* =========================================================
+   2. GEMENSAMMA KORT & RUBRIKER
+   ========================================================= */
 
 .card {
-  padding: 1rem;
-  background-color: #ffffff;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background-color: var(--bg-app);
+  overflow-y: auto;
+}
+
+/* På startsidan (login-main) ser .card ut som ett inramat kort */
+.login-main .card {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
 }
 
 .card h2 {
   margin-top: 0;
-  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
-.user-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+/* =========================================================
+   3. FORMULÄR, KNAPPAR & LÄNKAR
+   ========================================================= */
 
-.user-list li {
-  border-bottom: 1px solid #d0d7de;
-}
-
-.user-option {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  width: 100%;
-  padding: 0.75rem 0.25rem;
+input,
+select,
+textarea {
   font: inherit;
-  color: inherit;
-  text-align: left;
-  background: none;
+  color: var(--text-main);
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.65rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.button,
+button[type='submit'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: var(--accent);
   border: none;
+  border-radius: var(--radius);
+  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
-.user-option:hover,
-.user-option:focus-visible {
-  background-color: #f6f8fa;
+.button:hover,
+button[type='submit']:hover {
+  background-color: var(--accent-hover);
 }
 
-.user-list li:last-child {
-  border-bottom: none;
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.user-role {
-  color: #57606a;
-  white-space: nowrap;
-}
+/* =========================================================
+   4. MEDDELANDEN & STATUSINDIKATORER
+   ========================================================= */
 
 .error {
-  color: #cf222e;
+  padding: 0.6rem 0.85rem;
+  color: var(--danger);
+  background-color: var(--danger-bg);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
 }
 
+/* =========================================================
+   5. GEMENSAM ÄRENDELISTA (AllTickets, MyTickets, MyAssignedTickets)
+   ========================================================= */
+
 .ticket-list {
-  margin: 0;
+  margin: 0.75rem 0 0 0;
   padding: 0;
   list-style: none;
+  border-top: 1px solid var(--border-light);
 }
 
 .ticket-list li {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 0.75rem 0.25rem;
-  border-bottom: 1px solid #d0d7de;
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+  transition: background-color 0.15s ease;
 }
 
-.ticket-list li:last-child {
-  border-bottom: none;
+.ticket-list li:hover {
+  background-color: var(--bg-hover);
+}
+
+.ticket-list a {
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.ticket-list a:hover .ticket-title {
+  color: var(--accent);
 }
 
 .ticket-title {
   font-weight: 600;
+  font-size: 0.975rem;
   overflow-wrap: anywhere;
 }
 
 .ticket-meta {
-  color: #57606a;
-  font-size: 0.9rem;
-}
-
-.unassigned-count {
-  margin: 0 0 1rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  background-color: #f6f8fa;
-  font-weight: 600;
-}
-
-.unassigned-count.has-unassigned {
-  background-color: #fff8c5;
-}
-
-.status-filter {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.status-filter select {
-  padding: 0.25rem 0.5rem;
-  font: inherit;
-  max-width: 100%;
-}
-
-.button {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  color: #ffffff;
-  background-color: #1f883d;
-  border-radius: 6px;
-  text-decoration: none;
-}
-
-@media (min-width: 48rem) {
-  .app-main {
-    padding: 2rem;
-  }
-
-  .nav-menu {
-    order: 0;
-    width: auto;
-  }
-}
-
-.data-table th {
-  text-align: left;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }

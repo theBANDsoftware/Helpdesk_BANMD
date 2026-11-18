@@ -1,0 +1,50 @@
+.user-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.user-list li {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.user-list li:last-child {
+  border-bottom: none;
+}
+
+.user-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.8rem 0.75rem;
+  font: inherit;
+  color: var(--text-main);
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.user-option:hover,
+.user-option:focus-visible {
+  background-color: var(--bg-hover);
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-role {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  white-space: nowrap;
+}

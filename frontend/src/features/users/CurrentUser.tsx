@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useSelectedUser } from './selectedUserContext';
 import { roleLabels } from './usersApi';
+import "./CurrentUser.css"
 
 /** Namn, roll och "Byt användare" i sidhuvudet (AK 2 och 4). Visas bara när någon är vald. */
 export function CurrentUser() {

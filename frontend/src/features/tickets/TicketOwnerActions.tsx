@@ -9,6 +9,7 @@ import {
   withdrawTicket,
   type TicketDetailResponse,
 } from './ticketsApi';
+import "./TicketOwnerActions.css"
 
 type Field = 'title' | 'description' | 'category';
 type FieldErrors = Partial<Record<Field, string>>;
@@ -97,9 +98,9 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
   const isBusy = updateMutation.isPending || withdrawMutation.isPending;
 
   return (
-    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}>
+    <div>
       {!isEditing && (
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div>
           <button type="button" onClick={startEditing} disabled={isBusy}>
             Ändra
           </button>
@@ -149,7 +150,7 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
           </label>
           {fieldErrors.category && <p className="error">{fieldErrors.category}</p>}
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div>
             <button type="submit" disabled={isBusy}>
               {updateMutation.isPending ? 'Sparar …' : 'Spara'}
             </button>

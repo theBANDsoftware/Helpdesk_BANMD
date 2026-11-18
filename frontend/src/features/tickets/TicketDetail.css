@@ -1,0 +1,151 @@
+/* Tvåkolumns-vy på PC: Ärendet till vänster, kommentarer i sidopanel till höger */
+.workspace-main > section.card {
+  order: 1;
+  flex: 1.3;
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+}
+
+.workspace-main > section:not(.card) {
+  order: 2;
+  flex: 1;
+  max-width: 32rem;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background-color: var(--bg-sidebar);
+  border-left: 1px solid var(--border-light);
+}
+
+/* Tillbaka-länk */
+.card .link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.card .link:hover {
+  color: var(--accent);
+}
+
+/* Beskrivningstexten under rubriken */
+.card > h2 + p {
+  margin: 0 0 1.25rem 0;
+  padding: 0.9rem 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  white-space: pre-wrap;
+}
+
+/* Metadata-tabellen (DataTable) */
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.card table th,
+.card table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+  vertical-align: top;
+}
+
+.card table th {
+  width: 11rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.card table tr:last-child th,
+.card table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Admin-kontroller (Status, Prioritet, Tilldelad) */
+.status-control,
+.assign-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.status-control label,
+.assign-control label {
+  min-width: 6.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.status-control select,
+.assign-control select {
+  min-width: 13rem;
+}
+
+.status-control .error,
+.assign-control .error {
+  width: 100%;
+  margin: 0.25rem 0 0 0;
+}
+
+/* =========================================================
+   Kommentarstråd & självväxande kommentarsfält
+   ========================================================= */
+
+.workspace-main > section:not(.card) ul {
+  margin: 0 0 1rem 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.workspace-main > section:not(.card) li {
+  padding: 0.75rem 0.9rem;
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+.workspace-main > section:not(.card) li > *:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.workspace-main > section:not(.card) form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.workspace-main > section:not(.card) textarea {
+  width: 100%;
+  min-height: 7.5rem;
+  max-height: 24rem;
+  field-sizing: content;
+  resize: none;
+  line-height: 1.5;
+  padding: 0.65rem 0.75rem;
+}
+
+.workspace-main > section:not(.card) button[type='submit'] {
+  align-self: flex-start;
+}

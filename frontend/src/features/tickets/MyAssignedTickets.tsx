@@ -29,7 +29,7 @@ export default function MyAssignedTickets() {
         <ul className="ticket-list">
           {query.data.map((ticket) => (
             <li key={ticket.id}>
-                {/* Klick navigerar användaren till ärendets detaljvy */}
+              {/* Klick navigerar användaren till ärendets detaljvy */}
               <Link to={'/tickets/' + ticket.id}>
                 <span className="ticket-title">
                   #{ticket.id} {ticket.title}

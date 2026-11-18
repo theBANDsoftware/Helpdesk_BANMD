@@ -4,6 +4,7 @@ import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from './selectedUserContext';
 import { getUsers, roleLabels, type User } from './usersApi';
 import { homePaths } from './homePaths';
+import './UserList.css';
 
 type State =
   { kind: 'loading' } | { kind: 'ok'; users: User[] } | { kind: 'error'; message: string };

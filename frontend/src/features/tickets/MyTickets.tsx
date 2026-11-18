@@ -28,11 +28,12 @@ export default function MyTickets() {
         <ul className="ticket-list">
           {query.data.map((ticket) => (
             <li key={ticket.id}>
-              <Link to={"/tickets/"+ticket.id}><span className="ticket-title">{ticket.title}</span>
+              <Link to={'/tickets/' + ticket.id}>
+                <span className="ticket-title">{ticket.title}</span>
               </Link>
               <span className="ticket-meta">
-                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet: {priorityLabels[ticket.priority]} ·{' '}
-                {formatDate(ticket.createdAt)}
+                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
+                {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
               </span>
             </li>
           ))}
