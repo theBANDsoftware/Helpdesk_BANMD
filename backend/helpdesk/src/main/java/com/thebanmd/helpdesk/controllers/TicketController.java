@@ -84,6 +84,14 @@ public class TicketController {
         @RequestHeader("X-User-Id") Long userId) {
         return ticketService.updateStatus(id, request, userId);
     }
+    @PutMapping("/{id}/category")
+    public TicketDetailResponse updateCategory(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateCategoryRequest request,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.updateCategory(id, request, userId);
+    }
+
     @PutMapping("/{id}/priority")
     public TicketDetailResponse updatePriority(
         @PathVariable Long id,

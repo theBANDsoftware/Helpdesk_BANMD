@@ -117,6 +117,20 @@ export async function updateTicketStatus(
   );
 }
 
+/** Ändrar kategori på ett ärende. Bara IT-ansvariga får göra det (TB-81). */
+export async function updateTicketCategory(
+  ticketId: number,
+  category: categoryTicket,
+  currentUserId: number,
+): Promise<TicketDetailResponse> {
+  return apiRequest<TicketDetailResponse>(
+    `/tickets/${ticketId}/category`,
+    'PUT',
+    { category },
+    { 'X-User-Id': currentUserId.toString() },
+  );
+}
+
 /** Ändrar prioritet på ärendet. */
 export async function updateTicketPriority(
   ticketId: number,
