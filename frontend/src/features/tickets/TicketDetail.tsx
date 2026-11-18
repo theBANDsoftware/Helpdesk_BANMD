@@ -32,6 +32,9 @@ export default function TicketDetail() {
   const queryClient = useQueryClient();
   const [assignError, setAssignError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  // När IT väljer Löst måste en lösning skrivas innan statusen sparas (TB-80)
+  const [resolving, setResolving] = useState(false);
+  const [resolution, setResolution] = useState('');
   const [priorityError, setPriorityError] = useState<string | null>(null);
   const [categoryError, setCategoryError] = useState<string | null>(null);
 
@@ -79,14 +82,18 @@ export default function TicketDetail() {
 
   // Mutation för att ändra status (TB-27). Samma mönster som tilldelningen ovan.
   const statusMutation = useMutation({
-    mutationFn: (status: StatusTicket) => {
+    mutationFn: ({ status, resolution }: { status: StatusTicket; resolution?: string }) => {
       if (!currentUser) throw new Error('Ingen användare är vald');
-      return updateTicketStatus(ticketId, status, currentUser.id);
+      return updateTicketStatus(ticketId, status, currentUser.id, resolution);
     },
     onSuccess: (updatedTicket) => {
       setStatusError(null);
+      setResolving(false);
+      setResolution('');
       queryClient.setQueryData(['tickets', ticketId], updatedTicket);
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      // Lösningen sparas som en kommentar, så kommentarslistan hämtas om
+      queryClient.invalidateQueries({ queryKey: ['comments', ticketId] });
     },
     onError: (error) => {
       if (
@@ -174,7 +181,26 @@ export default function TicketDetail() {
   }
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    statusMutation.mutate(e.target.value as StatusTicket);
+    const status = e.target.value as StatusTicket;
+    setStatusError(null);
+    if (status === 'RESOLVED') {
+      // Sparas först när lösningen är skriven, se handleResolveSubmit
+      setResolving(true);
+      return;
+    }
+    setResolving(false);
+    statusMutation.mutate({ status });
+  }
+
+  function handleResolveSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (resolution.trim() === '') return;
+    statusMutation.mutate({ status: 'RESOLVED', resolution: resolution.trim() });
+  }
+
+  function handleResolveCancel() {
+    setResolving(false);
+    setResolution('');
   }
 
   function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -249,7 +275,7 @@ export default function TicketDetail() {
                 </label>
                 <select
                   id="statusSelect"
-                  value={query.data.status}
+                  value={resolving ? 'RESOLVED' : query.data.status}
                   onChange={handleStatusChange}
                   disabled={statusMutation.isPending}
                 >
@@ -263,6 +289,29 @@ export default function TicketDetail() {
                       </option>
                     ))}
                 </select>
+                {resolving && (
+                  <form className="resolution-form" onSubmit={handleResolveSubmit}>
+                    <label htmlFor="resolutionText">Vad gjordes?</label>
+                    <textarea
+                      id="resolutionText"
+                      rows={3}
+                      value={resolution}
+                      onChange={(e) => setResolution(e.target.value)}
+                      placeholder="T.ex. Bytte tonerkassett och startade om skrivaren."
+                    />
+                    <div className="resolution-actions">
+                      <button
+                        type="submit"
+                        disabled={resolution.trim() === '' || statusMutation.isPending}
+                      >
+                        Markera som löst
+                      </button>
+                      <button type="button" onClick={handleResolveCancel}>
+                        Avbryt
+                      </button>
+                    </div>
+                  </form>
+                )}
                 {statusMutation.isPending && <span> Sparar …</span>}
                 {statusError && <p className="error">{statusError}</p>}
               </div>
