@@ -13,6 +13,12 @@ const priorityOrder: Record<TicketPriority, number> = {
   LOW: 2,
 };
 
+const priorityPillClass: Record<TicketPriority, string> = {
+  HIGH: 'pill pill-danger',
+  MEDIUM: 'pill pill-warning',
+  LOW: 'pill',
+};
+
 /** Alla ärenden från alla anmälare, nyaste först, filtrerade på status. För IT-ansvariga (TB-25, TB-31). */
 export default function AllTickets() {
   const query = useQuery({
@@ -56,15 +62,18 @@ export default function AllTickets() {
 
   return (
     <section className="card">
-      <h2 className="section-title">Alla ärenden</h2>
+      <div className="dashboard-hero">
+        <div className="dashboard-hero-top">
+          <h2 className="section-title">Alla ärenden</h2>
+        </div>
+        <TicketSearch value={searchTerm} onChange={setSearchTerm} />
+      </div>
 
       {query.isSuccess && isItAdmin && (
         <p className={unassignedCount > 0 ? 'badge badge-warning' : 'badge'}>
           {unassignedText(unassignedCount)}
         </p>
       )}
-
-      <TicketSearch value={searchTerm} onChange={setSearchTerm} />
 
       <div className="inline-row">
         <label className="inline-field">
@@ -108,12 +117,17 @@ export default function AllTickets() {
         <ul className="list">
           {sortedTickets.map((ticket) => (
             <li key={ticket.id} className="list-item">
-              <Link to={'/tickets/' + ticket.id} className="item-link">
-                <span className="item-title">{ticket.title}</span>
-              </Link>
+              <div className="list-item-top">
+                <Link to={'/tickets/' + ticket.id} className="item-link">
+                  <span className="item-title">{ticket.title}</span>
+                </Link>
+                <span className={priorityPillClass[ticket.priority]}>
+                  {priorityLabels[ticket.priority]}
+                </span>
+              </div>
               <span className="item-meta">
-                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
-                {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
+                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} ·{' '}
+                {formatDate(ticket.createdAt)}
               </span>
               <span className="item-meta">
                 Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}

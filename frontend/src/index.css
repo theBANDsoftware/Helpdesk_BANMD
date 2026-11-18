@@ -1,7 +1,5 @@
 /* =========================================================
-   Design Tokens (Färger, typografi, mått & avstånd)
-   Mobile first: skriv för smal skärm först och lägg till
-   @media (min-width: ...) för större skärmar (DoD punkt 9).
+   Design Tokens (PC first: basregler för PC, mobil <= 47.99rem)
    ========================================================= */
 
 :root {
@@ -12,7 +10,7 @@
     Roboto,
     sans-serif;
 
-  /* Färger (Ljust helpdesk-tema) */
+  /* Färger */
   --bg-page: #f8fafc;
   --bg-app: #ffffff;
   --bg-hover: #f1f5f9;
@@ -25,7 +23,6 @@
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
   --success: #16a34a;
-  --success-hover: #15803d;
   --success-bg: #f0fdf4;
   --success-border: #bbf7d0;
   --danger: #dc2626;
@@ -38,7 +35,7 @@
   --border-light: #e2e8f0;
   --border-medium: #cbd5e1;
 
-  /* Typografi (fasta steg i hela appen) */
+  /* Typografi & mått */
   --font-size-xs: 0.8rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 0.95rem;
@@ -46,19 +43,16 @@
   --font-size-xl: 1.3rem;
   --line-height-base: 1.55;
 
-  /* Standardbredder */
   --sidebar-width: 15rem;
   --max-width-narrow: 32rem;
   --max-width-form: 40rem;
   --max-width-text: 65ch;
 
-  /* Avstånd */
   --space-xs: 0.3rem;
   --space-sm: 0.6rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
 
-  /* Form & skuggor */
   --radius: 6px;
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
 
@@ -66,10 +60,6 @@
   color: var(--text-main);
   background-color: var(--bg-app);
 }
-
-/* =========================================================
-   Grundläggande sidstruktur (Workspace & Login)
-   ========================================================= */
 
 *,
 *::before,
@@ -83,6 +73,10 @@ body {
   color: var(--text-main);
 }
 
+/* =========================================================
+   Sidstruktur (Trezons-layout på PC)
+   ========================================================= */
+
 .workspace-shell,
 .login-shell {
   min-height: 100vh;
@@ -95,37 +89,40 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-sm) var(--space-md);
+  gap: var(--space-xs) var(--space-md);
   min-height: 3.25rem;
   padding: 0.6rem var(--space-lg);
-  background-color: var(--bg-app);
   border-bottom: 1px solid var(--border-light);
 }
 
 .workspace-brand {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--text-main);
 }
 
 .workspace-body {
   flex: 1;
   display: flex;
-  flex-direction: column;
 }
 
 .workspace-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
   padding: var(--space-md);
   background-color: var(--bg-page);
-  border-bottom: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
 }
 
 .workspace-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--space-md);
-  background-color: var(--bg-app);
+  padding: var(--space-lg) 2rem;
+}
+
+.workspace-main:has(.ticket-detail-pane) {
+  flex-direction: row;
+  padding: 0;
 }
 
 .login-main {
@@ -138,16 +135,15 @@ body {
 
 .card {
   width: 100%;
-  background-color: var(--bg-app);
 }
 
 /* =========================================================
-   Navigeringsmeny (Sidopanel till vänster)
+   Navigeringsmeny (Sidomeny på PC)
    ========================================================= */
 
 .nav-menu {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--space-xs);
 }
 
@@ -177,22 +173,27 @@ body {
   font-weight: 600;
 }
 
+.nav-icon,
+.nav-label-mobile {
+  display: none;
+}
+
 /* =========================================================
-   Rubriker, texter & avgränsare
+   Rubriker, texter, badges & pills
    ========================================================= */
 
-.section-title {
+.section-title,
+.subsection-title {
   margin: 0 0 var(--space-md) 0;
-  font-size: var(--font-size-xl);
   font-weight: 600;
-  color: var(--text-main);
+}
+
+.section-title {
+  font-size: var(--font-size-xl);
 }
 
 .subsection-title {
-  margin: 0 0 var(--space-md) 0;
   font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-main);
 }
 
 .section-divider {
@@ -205,20 +206,23 @@ body {
   margin: 0 0 var(--space-lg) 0;
   padding: 0.85rem var(--space-md);
   max-width: var(--max-width-text);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
   color: var(--text-secondary);
   background-color: var(--bg-page);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
-.helper-text {
+.helper-text,
+.item-meta {
   margin: 0;
   font-size: var(--font-size-xs);
-  line-height: 1.45;
   color: var(--text-muted);
+}
+
+.item-meta {
+  font-variant-numeric: tabular-nums;
 }
 
 .empty-state {
@@ -237,21 +241,27 @@ body {
   font-size: var(--font-size-sm);
 }
 
-.success-message {
-  max-width: var(--max-width-form);
+.success-message,
+.summary-box {
   margin: var(--space-md) 0 0 0;
   padding: 0.75rem var(--space-md);
-  font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--success);
-  background-color: var(--success-bg);
-  border: 1px solid var(--success-border);
   border-radius: var(--radius);
 }
 
-/* =========================================================
-   Status-banners, etiketter & summering
-   ========================================================= */
+.success-message {
+  max-width: var(--max-width-form);
+  font-size: var(--font-size-sm);
+  color: var(--success);
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
+}
+
+.summary-box {
+  max-width: var(--max-width-narrow);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+}
 
 .badge {
   display: inline-block;
@@ -263,13 +273,6 @@ body {
   background-color: var(--bg-page);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
-}
-
-.badge-warning {
-  color: var(--warning-text);
-  background-color: var(--warning-bg);
-  border-color: var(--warning-border);
-  font-weight: 600;
 }
 
 .pill {
@@ -284,16 +287,19 @@ body {
   white-space: nowrap;
 }
 
-.summary-box {
-  max-width: var(--max-width-narrow);
-  margin: var(--space-md) 0 0 0;
-  padding: 0.75rem var(--space-md);
-  font-size: var(--font-size-base);
+.badge-warning,
+.pill-warning {
+  color: var(--warning-text);
+  background-color: var(--warning-bg);
+  border-color: var(--warning-border);
   font-weight: 600;
-  color: var(--text-main);
-  background-color: var(--bg-page);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
+}
+
+.pill-danger {
+  color: var(--danger);
+  background-color: var(--danger-bg);
+  border-color: var(--danger-border);
+  font-weight: 600;
 }
 
 /* =========================================================
@@ -308,7 +314,10 @@ body {
 }
 
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
   padding: 0.45rem 0.9rem;
   font: inherit;
   font-size: var(--font-size-sm);
@@ -361,8 +370,10 @@ body {
 }
 
 .back-link {
-  display: inline-block;
-  margin-bottom: var(--space-md);
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  margin-bottom: var(--space-sm);
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--text-muted);
@@ -386,7 +397,6 @@ body {
 
 .form-box {
   padding: var(--space-md);
-  background-color: var(--bg-app);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
@@ -404,11 +414,10 @@ body {
 .form-field input,
 .form-field textarea,
 .form-field select,
-.inline-field select {
+.inline-field select,
+.search-input {
   font: inherit;
   font-size: var(--font-size-base);
-  font-weight: 400;
-  padding: 0.45rem 0.75rem;
   color: var(--text-main);
   background-color: var(--bg-app);
   border: 1px solid var(--border-medium);
@@ -417,14 +426,32 @@ body {
 
 .form-field input,
 .form-field textarea,
-.form-field select {
+.form-field select,
+.search-input {
   width: 100%;
+  padding: 0.45rem 0.75rem;
+}
+
+.form-field input[type='file'] {
+  padding: 0.35rem 0.5rem;
+  font-size: var(--font-size-sm);
+}
+
+.form-field select {
+  max-width: 20rem;
+}
+
+.inline-field select {
+  padding: 0.35rem 0.65rem;
+  font-size: var(--font-size-sm);
 }
 
 .form-field input:focus,
 .form-field textarea:focus,
 .form-field select:focus,
-.inline-field select:focus {
+.inline-field select:focus,
+.search-input:focus {
+  background-color: var(--bg-app);
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   outline: none;
@@ -436,24 +463,16 @@ body {
   line-height: var(--line-height-base);
 }
 
-.form-field select {
-  max-width: 20rem;
-}
-
 .form-field [aria-invalid='true'] {
   border-color: var(--danger);
 }
 
 .textarea-autogrow {
-  min-height: 7.5rem;
+  min-height: 6.5rem;
   max-height: 24rem;
   field-sizing: content;
   resize: none;
   background-color: var(--bg-page);
-}
-
-.textarea-autogrow:focus {
-  background-color: var(--bg-app);
 }
 
 .inline-row {
@@ -475,11 +494,6 @@ body {
   color: var(--text-secondary);
 }
 
-.inline-field select {
-  padding: 0.35rem 0.65rem;
-  font-size: var(--font-size-sm);
-}
-
 .search-box {
   width: 100%;
   max-width: var(--max-width-form);
@@ -487,33 +501,17 @@ body {
 }
 
 .search-input {
-  width: 100%;
   padding: 0.5rem 0.85rem 0.5rem 2.4rem;
-  font: inherit;
-  font-size: var(--font-size-base);
-  color: var(--text-main);
   background-color: var(--bg-page);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2364748b' stroke-width='1.75'%3E%3Ccircle cx='8.5' cy='8.5' r='5.75'/%3E%3Cpath d='M13 13l4.25 4.25' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: 0.75rem center;
   background-size: 1.05rem 1.05rem;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease,
-    box-shadow 0.15s ease;
+  border-color: var(--border-light);
 }
 
 .search-input::placeholder {
   color: var(--text-muted);
-}
-
-.search-input:focus {
-  background-color: var(--bg-app);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  outline: none;
 }
 
 /* =========================================================
@@ -527,39 +525,46 @@ body {
   border-top: 1px solid var(--border-light);
 }
 
-.list-item {
+.list-item,
+.list-row-btn {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
   padding: 0.85rem 0.75rem;
   border-bottom: 1px solid var(--border-light);
   transition: background-color 0.15s ease;
 }
 
-.list-item:hover {
-  background-color: var(--bg-hover);
+.list-item {
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
 .list-row-btn {
-  display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-md);
   width: 100%;
-  padding: 0.85rem 0.75rem;
+  min-height: 3rem;
   font: inherit;
   color: inherit;
   text-align: left;
   background: none;
-  border: none;
-  border-bottom: 1px solid var(--border-light);
+  border-top: none;
+  border-right: none;
+  border-left: none;
   cursor: pointer;
-  transition: background-color 0.15s ease;
 }
 
+.list-item:hover,
 .list-row-btn:hover,
 .list-row-btn:focus-visible {
   background-color: var(--bg-hover);
+}
+
+.list-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
 }
 
 .item-link {
@@ -569,21 +574,13 @@ body {
 }
 
 .item-title {
-  font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--text-main);
   overflow-wrap: anywhere;
 }
 
 .item-link:hover .item-title {
   color: var(--accent);
   text-decoration: underline;
-}
-
-.item-meta {
-  color: var(--text-muted);
-  font-size: var(--font-size-xs);
-  font-variant-numeric: tabular-nums;
 }
 
 /* =========================================================
@@ -599,7 +596,6 @@ body {
 
 .sub-card {
   padding: 0.85rem 1rem;
-  background-color: var(--bg-app);
   border: 1px solid var(--border-light);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius);
@@ -608,9 +604,10 @@ body {
 
 .sub-card-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-sm);
+  gap: var(--space-xs) var(--space-sm);
   margin-bottom: 0.4rem;
 }
 
@@ -618,7 +615,6 @@ body {
   margin: 0;
   max-width: var(--max-width-text);
   font-size: var(--font-size-sm);
-  line-height: var(--line-height-base);
   color: var(--text-secondary);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -628,10 +624,14 @@ body {
    Tabeller (DataTable)
    ========================================================= */
 
+.data-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .data-table table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--font-size-base);
 }
 
 .data-table th,
@@ -640,6 +640,7 @@ body {
   border-bottom: 1px solid var(--border-light);
   text-align: left;
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 
 .data-table tr:last-child th,
@@ -649,7 +650,6 @@ body {
 
 .data-table-narrow {
   max-width: var(--max-width-narrow);
-  background-color: var(--bg-app);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   overflow: hidden;
@@ -666,38 +666,7 @@ body {
 }
 
 /* =========================================================
-   Desktop-anpassning (min-width: 48rem)
-   ========================================================= */
-
-@media (min-width: 48rem) {
-  .workspace-body {
-    flex-direction: row;
-  }
-
-  .workspace-sidebar {
-    width: var(--sidebar-width);
-    flex-shrink: 0;
-    border-bottom: none;
-    border-right: 1px solid var(--border-light);
-  }
-
-  .nav-menu {
-    flex-direction: column;
-  }
-
-  .workspace-main {
-    padding: var(--space-lg) 2rem;
-  }
-
-  /* Tvåkolumns-vy när TicketDetail visas */
-  .workspace-main:has(.ticket-detail-pane) {
-    flex-direction: row;
-    padding: 0;
-  }
-}
-
-/* =========================================================
-   Tvåkolumns-layout för ärendedetaljer (Kommentarer till höger)
+   Ärendedetaljer & kommentarer (Två kolumner på PC)
    ========================================================= */
 
 .ticket-detail-pane {
@@ -709,10 +678,12 @@ body {
 
 .ticket-comments-pane {
   order: 2;
-  width: 100%;
+  width: 26rem;
+  flex-shrink: 0;
+  margin-left: auto;
   padding: var(--space-lg);
   background-color: var(--bg-page);
-  border-top: 1px solid var(--border-light);
+  border-left: 1px solid var(--border-light);
 }
 
 .ticket-detail-table th {
@@ -741,16 +712,6 @@ body {
   margin: var(--space-xs) 0 0 0;
 }
 
-@media (min-width: 48rem) {
-  .ticket-comments-pane {
-    width: 26rem;
-    flex-shrink: 0;
-    margin-left: auto;
-    border-top: none;
-    border-left: 1px solid var(--border-light);
-  }
-}
-
 /* =========================================================
    Bifogade bilder (Miniatyrer)
    ========================================================= */
@@ -762,13 +723,16 @@ body {
   margin-bottom: var(--space-md);
 }
 
-.media-card {
-  margin: 0;
+.media-card,
+.media-thumb {
   width: 11rem;
 }
 
+.media-card {
+  margin: 0;
+}
+
 .media-thumb {
-  width: 11rem;
   height: 7.5rem;
   object-fit: contain;
   padding: var(--space-xs);
@@ -782,4 +746,165 @@ body {
   font-size: var(--font-size-xs);
   color: var(--text-muted);
   word-break: break-all;
+}
+
+/* =========================================================
+   Mobilanpassning (max-width: 47.99rem / under 768px)
+   ========================================================= */
+
+@media (max-width: 47.99rem) {
+  :root {
+    --font-size-xl: 1.25rem;
+  }
+
+  .workspace-shell {
+    padding-bottom: 4.25rem;
+  }
+
+  .workspace-topbar,
+  .workspace-main,
+  .login-main,
+  .ticket-detail-pane,
+  .ticket-comments-pane {
+    padding: var(--space-md);
+  }
+
+  .workspace-body,
+  .workspace-main:has(.ticket-detail-pane) {
+    flex-direction: column;
+  }
+
+  /* Fast bottennavigering på mobil */
+  .workspace-sidebar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    width: auto;
+    padding: var(--space-xs);
+    background-color: var(--bg-app);
+    border-right: none;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .nav-menu {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+  }
+
+  .nav-link {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.15rem;
+    padding: 0.35rem 0.25rem;
+    font-size: 0.72rem;
+    text-align: center;
+  }
+
+  .nav-link.active {
+    background: none;
+  }
+
+  .nav-icon {
+    display: inline;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .nav-label-mobile {
+    display: inline;
+  }
+
+  .nav-label-desktop {
+    display: none;
+  }
+
+  /* Blå mobil-hero i AllTickets */
+  .dashboard-hero {
+    margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-md)) var(--space-md);
+    padding: var(--space-md);
+    background-color: var(--accent);
+  }
+
+  .dashboard-hero .section-title {
+    margin-bottom: var(--space-sm);
+    color: var(--bg-app);
+  }
+
+  .dashboard-hero .search-box {
+    margin-bottom: 0;
+  }
+
+  .dashboard-hero .search-input {
+    background-color: var(--bg-app);
+    border-color: transparent;
+    border-radius: 999px;
+  }
+
+  /* Formulär & sökfält utan iOS-zoom */
+  .form-field input,
+  .form-field textarea,
+  .form-field select,
+  .inline-field select,
+  .search-input {
+    font-size: 1rem;
+    min-height: 2.5rem;
+  }
+
+  .form-field select {
+    max-width: 100%;
+  }
+
+  .list-item,
+  .list-row-btn {
+    padding: 0.85rem 0.5rem;
+  }
+
+  .data-table table {
+    font-size: var(--font-size-sm);
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.6rem 0.65rem;
+  }
+
+  .ticket-detail-table th {
+    width: 7.5rem;
+    font-size: var(--font-size-xs);
+  }
+
+  .ticket-detail-pane .section-divider.inline-field {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ticket-detail-pane .section-divider.inline-field label,
+  .ticket-detail-pane .section-divider.inline-field select {
+    min-width: 0;
+  }
+
+  .ticket-comments-pane {
+    width: 100%;
+    margin-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .media-card,
+  .media-thumb {
+    width: 100%;
+  }
+
+  .media-thumb {
+    height: 6.5rem;
+  }
 }
