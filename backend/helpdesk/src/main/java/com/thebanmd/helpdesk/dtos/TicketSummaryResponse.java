@@ -9,6 +9,7 @@ import java.time.Instant;
 /**
  * Ett ärende i en lista, i "Mina ärenden" (TB-24) och "Alla ärenden" (TB-25).
  * createdBy och assignedTo är namn, inte id. assignedTo är null om ingen är tilldelad.
+ * createdById används för att filtrera listan på en anmälare (TB-83).
  */
 
 public record TicketSummaryResponse(
@@ -17,6 +18,7 @@ public record TicketSummaryResponse(
     Category category,
     Status status,
     String createdBy,
+    Long createdById,
     String assignedTo,
     Long assignedToId,
     Instant createdAt,

@@ -23,6 +23,8 @@ export default function AllTickets() {
   const [typeFilter, setTypeFilter] = useState('OPEN');
   const [assignedFilter, setAssignedFilter] = useState("mine");
   const [searchTerm, setSearchTerm] = useState('');
+  // Anmälaren som IT har klickat på, eller null om alla anmälare visas (TB-83)
+  const [reporterFilter, setReporterFilter] = useState<{ id: number; name: string } | null>(null);
   const { user } = useSelectedUser();
   const isItAdmin = user?.role === 'IT_ADMIN';
 
@@ -46,6 +48,11 @@ export default function AllTickets() {
       if (assignedFilter === "unassigned") return ticket.assignedToId === null;
       return true;
     });
+  }
+
+  // Filtrera på anmälaren som IT har klickat på (TB-83)
+  if (reporterFilter) {
+    filteredTickets = filteredTickets.filter((ticket) => ticket.createdById === reporterFilter.id);
   }
 
   // Filtrera på rubrik eller anmälare (skiftlägesokänsligt)
@@ -78,6 +85,15 @@ export default function AllTickets() {
       {query.isSuccess && isItAdmin && (
         <p className={unassignedCount > 0 ? 'badge badge-warning' : 'badge'}>
           {unassignedText(unassignedCount)}
+        </p>
+      )}
+
+      {reporterFilter && (
+        <p className="reporter-filter">
+          Anmälare: {reporterFilter.name}
+          <button type="button" className="btn" onClick={() => setReporterFilter(null)}>
+            Visa alla anmälare
+          </button>
         </p>
       )}
 
@@ -131,7 +147,7 @@ export default function AllTickets() {
       )}
 
       {query.isSuccess && query.data.length > 0 && filteredTickets.length === 0 && (
-        <p>Inga ärenden med den statusen</p>
+        <p className="empty-state">Inga ärenden matchar filtren</p>
       )}
 
       {query.isSuccess &&
@@ -142,7 +158,13 @@ export default function AllTickets() {
       {visibleTickets.length > 0 && (
         <ul className="list">
           {sortedTickets.map((ticket) => (
-            <TicketListItem key={ticket.id} data={ticket}></TicketListItem>
+            <TicketListItem
+              key={ticket.id}
+              data={ticket}
+              onReporterClick={
+                isItAdmin ? (id, name) => setReporterFilter({ id, name }) : undefined
+              }
+            ></TicketListItem>
           ))}
         </ul>
       )}
