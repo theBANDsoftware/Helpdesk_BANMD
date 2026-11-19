@@ -59,14 +59,56 @@ Samtal startade 17:10 till 16:24
 | Noah Fältman    | Ja      | TB-66 Gemensam formatering i frontend | -                                                            |        |
 | Mustafa Samir   | Ja      | -                                     | -                                                            |        |
 
-## Torsdag ÅÅÅÅ-MM-DD
+## Torsdag 2026-11-19
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-| ---- | ------- | ---- | ---- | ------ |
-|      |         |      |      |        |
-|      |         |      |      |        |
-|      |         |      |      |        |
-|      |         |      |      |        |
+Samtal startade 19:00 till 19:32
+
+| Namn            | Närvaro | Hinder |
+| :-------------- | :-----: | :----- |
+| Adli Anabtawi   |   Ja    | -      |
+| Bleart Rama     |   Ja    | -      |
+| David Andersson |   Ja    | -      |
+| Noah Fältman    |   Ja    | -      |
+| Mustafa Samir   |   Ja    | -      |
+
+### Adli Anabtawi
+
+- **Igår:**
+  - TB-81 Som IT-ansvarig vill jag ändra kategori på ett ärende
+- **Idag:**
+  - TB-80 Som IT-ansvarig vill jag skriva en lösning när jag markerar ett ärende som löst
+  - TB-81 Som IT-ansvarig vill jag ändra kategori på ett ärende
+
+### Bleart Rama
+
+- **Igår:** -
+- **Idag:**
+  - TB-62 Ta ett ärende direkt från Alla ärenden
+
+### David Andersson
+
+- **Igår:** -
+- **Idag:**
+  - TB-61 Filtrera mina tilldelade ärenden på status
+  - TB-68 Gemensam komponent för ärendelistor
+  - TB-74 Som anställd vill jag filtrera Mina ärenden på status
+  - TB-78 Städa och gruppera listmetoderna i backend
+
+### Noah Fältman
+
+- **Igår:** -
+- **Idag:**
+  - TB-66 Gemensam formatering i frontend
+  - TB-67 Flytta inline-stilar till CSS
+  - TB-70 Bestäm färger och stil för frontend
+  - TB-71 Enhetlig styling av frontend
+
+### Mustafa Samir
+
+- **Igår:** -
+- **Idag:**
+  - TB-73 Som anställd vill jag öppna ett löst eller återkallat ärende igen
+  - TB-77 Som anställd vill jag läsa svar på vanliga problem innan jag anmäler ett fel
 
 ## Fredag ÅÅÅÅ-MM-DD
 
