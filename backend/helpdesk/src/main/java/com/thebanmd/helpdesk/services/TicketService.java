@@ -90,7 +90,7 @@ public class TicketService {
     /** Ändrar status på ett ärende. Bara IT-ansvariga får göra det (TB-27, AK 3). */
     @Transactional
     public TicketDetailResponse updateStatus(Long ticketId, UpdateStatusRequest request, Long performedByUserId) {
-        requireItAdmin(performedByUserId, "ändra status på ärenden");
+        User performingUser = requireItAdmin(performedByUserId, "ändra status på ärenden");
 
         // Återkallad sätts bara när anmälaren tar tillbaka sitt ärende (TB-51)
         if (request.status() == Status.WITHDRAWN) {
