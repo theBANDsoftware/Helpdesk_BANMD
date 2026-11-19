@@ -289,4 +289,72 @@ class TicketServiceTest {
         assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
         verify(commentRepository, never()).save(any());
     }
+
+    // ---- TB-73: anmälaren öppnar ett löst eller återkallat ärende igen ----
+
+    @Test
+    void reopenTicketGorLostArendePagaende() {
+        Ticket ticket = annasNyaArende();
+        ticket.setStatus(Status.RESOLVED);
+
+        TicketDetailResponse response = service.reopenTicket(10L, 1L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+        assertThat(response.status()).isEqualTo(Status.IN_PROGRESS);
+    }
+
+    @Test
+    void reopenTicketGorAterkalltArendeNytt() {
+        Ticket ticket = annasNyaArende();
+        ticket.setStatus(Status.WITHDRAWN);
+
+        TicketDetailResponse response = service.reopenTicket(10L, 1L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.NEW);
+        assertThat(response.status()).isEqualTo(Status.NEW);
+    }
+
+    @Test
+    void reopenTicketBehallerTilldelningOchHistorik() {
+        Ticket ticket = annasNyaArende();
+        User erik = userWithId(6L, "Erik Holm", Role.IT_ADMIN);
+        ticket.setAssignedTo(erik);
+        ticket.setStatus(Status.RESOLVED);
+
+        service.reopenTicket(10L, 1L);
+
+        assertThat(ticket.getAssignedTo()).isSameAs(erik);
+        verify(commentRepository, never()).save(any());
+    }
+
+    @Test
+    void reopenTicketNekasForAnnanAnvandare() {
+        Ticket ticket = annasNyaArende();
+        ticket.setStatus(Status.RESOLVED);
+
+        assertThatThrownBy(() -> service.reopenTicket(10L, 2L))
+                .isInstanceOf(ForbiddenActionException.class);
+        assertThat(ticket.getStatus()).isEqualTo(Status.RESOLVED);
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void reopenTicketNekasNarArendetArNytt() {
+        Ticket ticket = annasNyaArende();
+
+        assertThatThrownBy(() -> service.reopenTicket(10L, 1L))
+                .isInstanceOf(TicketNotEditableException.class)
+                .hasMessage("Bara ett löst eller återkallat ärende kan öppnas igen.");
+        assertThat(ticket.getStatus()).isEqualTo(Status.NEW);
+    }
+
+    @Test
+    void reopenTicketNekasNarArendetArPagaende() {
+        Ticket ticket = annasNyaArende();
+        ticket.setStatus(Status.IN_PROGRESS);
+
+        assertThatThrownBy(() -> service.reopenTicket(10L, 1L))
+                .isInstanceOf(TicketNotEditableException.class);
+        assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+    }
 }

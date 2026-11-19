@@ -21,6 +21,7 @@ import type { categoryTicket, TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
+import TicketReopenAction from './TicketReopenAction';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -254,6 +255,12 @@ export default function TicketDetail() {
             {query.data.createdById === currentUser?.id && query.data.status === 'NEW' && (
               <TicketOwnerActions ticket={query.data} />
             )}
+
+            {/* Öppna igen. Bara anmälaren, och bara när ärendet är löst eller återkallat (TB-73). */}
+            {query.data.createdById === currentUser?.id &&
+              (query.data.status === 'RESOLVED' || query.data.status === 'WITHDRAWN') && (
+                <TicketReopenAction ticket={query.data} />
+              )}
 
             {/* Bifogade skärmdumpar (TB-35). Anmälaren och IT-ansvariga får ladda upp. */}
             <TicketAttachments

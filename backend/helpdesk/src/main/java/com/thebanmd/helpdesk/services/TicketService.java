@@ -203,8 +203,39 @@ public class TicketService {
         return ticketMapper.toDetailResponse(ticketRepository.save(ticket));
     }
 
+    /**
+     * Anmälaren öppnar sitt ärende igen (TB-73). Ett löst ärende går till IN_PROGRESS,
+     * eftersom IT redan har arbetat med det, och ett återkallat går till NEW, eftersom
+     * det bara kan återkallas medan det var nytt. Tilldelning, kommentarer och bilagor
+     * rörs inte, så hela historiken finns kvar.
+     */
+    @Transactional
+    public TicketDetailResponse reopenTicket(Long ticketId, Long performedByUserId) {
+        Ticket ticket = findByCreator(ticketId, performedByUserId, "öppna");
+
+        Status newStatus = switch (ticket.getStatus()) {
+            case RESOLVED -> Status.IN_PROGRESS;
+            case WITHDRAWN -> Status.NEW;
+            default -> throw new TicketNotEditableException(
+                "Bara ett löst eller återkallat ärende kan öppnas igen.");
+        };
+
+        ticket.setStatus(newStatus);
+        return ticketMapper.toDetailResponse(ticketRepository.save(ticket));
+    }
+
     /** Gemensamma kontroller för updateTicket och withdrawTicket (TB-51). */
     private Ticket findEditableByCreator(Long ticketId, Long performedByUserId, String action) {
+        Ticket ticket = findByCreator(ticketId, performedByUserId, action);
+        // Har IT hunnit ändra status medan anmälaren redigerade får hen ett fel (409) och inget ändras
+        if (ticket.getStatus() != Status.NEW) {
+            throw new TicketNotEditableException();
+        }
+        return ticket;
+    }
+
+    /** Hämtar ärendet och kastar 403 om den som anropar inte är anmälaren (TB-51, TB-73). */
+    private Ticket findByCreator(Long ticketId, Long performedByUserId, String action) {
         if (!userRepository.existsById(performedByUserId)) {
             throw new UserNotFoundException(performedByUserId);
         }
@@ -213,10 +244,6 @@ public class TicketService {
 
         if (!Objects.equals(ticket.getCreatedBy().getId(), performedByUserId)) {
             throw new ForbiddenActionException("Bara den som anmält ärendet kan " + action + " det");
-        }
-        // Har IT hunnit ändra status medan anmälaren redigerade får hen ett fel (409) och inget ändras
-        if (ticket.getStatus() != Status.NEW) {
-            throw new TicketNotEditableException();
         }
         return ticket;
     }
