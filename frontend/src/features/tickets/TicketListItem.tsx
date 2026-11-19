@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDate } from '../../shared/formatDate';
-import { categoryLabels, priorityLabels, statusLabels } from './ticketsApi';
+import { assignTicket, categoryLabels, priorityLabels, statusLabels } from './ticketsApi';
 import { useSelectedUser } from '../users/selectedUserContext';
 import type { TicketPriority, TicketSummary } from '../../Types';
 
@@ -18,6 +20,29 @@ const priorityPillClass: Record<TicketPriority, string> = {
 export default function TicketListItem({ data }: Props) {
 	const { user } = useSelectedUser();
 	const isItAdmin = user?.role === 'IT_ADMIN';
+
+	const queryClient = useQueryClient();
+	const [takeError, setTakeError] = useState<string | null>(null);
+
+	// Knappen visas bara för IT-ansvariga, på otilldelade ärenden som inte är avslutade (TB-62)
+	const canTake =
+		isItAdmin &&
+		data.assignedToId === null &&
+		(data.status === 'NEW' || data.status === 'IN_PROGRESS');
+
+	const takeMutation = useMutation({
+		mutationFn: () => {
+			if (!user) throw new Error('Ingen användare är vald');
+			return assignTicket(data.id, user.id, user.id);
+		},
+		onSuccess: () => {
+			setTakeError(null);
+			queryClient.invalidateQueries({ queryKey: ['tickets'] });
+		},
+		onError: () => {
+			setTakeError('Kunde inte ta ärendet. Försök igen.');
+		},
+	});
 
 	return (
     <>
@@ -39,6 +64,19 @@ export default function TicketListItem({ data }: Props) {
         Anmälare: {data.createdBy} · Tilldelad: {data.assignedTo ?? 'Ej tilldelad'}
         </span>
       )}
+	  {canTake && (
+				<div className="btn-row">
+					<button
+						type="button"
+						className="btn"
+						onClick={() => takeMutation.mutate()}
+						disabled={takeMutation.isPending}
+					>
+						{takeMutation.isPending ? 'Tar ärendet …' : 'Ta ärendet'}
+					</button>
+				</div>
+			)}
+				{takeError && <p className="error">{takeError}</p>}
 		</li>
 
 
