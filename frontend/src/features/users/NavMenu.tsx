@@ -18,6 +18,7 @@ const menuLinks: MenuLink[] = [
   { to: '/tickets/new', label: 'Anmäl ett fel', roles: ['EMPLOYEE', 'IT_ADMIN'] },
   { to: '/tickets/assigned', label: 'Mina tilldelade ärenden', roles: ['IT_ADMIN'] },
   { to: '/tickets/statistics', label: 'Statistik', roles: ['IT_ADMIN'] },
+  { to: '/faq', label: 'Vanliga frågor', roles: ['EMPLOYEE', 'IT_ADMIN'] },
 ];
 
 /** Menyn i sidhuvudet. Visas bara när någon är vald, och visar bara länkarna för användarens roll. */

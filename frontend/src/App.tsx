@@ -11,6 +11,7 @@ import MyTickets from './features/tickets/MyTickets';
 import AllTickets from './features/tickets/AllTickets';
 import MyAssignedTickets from './features/tickets/MyAssignedTickets';
 import TicketStatistics from './features/tickets/TicketStatistics';
+import FaqPage from './features/faq/FaqPage';
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="/tickets/:id" element={<TicketDetail />} />
               <Route path="/tickets/assigned" element={<MyAssignedTickets />} />
               <Route path="/tickets/statistics" element={<TicketStatistics />} />
+              <Route path="/faq" element={<FaqPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
