@@ -6,6 +6,8 @@ import type { TicketPriority, TicketSummary } from '../../Types';
 
 type Props = {
 	data: TicketSummary;
+	/** Skickas bara från listan för IT-ansvariga. Då går anmälarens namn att klicka på (TB-83). */
+	onReporterClick?: (id: number, name: string) => void;
 };
 
 const priorityPillClass: Record<TicketPriority, string> = {
@@ -15,7 +17,7 @@ const priorityPillClass: Record<TicketPriority, string> = {
 };
 
 /** En rad i en ärendelista. IT-ansvariga ser även prioritet, anmälare och tilldelad (TB-68). */
-export default function TicketListItem({ data }: Props) {
+export default function TicketListItem({ data, onReporterClick }: Props) {
 	const { user } = useSelectedUser();
 	const isItAdmin = user?.role === 'IT_ADMIN';
 
@@ -36,7 +38,19 @@ export default function TicketListItem({ data }: Props) {
 			</span>
 			{isItAdmin && (
         <span className="item-meta">
-        Anmälare: {data.createdBy} · Tilldelad: {data.assignedTo ?? 'Ej tilldelad'}
+          Anmälare:{' '}
+          {onReporterClick ? (
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => onReporterClick(data.createdById, data.createdBy)}
+            >
+              {data.createdBy}
+            </button>
+          ) : (
+            data.createdBy
+          )}{' '}
+          · Tilldelad: {data.assignedTo ?? 'Ej tilldelad'}
         </span>
       )}
 		</li>

@@ -31,6 +31,7 @@ export type TicketSummary = {
   status: TicketStatus;
   priority: TicketPriority;
   createdBy: string;
+  createdById: number;
   assignedTo: string | null;
   assignedToId: number | null;
   createdAt: string;

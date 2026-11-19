@@ -1045,3 +1045,32 @@ input[type='radio']:focus-visible {
   color: #57606a;
   font-size: 0.9rem;
 }
+
+/* Filter på anmälare i Ärenden (TB-83) */
+.reporter-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 600;
+  background-color: var(--bg-selected);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+/* Knapp som ser ut som en länk, t.ex. anmälarens namn i ärendelistan */
+.link-button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--accent-hover);
+}
