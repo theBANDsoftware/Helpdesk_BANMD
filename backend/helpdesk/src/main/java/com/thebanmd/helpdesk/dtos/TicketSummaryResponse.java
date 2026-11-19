@@ -18,6 +18,7 @@ public record TicketSummaryResponse(
     Status status,
     String createdBy,
     String assignedTo,
+    Long assignedToId,
     Instant createdAt,
     TicketPriority priority) {
 }

@@ -105,7 +105,7 @@ class TicketServiceTest {
 
         assertThatThrownBy(() -> service.updateStatus(1L, new UpdateStatusRequest(Status.RESOLVED), 1L))
                 .isInstanceOf(ForbiddenActionException.class)
-                .hasMessage("Bara IT-ansvariga kan ändra status");
+                .hasMessage("Bara IT-ansvariga kan ändra status på ärenden");
         verify(ticketRepository, never()).save(any());
     }
 

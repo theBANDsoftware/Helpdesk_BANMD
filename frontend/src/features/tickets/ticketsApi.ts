@@ -146,6 +146,7 @@ export async function updateTicketPriority(
   );
 }
 
+/** Ärenden nyaste först. IT-ansvariga får alla, anställda bara sina egna. */
 export function getMyTickets(): Promise<TicketSummary[]> {
   return apiRequest<TicketSummary[]>('/tickets/mine');
 }
@@ -153,14 +154,6 @@ export function getMyTickets(): Promise<TicketSummary[]> {
 /** Alla ärenden från alla anmälare, nyaste först */
 export function getAllTickets(): Promise<TicketSummary[]> {
   return apiRequest<TicketSummary[]>('/tickets');
-}
-
-/**
- * Hämtar alla ärenden som är tilldelade den inloggade IT-ansvariga.
- * Anropar GET /api/tickets/assigned-to-me där X-User-Id skickas med automatiskt av apiGet.
- */
-export function getMyAssignedTickets(): Promise<TicketSummary[]> {
-  return apiRequest<TicketSummary[]>('/tickets/assigned-to-me');
 }
 
 // Hämta räknare för alla ärenden utifrån kategori
