@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { categoryLabels, getAllTickets, priorityLabels, statusLabels } from './ticketsApi';
-import { formatDate } from '../../shared/formatDate';
-import { Link } from 'react-router';
+import { getAllTickets, statusLabels } from './ticketsApi';
 import type { TicketPriority } from '../../Types';
 import TicketSearch from './TicketSearch';
 import { useSelectedUser } from '../users/selectedUserContext';
+import TicketListItem from './TicketListItem';
 
 const priorityOrder: Record<TicketPriority, number> = {
   HIGH: 0,
@@ -29,19 +28,19 @@ export default function AllTickets() {
   // Ej tilldelade ärenden räknas på hela listan, oavsett statusfilter och sökning.
   // Lösta ärenden räknas inte (TB-52).
   const unassignedCount = (query.data ?? []).filter(
-    (ticket) => ticket.status !== 'RESOLVED' && !ticket.assignedTo,
+    (ticket) => ticket.status !== 'RESOLVED' && ticket.status !== 'WITHDRAWN' && !ticket.assignedTo,
   ).length;
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
   // Filtrera på status
   let filteredTickets = (query.data ?? []).filter((ticket) => {
-    "WITHDRAWN"
     if (typeFilter === 'ALL') return true;
     if (typeFilter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
     return ticket.status === typeFilter;
   });
   
+  // Filtrera efter tilldelning
   if(isItAdmin) {
     filteredTickets = filteredTickets.filter((ticket) => {
       if (assignedFilter === "mine") return ticket.assignedToId === user?.id;
@@ -126,20 +125,7 @@ export default function AllTickets() {
       {visibleTickets.length > 0 && (
         <ul className="ticket-list">
           {sortedTickets.map((ticket) => (
-            <li key={ticket.id}>
-              <Link to={'/tickets/' + ticket.id}>
-                <span className="ticket-title">{ticket.title}</span>
-              </Link>
-              <span className="ticket-meta">
-                {categoryLabels[ticket.category]} · {statusLabels[ticket.status]} · Prioritet:{' '}
-                {priorityLabels[ticket.priority]} · {formatDate(ticket.createdAt)}
-              </span>
-              {isItAdmin && (
-                <span className="ticket-meta">
-                  Anmälare: {ticket.createdBy} · Tilldelad: {ticket.assignedTo ?? 'Ej tilldelad'}
-                </span>
-              )}
-            </li>
+            <TicketListItem key={ticket.id} data={ticket}></TicketListItem>
           ))}
         </ul>
       )}

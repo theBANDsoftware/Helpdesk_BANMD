@@ -17,10 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,12 +67,7 @@ public class TicketService {
      */
     @Transactional
     public TicketDetailResponse assignTicket(Long ticketId, AssignTicketRequest request, Long performedByUserId) {
-        User performingUser = userRepository.findById(performedByUserId)
-            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
-
-        if (performingUser.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Bara IT-ansvariga kan tilldela ärenden");
-        }
+        requireItAdmin(performedByUserId, "tilldela ärenden");
 
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
@@ -78,13 +75,7 @@ public class TicketService {
         if (request.assignedToUserId() == null) {
             ticket.setAssignedTo(null);
         } else {
-            User assignee = userRepository.findById(request.assignedToUserId())
-                .orElseThrow(() -> new UserNotFoundException(request.assignedToUserId()));
-
-            if (assignee.getRole() != Role.IT_ADMIN) {
-                throw new ForbiddenActionException("Endast IT-ansvariga kan tilldelas ärenden");
-            }
-
+            User assignee = requireItAdmin(request.assignedToUserId(), "tilldelas ärenden");
             ticket.setAssignedTo(assignee);
         }
 
@@ -95,12 +86,8 @@ public class TicketService {
     /** Ändrar status på ett ärende. Bara IT-ansvariga får göra det (TB-27, AK 3). */
     @Transactional
     public TicketDetailResponse updateStatus(Long ticketId, UpdateStatusRequest request, Long performedByUserId) {
-        User performingUser = userRepository.findById(performedByUserId)
-            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
+        requireItAdmin(performedByUserId, "ändra status på ärenden");
 
-        if (performingUser.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Bara IT-ansvariga kan ändra status");
-        }
         // Återkallad sätts bara när anmälaren tar tillbaka sitt ärende (TB-51)
         if (request.status() == Status.WITHDRAWN) {
             throw new ForbiddenActionException("Bara anmälaren kan ta tillbaka ett ärende");
@@ -116,12 +103,7 @@ public class TicketService {
 
     @Transactional
     public TicketDetailResponse updatePriority(Long ticketId, UpdatePriorityRequest request, Long performedByUserId) {
-        User performingUser = userRepository.findById(performedByUserId)
-            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
-
-        if (performingUser.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Bara IT-ansvariga kan ändra prioritet");
-        }
+       requireItAdmin(performedByUserId, "ändra prioritet på ärenden");
 
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
@@ -131,17 +113,9 @@ public class TicketService {
         return ticketMapper.toDetailResponse(updated);
     }
 
-    /** Ärenden som användaren har anmält, nyaste först (TB-24). Kastar UserNotFoundException om användaren inte finns. */
-    @Transactional(readOnly = true)
-    public List<TicketSummaryResponse> getMyTickets(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException(userId);
-        }
-        List<Ticket> tickets = ticketRepository.findByCreatedByIdOrderByCreatedAtDescIdDesc(userId);
-        return ticketMapper.toSummaryResponseList(tickets);
-    }
-
-    /** Alla ärenden från alla anmälare, nyaste först (TB-25). Bara IT-ansvariga får se dem (TB-46). */
+    /**
+     * Ärenden nyaste först. IT-ansvariga får alla ärenden, anställda bara sina egna (TB-24, TB-25, TB-46, TB-78).
+     */
     @Transactional(readOnly = true)
     public List<TicketSummaryResponse> getAllTickets(Long userId) {
         User user = userRepository.findById(userId)
@@ -150,51 +124,26 @@ public class TicketService {
         if (user.getRole() != Role.IT_ADMIN) {
             List<Ticket> tickets = ticketRepository.findByCreatedByIdOrderByCreatedAtDescIdDesc(userId);
             return ticketMapper.toSummaryResponseList(tickets);
-            // throw new ForbiddenActionException("Bara IT-ansvariga kan se alla ärenden");
         }
 
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
         return ticketMapper.toSummaryResponseList(tickets);
     }
 
-    /** Ärenden som är tilldelade användaren (TB-49). Bara IT-ansvariga har tilldelade ärenden. */
-//    @Transactional(readOnly = true)
-//    public List<TicketSummaryResponse> getMyAssignedTickets(Long userId) {
-//        User user = userRepository.findById(userId)
-//            .orElseThrow(() -> new UserNotFoundException(userId));
-//
-//        if (user.getRole() != Role.IT_ADMIN) {
-//            throw new ForbiddenActionException("Endast IT-ansvariga har tilldelade ärenden.");
-//        }
-//
-//        List<Ticket> tickets = ticketRepository.findByAssignedToIdOrderByCreatedAtDesc(userId);
-//
-//        return ticketMapper.toSummaryResponseList(tickets);
-//    }
-
     /** Hämta alla öppna ärenden och räkna per kategori */
     @Transactional(readOnly = true)
     public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException(userId));
+        requireItAdmin(userId, "se statistik");
 
-        if (user.getRole() != Role.IT_ADMIN) {
-            throw new ForbiddenActionException("Endast IT-ansvariga kan se statistik.");
-        }
+        Map<Category, Long> countByCategory = ticketRepository.findByStatusIn(List.of(Status.NEW, Status.IN_PROGRESS))
+            .stream()
+            .collect(Collectors.groupingBy(Ticket::getCategory, Collectors.counting()));
 
-        List<Ticket> openTickets = ticketRepository.findByStatusIn(List.of(Status.NEW, Status.IN_PROGRESS));
-        List<TicketCategoryCountResponse> result = new ArrayList<>();
-        for (Category category : Category.values()) {
-            long count = 0;
-            for (Ticket ticket : openTickets) {
-                if (ticket.getCategory() == category) {
-                    count++;
-                }
-            }
-            result.add(new TicketCategoryCountResponse(category, count));
-        }
-        result.sort(Comparator.comparingLong(TicketCategoryCountResponse::count).reversed());
-        return result;
+        // Alla kategorier tas med, så att de utan öppna ärenden visas med 0
+        return Arrays.stream(Category.values())
+            .map(category -> new TicketCategoryCountResponse(category, countByCategory.getOrDefault(category, 0L)))
+            .sorted(Comparator.comparingLong(TicketCategoryCountResponse::count).reversed())
+            .toList();
     }
 
     /**
@@ -237,5 +186,14 @@ public class TicketService {
             throw new TicketNotEditableException();
         }
         return ticket;
+    }
+    /** Hämtar användaren och kastar 403 om den inte är IT-ansvarig. */
+    private User requireItAdmin(Long userId, String action) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+        if (user.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan " + action);
+        }
+        return user;
     }
 }
