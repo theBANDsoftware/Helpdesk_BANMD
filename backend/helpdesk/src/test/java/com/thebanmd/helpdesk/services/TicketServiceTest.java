@@ -2,6 +2,7 @@ package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
+import com.thebanmd.helpdesk.dtos.UpdateCategoryRequest;
 import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
 import com.thebanmd.helpdesk.dtos.UpdateTicketRequest;
 import com.thebanmd.helpdesk.entities.Ticket;
@@ -205,6 +206,32 @@ class TicketServiceTest {
 
         assertThatThrownBy(() -> service.updateStatus(1L, new UpdateStatusRequest(Status.WITHDRAWN), 5L))
                 .isInstanceOf(ForbiddenActionException.class);
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void updateCategoryAndrarKategoriNarItAnsvarigAndrar() {
+        User maria = new User("Maria Nordin", Role.IT_ADMIN);
+        Ticket ticket = new Ticket("Kommer inte in", "Lösenordet fungerar inte", Category.OTHER, new User("Anna Lind", Role.EMPLOYEE));
+        ticket.setStatus(Status.RESOLVED);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(maria));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+
+        TicketDetailResponse response = service.updateCategory(1L, new UpdateCategoryRequest(Category.ACCOUNT), 5L);
+
+        assertThat(ticket.getCategory()).isEqualTo(Category.ACCOUNT);
+        assertThat(response.category()).isEqualTo(Category.ACCOUNT);
+    }
+
+    @Test
+    void updateCategoryKastarForbiddenOmAnstalldForsokerAndra() {
+        User anna = new User("Anna Lind", Role.EMPLOYEE);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(anna));
+
+        assertThatThrownBy(() -> service.updateCategory(1L, new UpdateCategoryRequest(Category.ACCOUNT), 1L))
+                .isInstanceOf(ForbiddenActionException.class)
+                .hasMessage("Bara IT-ansvariga kan ändra kategori");
         verify(ticketRepository, never()).save(any());
     }
 }

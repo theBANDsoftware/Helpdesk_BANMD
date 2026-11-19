@@ -32,7 +32,7 @@ export const ticketColumns: Record<string, string> = {
   id: 'Ärendenummer',
   category: 'Kategori',
   status: 'Status',
-  priority: "Prioritet",
+  priority: 'Prioritet',
   createdBy: 'Anmälare',
   assignedTo: 'Tilldelad',
   createdAt: 'Skapad',
@@ -72,20 +72,14 @@ export async function getTicket(id: number): Promise<TicketDetailResponse> {
 }
 
 /** Skapar ett nytt ärende med anmälarens id i X-User-Id-headern */
-export async function createTicket(
-  ticket: CreateTicketDTO
-): Promise<TicketDetailResponse> {
-  return apiRequest<TicketDetailResponse>(
-    '/tickets',
-    'POST',
-    ticket
-  );
+export async function createTicket(ticket: CreateTicketDTO): Promise<TicketDetailResponse> {
+  return apiRequest<TicketDetailResponse>('/tickets', 'POST', ticket);
 }
 
 /** Anmälaren ändrar rubrik, beskrivning och kategori medan ärendet har status Ny (TB-51). */
 export async function updateTicket(
   ticketId: number,
-  ticket: CreateTicketDTO
+  ticket: CreateTicketDTO,
 ): Promise<TicketDetailResponse> {
   return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}`, 'PUT', ticket);
 }
@@ -99,13 +93,13 @@ export async function withdrawTicket(ticketId: number): Promise<TicketDetailResp
 export async function assignTicket(
   ticketId: number,
   assignedToUserId: number | null,
-  currentUserId: number
+  currentUserId: number,
 ): Promise<TicketDetailResponse> {
   return apiRequest<TicketDetailResponse>(
     `/tickets/${ticketId}/assign`,
     'PUT',
     { assignedToUserId },
-    { 'X-User-Id': currentUserId.toString() }
+    { 'X-User-Id': currentUserId.toString() },
   );
 }
 
@@ -113,13 +107,27 @@ export async function assignTicket(
 export async function updateTicketStatus(
   ticketId: number,
   status: StatusTicket,
-  currentUserId: number
+  currentUserId: number,
 ): Promise<TicketDetailResponse> {
   return apiRequest<TicketDetailResponse>(
     `/tickets/${ticketId}/status`,
     'PUT',
     { status },
-    { 'X-User-Id': currentUserId.toString() }
+    { 'X-User-Id': currentUserId.toString() },
+  );
+}
+
+/** Ändrar kategori på ett ärende. Bara IT-ansvariga får göra det (TB-81). */
+export async function updateTicketCategory(
+  ticketId: number,
+  category: categoryTicket,
+  currentUserId: number,
+): Promise<TicketDetailResponse> {
+  return apiRequest<TicketDetailResponse>(
+    `/tickets/${ticketId}/category`,
+    'PUT',
+    { category },
+    { 'X-User-Id': currentUserId.toString() },
   );
 }
 
@@ -127,26 +135,31 @@ export async function updateTicketStatus(
 export async function updateTicketPriority(
   ticketId: number,
   priority: TicketPriority,
-  currentUserId: number
+  currentUserId: number,
 ): Promise<TicketSummary[]> {
   return apiRequest<TicketSummary[]>(
     `/tickets/${ticketId}/priority`,
     'PUT',
     { priority },
-    { 'X-User-Id': currentUserId.toString() }
+    { 'X-User-Id': currentUserId.toString() },
   );
 }
 
 /** Ärenden nyaste först. IT-ansvariga får alla, anställda bara sina egna. */
+export function getMyTickets(): Promise<TicketSummary[]> {
+  return apiRequest<TicketSummary[]>('/tickets/mine');
+}
+
+/** Alla ärenden från alla anmälare, nyaste först */
 export function getAllTickets(): Promise<TicketSummary[]> {
   return apiRequest<TicketSummary[]>('/tickets');
 }
 
 // Hämta räknare för alla ärenden utifrån kategori
 export type TicketCategoryCount = {
-	category: categoryTicket;
-	count: number;
+  category: categoryTicket;
+  count: number;
 };
 export function getTicketcountByCategory(): Promise<TicketCategoryCount[]> {
-	return apiRequest<TicketCategoryCount[]>('/tickets/ticketspercategory');
+  return apiRequest<TicketCategoryCount[]>('/tickets/ticketspercategory');
 }

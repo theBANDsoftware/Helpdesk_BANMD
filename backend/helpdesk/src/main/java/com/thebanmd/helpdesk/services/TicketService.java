@@ -101,6 +101,24 @@ public class TicketService {
         return ticketMapper.toDetailResponse(updated);
     }
 
+    /** IT-ansvariga ändrar kategori, t.ex. när anmälaren valt fel (TB-81). Gäller oavsett status. */
+    @Transactional
+    public TicketDetailResponse updateCategory(Long ticketId, UpdateCategoryRequest request, Long performedByUserId) {
+        User performingUser = userRepository.findById(performedByUserId)
+            .orElseThrow(() -> new UserNotFoundException(performedByUserId));
+
+        if (performingUser.getRole() != Role.IT_ADMIN) {
+            throw new ForbiddenActionException("Bara IT-ansvariga kan ändra kategori");
+        }
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new TicketNotFoundException(ticketId));
+
+        ticket.setCategory(request.category());
+        Ticket updated = ticketRepository.save(ticket);
+        return ticketMapper.toDetailResponse(updated);
+    }
+
     @Transactional
     public TicketDetailResponse updatePriority(Long ticketId, UpdatePriorityRequest request, Long performedByUserId) {
        requireItAdmin(performedByUserId, "ändra prioritet på ärenden");

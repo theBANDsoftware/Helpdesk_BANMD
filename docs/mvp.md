@@ -23,6 +23,7 @@ Appen är ett enkelt ärendesystem för små organisationer, till exempel en sko
 5. IT-ansvarig tilldelar ett ärende till sig själv eller en kollega
 6. IT-ansvarig ändrar status: Ny → Pågår → Löst
 7. Både anställd och IT-ansvarig kan skriva kommentarer på ett ärende
+8. En anställd kan läsa svar på vanliga problem innan hen anmäler ett fel (tillagd i sprint 4, beslut 15)
 
 ### Ingår inte i MVP:n
 
@@ -32,7 +33,6 @@ Appen är ett enkelt ärendesystem för små organisationer, till exempel en sko
 - Notiser via mejl eller i appen
 - Skapa ärenden genom att mejla till en adress
 - Statistik och översiktspanel
-- Kunskapsbank med vanliga problem och lösningar
 - Register över datorer och annan utrustning kopplat till ärenden
 - Stöd för flera organisationer i samma system
 - Mobilapp

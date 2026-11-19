@@ -29,28 +29,30 @@ export async function apiRequest<T>(
   path: string,
   method: string = 'GET',
   requestBody?: unknown,
-  customHeaders: Record<string, string> = {}
+  customHeaders: Record<string, string> = {},
 ): Promise<T> {
   const isFormData = requestBody instanceof FormData;
 
   const headers = withSelectedUser({
     Accept: 'application/json',
-    ...(!isFormData && requestBody !== undefined && {
-      'Content-Type': 'application/json'
-    }),
+    ...(!isFormData &&
+      requestBody !== undefined && {
+        'Content-Type': 'application/json',
+      }),
     ...customHeaders,
   });
 
   const response = await fetch(`/api${path}`, {
     method,
     headers,
-    body: requestBody === undefined
-      ? undefined
-      : isFormData
-        ? requestBody
-        : method.toUpperCase() === 'GET'
-          ? undefined
-          : JSON.stringify(requestBody),
+    body:
+      requestBody === undefined
+        ? undefined
+        : isFormData
+          ? requestBody
+          : method.toUpperCase() === 'GET'
+            ? undefined
+            : JSON.stringify(requestBody),
   });
 
   const body: unknown = await response.json().catch(() => null);
