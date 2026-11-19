@@ -5,16 +5,19 @@ import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.dtos.UpdateCategoryRequest;
 import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
 import com.thebanmd.helpdesk.dtos.UpdateTicketRequest;
+import com.thebanmd.helpdesk.entities.Comment;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
+import com.thebanmd.helpdesk.exceptions.ResolutionRequiredException;
 import com.thebanmd.helpdesk.exceptions.TicketNotEditableException;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
+import com.thebanmd.helpdesk.repositories.CommentRepository;
 import com.thebanmd.helpdesk.repositories.TicketRepository;
 import com.thebanmd.helpdesk.repositories.UserRepository;
 
@@ -37,8 +40,9 @@ class TicketServiceTest {
 
     private final TicketRepository ticketRepository = mock(TicketRepository.class);
     private final UserRepository userRepository = mock(UserRepository.class);
-    private final TicketService service =
-            new TicketService(ticketRepository, Mappers.getMapper(TicketMapper.class), userRepository);
+    private final CommentRepository commentRepository = mock(CommentRepository.class);
+    private final TicketService service = new TicketService(
+            ticketRepository, Mappers.getMapper(TicketMapper.class), userRepository, commentRepository);
 
     private final CreateTicketRequest request =
             new CreateTicketRequest("Skrivaren skriver inte ut", "Det blinkar rött", Category.PRINTER);
@@ -101,7 +105,7 @@ class TicketServiceTest {
 
         assertThatThrownBy(() -> service.updateStatus(1L, new UpdateStatusRequest(Status.RESOLVED), 1L))
                 .isInstanceOf(ForbiddenActionException.class)
-                .hasMessage("Bara IT-ansvariga kan ändra status");
+                .hasMessage("Bara IT-ansvariga kan ändra status på ärenden");
         verify(ticketRepository, never()).save(any());
     }
 
@@ -233,5 +237,56 @@ class TicketServiceTest {
                 .isInstanceOf(ForbiddenActionException.class)
                 .hasMessage("Bara IT-ansvariga kan ändra kategori");
         verify(ticketRepository, never()).save(any());
+    }
+
+    // ---- TB-80: lösning när ärendet markeras som löst ----
+
+    @Test
+    void updateStatusTillLostSpararLosningenSomKommentar() {
+        User maria = new User("Maria Nordin", Role.IT_ADMIN);
+        Ticket ticket = new Ticket("Skrivaren skriver inte ut", "Blinkar rött", Category.PRINTER, new User("Anna Lind", Role.EMPLOYEE));
+        ticket.setStatus(Status.IN_PROGRESS);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(maria));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+
+        service.updateStatus(1L, new UpdateStatusRequest(Status.RESOLVED, "  Bytte tonerkassett  "), 5L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.RESOLVED);
+        ArgumentCaptor<Comment> saved = ArgumentCaptor.forClass(Comment.class);
+        verify(commentRepository).save(saved.capture());
+        assertThat(saved.getValue().getBody()).isEqualTo("Lösning: Bytte tonerkassett");
+        assertThat(saved.getValue().getAuthor()).isSameAs(maria);
+    }
+
+    @Test
+    void updateStatusTillLostUtanLosningKastarResolutionRequired() {
+        User maria = new User("Maria Nordin", Role.IT_ADMIN);
+        Ticket ticket = new Ticket("Skrivaren skriver inte ut", "Blinkar rött", Category.PRINTER, new User("Anna Lind", Role.EMPLOYEE));
+        ticket.setStatus(Status.IN_PROGRESS);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(maria));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        assertThatThrownBy(() -> service.updateStatus(1L, new UpdateStatusRequest(Status.RESOLVED, "   "), 5L))
+                .isInstanceOf(ResolutionRequiredException.class)
+                .hasMessage("Skriv vad som gjordes för att lösa ärendet.");
+        assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+        verify(ticketRepository, never()).save(any());
+        verify(commentRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStatusTillPagaendeBehoverIngenLosning() {
+        User maria = new User("Maria Nordin", Role.IT_ADMIN);
+        Ticket ticket = new Ticket("Wifi försvinner", "I rum Ekan", Category.NETWORK, new User("Anna Lind", Role.EMPLOYEE));
+        ticket.setStatus(Status.NEW);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(maria));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+
+        service.updateStatus(1L, new UpdateStatusRequest(Status.IN_PROGRESS), 5L);
+
+        assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+        verify(commentRepository, never()).save(any());
     }
 }

@@ -491,7 +491,7 @@ input[type='checkbox'],
 input[type='radio'] {
   width: 1.1rem;
   height: 1.1rem;
-  margin: 0;
+  margin: 0px 5px;
   accent-color: var(--accent);
   cursor: pointer;
 }
@@ -933,5 +933,90 @@ input[type='radio']:focus-visible {
 
   .media-thumb {
     height: 6.5rem;
+  }
+}
+
+.data-table th {
+  text-align: left;
+}
+
+/* Lösning när ett ärende markeras som löst (TB-80) */
+.resolution-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.resolution-form label {
+  font-weight: 600;
+}
+
+.resolution-form textarea {
+  width: 100%;
+  font: inherit;
+}
+
+.resolution-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+/* Vanliga frågor (TB-77) */
+}
+.faq-section {
+  margin-bottom: 1.5rem;
+}
+
+.faq-section h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #57606a;
+}
+
+.faq-item {
+  border-bottom: 1px solid #d0d7de;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+/* Hela raden är klickbar, och minst 44 px hög även på mobil */
+.faq-item summary {
+  padding: 0.75rem 0.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faq-item summary:hover,
+.faq-item summary:focus-visible {
+  background-color: #f6f8fa;
+}
+
+.faq-item p {
+  margin: 0 0 0.75rem;
+  padding: 0 0.25rem;
+}
+
+.faq-footer {
+  padding-top: 1rem;
+  border-top: 1px solid #d0d7de;
+}
+
+.faq-footer p {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.faq-hint {
+  margin-top: 0;
+}
+
+.filterCategory {
+  & h3 {
+    margin-bottom: 0px;
+  }
+  & label {
+    margin: 0px 5px;
   }
 }

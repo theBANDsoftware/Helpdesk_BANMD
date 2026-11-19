@@ -17,7 +17,7 @@ type MenuLink = {
 const menuLinks: MenuLink[] = [
   {
     to: '/tickets/mine',
-    label: 'Mina ärenden',
+    label: 'Ärenden',
     shortLabel: 'Mina',
     icon: '⌂',
     roles: ['EMPLOYEE'],
@@ -31,18 +31,18 @@ const menuLinks: MenuLink[] = [
     roles: ['EMPLOYEE', 'IT_ADMIN'],
   },
   {
-    to: '/tickets/assigned',
-    label: 'Mina tilldelade ärenden',
-    shortLabel: 'Tilldelade',
-    icon: '✓',
-    roles: ['IT_ADMIN'],
-  },
-  {
     to: '/tickets/statistics',
     label: 'Statistik',
     shortLabel: 'Statistik',
     icon: '▤',
     roles: ['IT_ADMIN'],
+  },
+  {
+    to: '/faq',
+    label: 'Vanliga frågor',
+    shortLabel: 'Statistik',
+    icon: '?',
+    roles: ['EMPLOYEE', 'IT_ADMIN'],
   },
 ];
 

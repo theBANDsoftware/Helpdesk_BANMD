@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import type { FormEvent } from 'react';
+import { Link } from 'react-router';
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { useMutation } from '@tanstack/react-query';
 import { categoryLabels, createTicket } from './ticketsApi';
 import { ApiError } from '../../shared/apiClient';
@@ -42,6 +43,10 @@ export default function NewTicketForm() {
   return (
     <section className="card">
       <h2 className="section-title">Anmäl ett fel</h2>
+      {/* Många fel går att lösa själv, så visa vägen dit först (TB-77) */}
+      <p className="faq-hint">
+        Kolla gärna <Link to="/faq">Vanliga frågor</Link> först, kanske finns svaret redan där.
+      </p>
       <form className="form-stack" onSubmit={handleSubmit} noValidate>
         <label className="form-field">
           Rubrik
