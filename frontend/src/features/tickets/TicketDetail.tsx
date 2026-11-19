@@ -162,8 +162,8 @@ export default function TicketDetail() {
 
   if (!Number.isInteger(ticketId)) {
     return (
-      <section className="card">
-        <a href="#" onClick={() => navigate(-1)} className="link">
+      <section className="card ticket-detail-pane">
+        <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
         <p className="error">Ärendet hittades inte</p>
@@ -215,15 +215,15 @@ export default function TicketDetail() {
   return (
     <>
       {query.isSuccess && (
-        <section>
+        <section className="ticket-comments-pane">
           <TicketComments
             ticketId={ticketId}
             canComment={isItAdmin || query.data.createdById === currentUser?.id}
           />
         </section>
       )}
-      <section className="card">
-        <a href="#" onClick={() => navigate(-1)} className="link">
+      <section className="card ticket-detail-pane">
+        <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
         {query.isPending && <p>Hämtar ärendet …</p>}
@@ -235,21 +235,23 @@ export default function TicketDetail() {
         )}
         {query.isSuccess && (
           <>
-            <h2>{query.data.title}</h2>
-            <p>{query.data.description}</p>
-            <DataTable
-              data={setColumns(
-                {
-                  ...query.data,
-                  category: categoryLabels[query.data.category],
-                  status: statusLabels[query.data.status],
-                  priority: priorityLabels[query.data.priority],
-                  assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
-                },
-                ticketColumns,
-                ['title', 'description'],
-              )}
-            ></DataTable>
+            <h2 className="section-title">{query.data.title}</h2>
+            <p className="text-block">{query.data.description}</p>
+            <div className="data-table ticket-detail-table">
+              <DataTable
+                data={setColumns(
+                  {
+                    ...query.data,
+                    category: categoryLabels[query.data.category],
+                    status: statusLabels[query.data.status],
+                    priority: priorityLabels[query.data.priority],
+                    assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
+                  },
+                  ticketColumns,
+                  ['title', 'description'],
+                )}
+              />
+            </div>
 
             {/* Ändra eller ta tillbaka. Bara anmälaren, och bara när status är Ny (TB-51). */}
             {query.data.createdById === currentUser?.id && query.data.status === 'NEW' && (
@@ -270,24 +272,14 @@ export default function TicketDetail() {
 
             {/* Val för status – visas bara för IT-ansvariga (TB-27, AK 3) */}
             {isItAdmin && (
-              <div
-                className="status-control"
-                style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-              >
-                <label
-                  htmlFor="statusSelect"
-                  style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                >
-                  Status
-                </label>
+              <div className="section-divider inline-field">
+                <label htmlFor="statusSelect">Status</label>
                 <select
                   id="statusSelect"
                   value={resolving ? 'RESOLVED' : query.data.status}
                   onChange={handleStatusChange}
                   disabled={statusMutation.isPending}
                 >
-                  {/* Återkallad kan IT inte välja, bara anmälaren kan ta tillbaka (TB-51).
-                      Den visas bara när ärendet redan är återkallat. */}
                   {(Object.keys(statusLabels) as StatusTicket[])
                     .filter((status) => status !== 'WITHDRAWN' || query.data.status === 'WITHDRAWN')
                     .map((status) => (
@@ -319,24 +311,16 @@ export default function TicketDetail() {
                     </div>
                   </form>
                 )}
-                {statusMutation.isPending && <span> Sparar …</span>}
+                {statusMutation.isPending && <span className="helper-text">Sparar …</span>}
                 {statusError && <p className="error">{statusError}</p>}
               </div>
             )}
 
-            {/* Val för prioritet, kategori och tilldelad – visas bara för IT-ansvariga */}
+            {/* Val för prioritet & tilldelad – visas bara för IT-ansvariga */}
             {isItAdmin && (
               <>
-                <div
-                  className="status-control"
-                  style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-                >
-                  <label
-                    htmlFor="prioritySelect"
-                    style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                  >
-                    Prioritet
-                  </label>
+                <div className="section-divider inline-field">
+                  <label htmlFor="prioritySelect">Prioritet</label>
                   <select
                     id="prioritySelect"
                     value={query.data.priority}
@@ -349,20 +333,12 @@ export default function TicketDetail() {
                       </option>
                     ))}
                   </select>
-                  {priorityMutation.isPending && <span> Sparar …</span>}
+                  {priorityMutation.isPending && <span className="helper-text">Sparar …</span>}
                   {priorityError && <p className="error">{priorityError}</p>}
                 </div>
 
-                <div
-                  className="status-control"
-                  style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-                >
-                  <label
-                    htmlFor="categorySelect"
-                    style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                  >
-                    Kategori
-                  </label>
+                <div className="section-divider inline-field">
+                  <label htmlFor="categorySelect">Kategori</label>
                   <select
                     id="categorySelect"
                     value={query.data.category}
@@ -379,17 +355,8 @@ export default function TicketDetail() {
                   {categoryError && <p className="error">{categoryError}</p>}
                 </div>
 
-                {/* Val för tilldelad – visas bara för IT-ansvariga */}
-                <div
-                  className="assign-control"
-                  style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-                >
-                  <label
-                    htmlFor="assignSelect"
-                    style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                  >
-                    Tilldelad
-                  </label>
+                <div className="section-divider inline-field">
+                  <label htmlFor="assignSelect">Tilldelad</label>
                   <select
                     id="assignSelect"
                     value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
@@ -403,7 +370,7 @@ export default function TicketDetail() {
                       </option>
                     ))}
                   </select>
-                  {assignMutation.isPending && <span> Sparar …</span>}
+                  {assignMutation.isPending && <span className="helper-text">Sparar …</span>}
                   {assignError && <p className="error">{assignError}</p>}
                 </div>
               </>

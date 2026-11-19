@@ -35,7 +35,9 @@ Samtal startade 14:24 till 16:24
 | Noah Fältman    | Ja      | –    | Review, retro och planning | -                 |
 | Mustafa Samir   | Ja      | –    | Review, retro och planning | -                 |
 
-## Tisdag ÅÅÅÅ-MM-DD
+## Tisdag 2026-11-17
+
+Samtal startade 19:00 till 19:26
 
 | Namn            | Närvaro | Igår                       | Idag                                  | Hinder |
 | --------------- | ------- | -------------------------- | ------------------------------------- | ------ |
@@ -45,14 +47,17 @@ Samtal startade 14:24 till 16:24
 | Noah Fältman    | Ja      | Review, retro och planning | TB-66 Gemensam formatering i frontend |
 | Mustafa Samir   | Ja      | Review, retro och planning | -                                     |
 
-## Onsdag ÅÅÅÅ-MM-DD
+## Onsdag 2026-11-18
 
-| Namn | Närvaro | Igår | Idag | Hinder |
-| ---- | ------- | ---- | ---- | ------ |
-|      |         |      |      |        |
-|      |         |      |      |        |
-|      |         |      |      |        |
-|      |         |      |      |        |
+Samtal startade 17:10 till 16:24
+
+| Namn            | Närvaro | Igår                                  | Idag                                                         | Hinder |
+| --------------- | ------- | ------------------------------------- | ------------------------------------------------------------ | ------ |
+| Adli Anabtawi   | Ja      | -                                     | TB-81 Som IT-ansvarig vill jag ändra kategori på ett ärende, |        |
+| Bleart Rama     | Ja      | -                                     | -                                                            |        |
+| David Andersson | Ja      | -                                     | -                                                            |        |
+| Noah Fältman    | Ja      | TB-66 Gemensam formatering i frontend | -                                                            |        |
+| Mustafa Samir   | Ja      | -                                     | -                                                            |        |
 
 ## Torsdag ÅÅÅÅ-MM-DD
 

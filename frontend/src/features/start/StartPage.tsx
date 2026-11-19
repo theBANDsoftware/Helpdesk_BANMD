@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { useSelectedUser } from '../users/selectedUserContext';
+import "./StartPage.css"
 
 /**
  * Enkel startsida efter valet av användare. Vart man skickas beroende på roll

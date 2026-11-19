@@ -43,7 +43,7 @@
 > - Vi tog in för mycket. Två stories blev inte klara.
 > - Ingen visste att Amir satt fast med Docker förrän torsdag.
 
--
+- Dubblekolla när vi städar kod.
 -
 
 ## Åtgärder till nästa sprint
