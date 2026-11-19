@@ -35,18 +35,18 @@ export function UserList() {
 
   return (
     <section className="card">
-      <h2>Vem är du?</h2>
+      <h2 className="section-title">Vem är du?</h2>
       {state.kind === 'loading' && <p>Hämtar användare …</p>}
       {state.kind === 'ok' && state.users.length === 0 && (
-        <p>Det finns inga användare i databasen. Har testdatan lagts in?</p>
+        <p className="empty-state">Det finns inga användare i databasen. Har testdatan lagts in?</p>
       )}
       {state.kind === 'ok' && state.users.length > 0 && (
-        <ul className="user-list">
+        <ul className="list">
           {state.users.map((user) => (
             <li key={user.id}>
-              <button type="button" className="user-option" onClick={() => choose(user)}>
-                <span className="user-name">{user.name}</span>
-                <span className="user-role">{roleLabels[user.role]}</span>
+              <button type="button" className="list-row-btn" onClick={() => choose(user)}>
+                <span className="item-title">{user.name}</span>
+                <span className="pill">{roleLabels[user.role]}</span>
               </button>
             </li>
           ))}

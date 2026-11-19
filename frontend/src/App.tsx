@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { BrowserRouter, Outlet, Navigate, Route, Routes } from 'react-router';
 import { UserList } from './features/users/UserList';
 import { CurrentUser } from './features/users/CurrentUser';
 import { RequireUser } from './features/users/RequireUser';
@@ -10,6 +10,7 @@ import TicketDetail from './features/tickets/TicketDetail';
 import AllTickets from './features/tickets/Tickets';
 import TicketStatistics from './features/tickets/TicketStatistics';
 import FaqPage from './features/faq/FaqPage';
+import "./index.css"
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
@@ -22,15 +23,42 @@ export default function App() {
   return (
     <BrowserRouter>
       <SelectedUserProvider>
-        <header className="app-header">
-          <h1>Helpdesk</h1>
-          <NavMenu />
-          <CurrentUser />
-        </header>
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<UserList />} />
-            <Route element={<RequireUser />}>
+        <Routes>
+          {/* Startsida: Välj användare (ingen sidomeny) */}
+          <Route
+            path="/"
+            element={
+              <div className="login-shell">
+                <header className="workspace-topbar">
+                  <span className="workspace-brand">Helpdesk</span>
+                </header>
+                <main className="login-main">
+                  <UserList />
+                </main>
+              </div>
+            }
+          />
+
+          {/* Inloggat läge: Helskärm med toppbar + vänstersidomeny */}
+          <Route element={<RequireUser />}>
+            <Route
+              element={
+                <div className="workspace-shell">
+                  <header className="workspace-topbar">
+                    <span className="workspace-brand">Helpdesk</span>
+                    <CurrentUser />
+                  </header>
+                  <div className="workspace-body">
+                    <aside className="workspace-sidebar">
+                      <NavMenu />
+                    </aside>
+                    <main className="workspace-main">
+                      <Outlet />
+                    </main>
+                  </div>
+                </div>
+              }
+            >
               <Route path="/start" element={<StartPage />} />
               <Route path="/tickets" element={<AllTickets />} />
               <Route path="/tickets/mine" element={<AllTickets />} />
@@ -39,9 +67,10 @@ export default function App() {
               <Route path="/tickets/statistics" element={<TicketStatistics />} />
               <Route path="/faq" element={<FaqPage />} />
             </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </SelectedUserProvider>
     </BrowserRouter>
   );
