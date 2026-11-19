@@ -1,16 +1,19 @@
 package com.thebanmd.helpdesk.services;
 
 import com.thebanmd.helpdesk.dtos.*;
+import com.thebanmd.helpdesk.entities.Comment;
 import com.thebanmd.helpdesk.entities.Ticket;
 import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
+import com.thebanmd.helpdesk.exceptions.ResolutionRequiredException;
 import com.thebanmd.helpdesk.exceptions.TicketNotEditableException;
 import com.thebanmd.helpdesk.exceptions.TicketNotFoundException;
 import com.thebanmd.helpdesk.exceptions.UserNotFoundException;
 import com.thebanmd.helpdesk.mappers.TicketMapper;
+import com.thebanmd.helpdesk.repositories.CommentRepository;
 import com.thebanmd.helpdesk.repositories.TicketRepository;
 import com.thebanmd.helpdesk.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     /** Skapar ett ärende med status NEW och den valda användaren som anmälare. */
     public void create(CreateTicketRequest ticket, Long createdById) {
@@ -109,8 +113,19 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
 
+        // Ett ärende som markeras som löst måste ha en lösning (TB-80)
+        boolean resolving = request.status() == Status.RESOLVED;
+        if (resolving && (request.resolution() == null || request.resolution().isBlank())) {
+            throw new ResolutionRequiredException();
+        }
+
         ticket.setStatus(request.status());
         Ticket updated = ticketRepository.save(ticket);
+
+        // Lösningen sparas som en vanlig kommentar, i samma transaktion som statusen
+        if (resolving) {
+            commentRepository.save(new Comment(updated, performingUser, "Lösning: " + request.resolution().trim()));
+        }
         return ticketMapper.toDetailResponse(updated);
     }
 

@@ -108,11 +108,12 @@ export async function updateTicketStatus(
   ticketId: number,
   status: StatusTicket,
   currentUserId: number,
+  resolution?: string,
 ): Promise<TicketDetailResponse> {
   return apiRequest<TicketDetailResponse>(
     `/tickets/${ticketId}/status`,
     'PUT',
-    { status },
+    { status, resolution },
     { 'X-User-Id': currentUserId.toString() },
   );
 }

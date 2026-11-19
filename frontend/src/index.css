@@ -219,6 +219,27 @@ body {
   text-align: left;
 }
 
+/* Lösning när ett ärende markeras som löst (TB-80) */
+.resolution-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.resolution-form label {
+  font-weight: 600;
+}
+
+.resolution-form textarea {
+  width: 100%;
+  font: inherit;
+}
+
+.resolution-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 /* Vanliga frågor (TB-77) */
 
 .faq-section {
