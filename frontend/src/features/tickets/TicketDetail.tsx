@@ -9,6 +9,7 @@ import {
   assignTicket,
   updateTicketStatus,
   updateTicketPriority,
+  updateTicketCategory,
   priorityLabels,
   type StatusTicket,
 } from './ticketsApi';
@@ -16,7 +17,7 @@ import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
-import type { TicketPriority } from '../../Types';
+import type { categoryTicket, TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
@@ -32,6 +33,7 @@ export default function TicketDetail() {
   const [assignError, setAssignError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [priorityError, setPriorityError] = useState<string | null>(null);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ['tickets', ticketId],
@@ -100,6 +102,31 @@ export default function TicketDetail() {
     },
   });
 
+  // Mutation för att ändra kategori (TB-81). Samma mönster som prioriteten nedan.
+  const categoryMutation = useMutation({
+    mutationFn: (category: categoryTicket) => {
+      if (!currentUser) throw new Error('Ingen användare är vald');
+      return updateTicketCategory(ticketId, category, currentUser.id);
+    },
+    onSuccess: (updatedTicket) => {
+      setCategoryError(null);
+      queryClient.setQueryData(['tickets', ticketId], updatedTicket);
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        typeof error.body === 'object' &&
+        error.body &&
+        'error' in error.body
+      ) {
+        setCategoryError((error.body as { error: string }).error);
+      } else {
+        setCategoryError('Kunde inte ändra kategori.');
+      }
+    },
+  });
+
   // Mutation till prioritering
   const priorityMutation = useMutation({
     mutationFn: (priority: TicketPriority) => {
@@ -148,6 +175,10 @@ export default function TicketDetail() {
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     statusMutation.mutate(e.target.value as StatusTicket);
+  }
+
+  function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    categoryMutation.mutate(e.target.value as categoryTicket);
   }
 
   function handlePriorityChange(e: React.ChangeEvent<HTMLSelectElement>) {
