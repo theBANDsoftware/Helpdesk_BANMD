@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { formatDate } from '../../shared/formatDate';
+import { formatDate, timestampToTimestring } from '../../shared/formatDate';
 import { assignTicket, categoryLabels, priorityLabels, statusLabels } from './ticketsApi';
 import { useSelectedUser } from '../users/selectedUserContext';
 import type { TicketPriority, TicketSummary } from '../../Types';
@@ -43,7 +43,6 @@ export default function TicketListItem({ data }: Props) {
 			setTakeError('Kunde inte ta ärendet. Försök igen.');
 		},
 	});
-
 	return (
     <>
 		<li key={data.id} className="list-item">
@@ -57,7 +56,7 @@ export default function TicketListItem({ data }: Props) {
 			</div>
 			<span className="item-meta">
 			{categoryLabels[data.category]} · {statusLabels[data.status]} ·{' '}
-			{formatDate(data.createdAt)}
+			{timestampToTimestring(data.createdAt)}
 			</span>
 			{isItAdmin && (
         <span className="item-meta">
