@@ -60,6 +60,17 @@ public class TicketController {
         return ticketService.withdrawTicket(id, userId);
     }
 
+    /**
+     * Anmälaren öppnar sitt lösta eller återkallade ärende igen (TB-73).
+     * Löst blir Pågående, återkallat blir Ny. 403 om man inte är anmälare.
+     */
+    @PostMapping("/{id}/reopen")
+    public TicketDetailResponse reopenTicket(
+        @PathVariable Long id,
+        @RequestHeader("X-User-Id") Long userId) {
+        return ticketService.reopenTicket(id, userId);
+    }
+
     /** Tilldelar ärendet till en IT-ansvarig, eller tar bort tilldelningen om assignedToUserId är null. */
     @PutMapping("/{id}/assign")
     public TicketDetailResponse assignTicket(

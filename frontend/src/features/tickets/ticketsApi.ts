@@ -89,6 +89,14 @@ export async function withdrawTicket(ticketId: number): Promise<TicketDetailResp
   return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}/withdraw`, 'POST');
 }
 
+/**
+ * Anmälaren öppnar sitt lösta eller återkallade ärende igen (TB-73).
+ * Löst blir Pågående, återkallat blir Ny.
+ */
+export async function reopenTicket(ticketId: number): Promise<TicketDetailResponse> {
+  return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}/reopen`, 'POST');
+}
+
 /** Tilldelar ärendet till en IT-ansvarig eller tar bort tilldelningen (null) */
 export async function assignTicket(
   ticketId: number,
