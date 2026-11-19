@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { formatDate, timestampToTimestring } from '../../shared/formatDate';
+import { timestampToTimestring } from '../../shared/formatDate';
 import { assignTicket, categoryLabels, priorityLabels, statusLabels } from './ticketsApi';
 import { useSelectedUser } from '../users/selectedUserContext';
 import type { TicketPriority, TicketSummary } from '../../Types';
@@ -44,7 +44,6 @@ export default function TicketListItem({ data }: Props) {
 		},
 	});
 	return (
-    <>
 		<li key={data.id} className="list-item">
 			<div className="list-item-top">
 			<Link to={'/tickets/' + data.id} className="item-link">
@@ -77,23 +76,5 @@ export default function TicketListItem({ data }: Props) {
 			)}
 				{takeError && <p className="error">{takeError}</p>}
 		</li>
-
-
-		{/* <li>
-			<Link to={'/tickets/' + data.id}>
-				<span className="ticket-title">{data.title}</span>
-			</Link>
-			<span className="ticket-meta">
-				{categoryLabels[data.category]} · {statusLabels[data.status]} ·{' '}
-				{isItAdmin && <>Prioritet: {priorityLabels[data.priority]} · </>}
-				{formatDate(data.createdAt)}
-			</span>
-			{isItAdmin && (
-				<span className="ticket-meta">
-					Anmälare: {data.createdBy} · Tilldelad: {data.assignedTo ?? 'Ej tilldelad'}
-				</span>
-			)}
-		</li> */}
-    </>
 	);
 }
