@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAllTickets, statusLabels } from './ticketsApi';
-import type { TicketPriority } from '../../Types';
+import { categoryLabels, getAllTickets, statusLabels } from './ticketsApi';
+import type { categoryTicket, TicketPriority } from '../../Types';
 import TicketSearch from './TicketSearch';
 import { useSelectedUser } from '../users/selectedUserContext';
 import TicketListItem from './TicketListItem';
@@ -22,6 +22,8 @@ export default function AllTickets() {
   const [sortBy, setSortBy] = useState<'time' | 'priority'>('priority');
   const [typeFilter, setTypeFilter] = useState('OPEN');
   const [assignedFilter, setAssignedFilter] = useState("mine");
+	// Kategorin som IT har valt, eller ALL om alla kategorier visas (TB-76)
+	const [categoryFilter, setCategoryFilter] = useState<categoryTicket | 'ALL'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   // Anmälaren som IT har klickat på, eller null om alla anmälare visas (TB-83)
   const [reporterFilter, setReporterFilter] = useState<{ id: number; name: string } | null>(null);
@@ -49,6 +51,11 @@ export default function AllTickets() {
       return true;
     });
   }
+
+	// Filtrera på kategori (TB-76)
+	if (categoryFilter !== 'ALL') {
+		filteredTickets = filteredTickets.filter((ticket) => ticket.category === categoryFilter);
+	}
 
   // Filtrera på anmälaren som IT har klickat på (TB-83)
   if (reporterFilter) {
@@ -79,6 +86,7 @@ export default function AllTickets() {
         <div className="dashboard-hero-top">
           <h2 className="section-title">Ärenden</h2>
         </div>
+        {/* Sökkomponent */}
         <TicketSearch value={searchTerm} onChange={setSearchTerm} />
       </div>
 
@@ -98,6 +106,7 @@ export default function AllTickets() {
       )}
 
       <div className="inline-row">
+      {/* filtrera på status på ärende */}
       <label className="inline-field">
         Visa
         <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
@@ -109,8 +118,26 @@ export default function AllTickets() {
           <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
         </select>
       </label>
+			{/* filtrera på kategori */}
+			{isItAdmin && (
+				<label className="inline-field">
+					Kategori
+					<select
+						value={categoryFilter}
+						onChange={(e) => setCategoryFilter(e.target.value as categoryTicket | 'ALL')}
+					>
+						<option value="ALL">Alla kategorier</option>
+						{(Object.keys(categoryLabels) as categoryTicket[]).map((category) => (
+							<option key={category} value={category}>
+								{categoryLabels[category]}
+							</option>
+						))}
+					</select>
+				</label>
+			)}
       {isItAdmin && (
       <div className="filterCategory">
+        {/* filtrera på tilldelning */}
         <h3>Tilldelning</h3>
         {[["all", "Alla"], ["mine", "Mina"], ["unassigned", "Ingen"]].map(type => {
           return <label key={type[0]}>{type[1]}
@@ -119,6 +146,7 @@ export default function AllTickets() {
         })}
       </div>
       )}
+        {/* sortering */}
         <label className="inline-field">
           Sortera efter
           <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
