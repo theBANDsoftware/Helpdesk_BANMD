@@ -190,6 +190,7 @@ export default function AllTickets() {
   );
 }
 
+
 function unassignedText(count: number): string {
   if (count === 0) return 'Alla ärenden är tilldelade';
   if (count === 1) return '1 ärende är inte tilldelat';
