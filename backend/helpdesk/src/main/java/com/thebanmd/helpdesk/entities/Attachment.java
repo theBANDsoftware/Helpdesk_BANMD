@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.Instant;
@@ -46,8 +46,8 @@ public class Attachment {
     @Column(name = "size_bytes", nullable = false)
     private Long sizeBytes;
 
-    @ColumnDefault("current_timestamp()")
-    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     public Attachment(Ticket ticket, User uploadedBy, String originalFilename,

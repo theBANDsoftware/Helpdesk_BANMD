@@ -9,6 +9,7 @@ import {
   assignTicket,
   updateTicketStatus,
   updateTicketPriority,
+  updateTicketCategory,
   priorityLabels,
   type StatusTicket,
 } from './ticketsApi';
@@ -16,10 +17,13 @@ import { DataTable, setColumns } from '../../shared/DataTable';
 import { ApiError } from '../../shared/apiClient';
 import { useSelectedUser } from '../users/selectedUserContext';
 import { getUsers } from '../users/usersApi';
-import type { TicketPriority } from '../../Types';
+import type { categoryTicket, TicketPriority } from '../../Types';
 import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
+import TicketReopenAction from './TicketReopenAction';
+import { timestampToTimestring } from '../../shared/formatDate';
+import Icon from '../../shared/Icon';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -31,15 +35,19 @@ export default function TicketDetail() {
   const queryClient = useQueryClient();
   const [assignError, setAssignError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  // När IT väljer Löst måste en lösning skrivas innan statusen sparas (TB-80)
+  const [resolving, setResolving] = useState(false);
+  const [resolution, setResolution] = useState('');
   const [priorityError, setPriorityError] = useState<string | null>(null);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ['tickets', ticketId],
     queryFn: () => getTicket(ticketId),
-        retry: (failureCount, error) =>
+    retry: (failureCount, error) =>
       !(error instanceof ApiError && (error.status === 404 || error.status === 403)) &&
       failureCount < 3,
-      enabled: Number.isInteger(ticketId),
+    enabled: Number.isInteger(ticketId),
   });
 
   // Hämta listan med användare om den inloggade är IT_ADMIN
@@ -77,14 +85,18 @@ export default function TicketDetail() {
 
   // Mutation för att ändra status (TB-27). Samma mönster som tilldelningen ovan.
   const statusMutation = useMutation({
-    mutationFn: (status: StatusTicket) => {
+    mutationFn: ({ status, resolution }: { status: StatusTicket; resolution?: string }) => {
       if (!currentUser) throw new Error('Ingen användare är vald');
-      return updateTicketStatus(ticketId, status, currentUser.id);
+      return updateTicketStatus(ticketId, status, currentUser.id, resolution);
     },
     onSuccess: (updatedTicket) => {
       setStatusError(null);
+      setResolving(false);
+      setResolution('');
       queryClient.setQueryData(['tickets', ticketId], updatedTicket);
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      // Lösningen sparas som en kommentar, så kommentarslistan hämtas om
+      queryClient.invalidateQueries({ queryKey: ['comments', ticketId] });
     },
     onError: (error) => {
       if (
@@ -96,6 +108,31 @@ export default function TicketDetail() {
         setStatusError((error.body as { error: string }).error);
       } else {
         setStatusError('Kunde inte ändra status.');
+      }
+    },
+  });
+
+  // Mutation för att ändra kategori (TB-81). Samma mönster som prioriteten nedan.
+  const categoryMutation = useMutation({
+    mutationFn: (category: categoryTicket) => {
+      if (!currentUser) throw new Error('Ingen användare är vald');
+      return updateTicketCategory(ticketId, category, currentUser.id);
+    },
+    onSuccess: (updatedTicket) => {
+      setCategoryError(null);
+      queryClient.setQueryData(['tickets', ticketId], updatedTicket);
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        typeof error.body === 'object' &&
+        error.body &&
+        'error' in error.body
+      ) {
+        setCategoryError((error.body as { error: string }).error);
+      } else {
+        setCategoryError('Kunde inte ändra kategori.');
       }
     },
   });
@@ -127,8 +164,8 @@ export default function TicketDetail() {
 
   if (!Number.isInteger(ticketId)) {
     return (
-      <section className="card">
-        <a href="#" onClick={() => navigate(-1)} className="link">
+      <section className="card ticket-detail-pane">
+        <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
         <p className="error">Ärendet hittades inte</p>
@@ -147,29 +184,60 @@ export default function TicketDetail() {
   }
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    statusMutation.mutate(e.target.value as StatusTicket);
+    const status = e.target.value as StatusTicket;
+    setStatusError(null);
+    if (status === 'RESOLVED') {
+      // Sparas först när lösningen är skriven, se handleResolveSubmit
+      setResolving(true);
+      return;
+    }
+    setResolving(false);
+    statusMutation.mutate({ status });
+  }
+
+  function handleResolveSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (resolution.trim() === '') return;
+    statusMutation.mutate({ status: 'RESOLVED', resolution: resolution.trim() });
+  }
+
+  function handleResolveCancel() {
+    setResolving(false);
+    setResolution('');
+  }
+
+  function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    categoryMutation.mutate(e.target.value as categoryTicket);
   }
 
   function handlePriorityChange(e: React.ChangeEvent<HTMLSelectElement>) {
     priorityMutation.mutate(e.target.value as TicketPriority);
   }
 
+	// IT-ansvariga ser "tid sedan" och en varning på gamla öppna ärenden, som i listan
+	const createdAt = query.data ? timestampToTimestring(query.data.createdAt) : null;
+	const oldTicketWarning =
+		!!createdAt?.warning &&
+		query.data?.status !== 'WITHDRAWN' &&
+		query.data?.status !== 'RESOLVED';
+	const warningIcon = <Icon name="schedule" error />;
+
   return (
     <>
       {query.isSuccess && (
-        <section>
+        <section className="ticket-comments-pane">
           <TicketComments
             ticketId={ticketId}
             canComment={isItAdmin || query.data.createdById === currentUser?.id}
           />
         </section>
       )}
-      <section className="card">
-        <a href="#" onClick={() => navigate(-1)} className="link">
+      <section className="card ticket-detail-pane">
+        <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
-        {query.isPending && <p>Hämtar ärendet …</p>}
-                {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
+		{query.isPending && <p>Hämtar ärendet …</p>}
+        {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
         )}
         {query.isError && query.error instanceof ApiError && query.error.status === 403 && (
@@ -177,26 +245,42 @@ export default function TicketDetail() {
         )}
         {query.isSuccess && (
           <>
-            <h2>{query.data.title}</h2>
-            <p>{query.data.description}</p>
-            <DataTable
-              data={setColumns(
-                {
-                  ...query.data,
-                  category: categoryLabels[query.data.category],
-                  status: statusLabels[query.data.status],
-                  priority: priorityLabels[query.data.priority],
-                  assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
-                },
-                ticketColumns,
-                ['title', 'description'],
-              )}
-            ></DataTable>
+            <h2 className="section-title">{query.data.title}</h2>
+            <p className="text-block">{query.data.description}</p>
+            <div className="data-table ticket-detail-table">
+              <DataTable
+                data={setColumns(
+                  {
+                    ...query.data,
+                    category: categoryLabels[query.data.category],
+                    status: statusLabels[query.data.status],
+                    priority: priorityLabels[query.data.priority],
+                    assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
+						createdAt: isItAdmin && createdAt ? (
+							<>
+								{oldTicketWarning && warningIcon}
+								{createdAt.time}
+							</>
+						) : (
+							query.data.createdAt
+						),
+                  },
+                  ticketColumns,
+                  ['title', 'description'],
+                )}
+              />
+            </div>
 
             {/* Ändra eller ta tillbaka. Bara anmälaren, och bara när status är Ny (TB-51). */}
             {query.data.createdById === currentUser?.id && query.data.status === 'NEW' && (
               <TicketOwnerActions ticket={query.data} />
             )}
+
+            {/* Öppna igen. Bara anmälaren, och bara när ärendet är löst eller återkallat (TB-73). */}
+            {query.data.createdById === currentUser?.id &&
+              (query.data.status === 'RESOLVED' || query.data.status === 'WITHDRAWN') && (
+                <TicketReopenAction ticket={query.data} />
+              )}
 
             {/* Bifogade skärmdumpar (TB-35). Anmälaren och IT-ansvariga får ladda upp. */}
             <TicketAttachments
@@ -206,24 +290,14 @@ export default function TicketDetail() {
 
             {/* Val för status – visas bara för IT-ansvariga (TB-27, AK 3) */}
             {isItAdmin && (
-              <div
-                className="status-control"
-                style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-              >
-                <label
-                  htmlFor="statusSelect"
-                  style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-                >
-                  Status
-                </label>
+              <div className="section-divider inline-field">
+                <label htmlFor="statusSelect">Status</label>
                 <select
                   id="statusSelect"
-                  value={query.data.status}
+                  value={resolving ? 'RESOLVED' : query.data.status}
                   onChange={handleStatusChange}
                   disabled={statusMutation.isPending}
                 >
-                  {/* Återkallad kan IT inte välja, bara anmälaren kan ta tillbaka (TB-51).
-                      Den visas bara när ärendet redan är återkallat. */}
                   {(Object.keys(statusLabels) as StatusTicket[])
                     .filter((status) => status !== 'WITHDRAWN' || query.data.status === 'WITHDRAWN')
                     .map((status) => (
@@ -232,68 +306,93 @@ export default function TicketDetail() {
                       </option>
                     ))}
                 </select>
-                {statusMutation.isPending && <span> Sparar …</span>}
+                {resolving && (
+                  <form className="resolution-form" onSubmit={handleResolveSubmit}>
+                    <label htmlFor="resolutionText">Vad gjordes?</label>
+                    <textarea
+                      id="resolutionText"
+                      rows={3}
+                      value={resolution}
+                      onChange={(e) => setResolution(e.target.value)}
+                      placeholder="T.ex. Bytte tonerkassett och startade om skrivaren."
+                    />
+                    <div className="resolution-actions">
+                      <button
+                        type="submit"
+                        disabled={resolution.trim() === '' || statusMutation.isPending}
+                      >
+                        Markera som löst
+                      </button>
+                      <button type="button" onClick={handleResolveCancel}>
+                        Avbryt
+                      </button>
+                    </div>
+                  </form>
+                )}
+                {statusMutation.isPending && <span className="helper-text">Sparar …</span>}
                 {statusError && <p className="error">{statusError}</p>}
               </div>
             )}
 
-          {/* Val för prioritet */}
-          {isItAdmin && (
-            <><div
-              className="status-control"
-              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-              <label
-                htmlFor="prioritySelect"
-                style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-              >
-                Prioritet
-              </label>
-              <select
-                id="prioritySelect"
-                value={query.data.priority}
-                onChange={handlePriorityChange}
-                disabled={priorityMutation.isPending}
-              >
-                {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
-                  <option key={priority} value={priority}>
-                    {priorityLabels[priority]}
-                  </option>
-                ))}
-              </select>
-              {priorityMutation.isPending && <span> Sparar …</span>}
-              {priorityError && <p className="error">{priorityError}</p>}
-            </div>
+            {/* Val för prioritet & tilldelad – visas bara för IT-ansvariga */}
+            {isItAdmin && (
+              <>
+                <div className="section-divider inline-field">
+                  <label htmlFor="prioritySelect">Prioritet</label>
+                  <select
+                    id="prioritySelect"
+                    value={query.data.priority}
+                    onChange={handlePriorityChange}
+                    disabled={priorityMutation.isPending}
+                  >
+                    {(Object.keys(priorityLabels) as TicketPriority[]).map((priority) => (
+                      <option key={priority} value={priority}>
+                        {priorityLabels[priority]}
+                      </option>
+                    ))}
+                  </select>
+                  {priorityMutation.isPending && <span className="helper-text">Sparar …</span>}
+                  {priorityError && <p className="error">{priorityError}</p>}
+                </div>
 
-          {/* Val för tilldelad – visas bara för IT-ansvariga */}
-            <div
-              className="assign-control"
-              style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-            <label
-              htmlFor="assignSelect"
-              style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-            >
-              Tilldelad
-            </label>
-              <select
-                id="assignSelect"
-                value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
-                onChange={handleAssignChange}
-                disabled={assignMutation.isPending}
-              >
-                <option value="">Ej tilldelad</option>
-                {itAdmins.map((admin) => (
-                  <option key={admin.id} value={admin.id}>
-                    {admin.name}
-                  </option>
-                ))}
-              </select>
-              {assignMutation.isPending && <span> Sparar …</span>}
-              {assignError && <p className="error">{assignError}</p>}
-            </div>
-            </>
-          )}
+                <div className="section-divider inline-field">
+                  <label htmlFor="categorySelect">Kategori</label>
+                  <select
+                    id="categorySelect"
+                    value={query.data.category}
+                    onChange={handleCategoryChange}
+                    disabled={categoryMutation.isPending}
+                  >
+                    {(Object.keys(categoryLabels) as categoryTicket[]).map((category) => (
+                      <option key={category} value={category}>
+                        {categoryLabels[category]}
+                      </option>
+                    ))}
+                  </select>
+                  {categoryMutation.isPending && <span> Sparar …</span>}
+                  {categoryError && <p className="error">{categoryError}</p>}
+                </div>
+
+                <div className="section-divider inline-field">
+                  <label htmlFor="assignSelect">Tilldelad</label>
+                  <select
+                    id="assignSelect"
+                    value={currentAssignedAdmin ? currentAssignedAdmin.id : ''}
+                    onChange={handleAssignChange}
+                    disabled={assignMutation.isPending}
+                  >
+                    <option value="">Ej tilldelad</option>
+                    {itAdmins.map((admin) => (
+                      <option key={admin.id} value={admin.id}>
+                        {admin.name}
+                      </option>
+                    ))}
+                  </select>
+                  {assignMutation.isPending && <span className="helper-text">Sparar …</span>}
+                  {assignError && <p className="error">{assignError}</p>}
+                </div>
+              </>
+            )}
           </>
         )}
       </section>

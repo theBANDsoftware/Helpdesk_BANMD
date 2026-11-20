@@ -24,7 +24,7 @@ export function getAttachments(ticketId: number): Promise<AttachmentResponse[]> 
 export function uploadAttachment(ticketId: number, file: File): Promise<AttachmentResponse> {
   const formData = new FormData();
   formData.append('file', file);
-  return apiRequest<AttachmentResponse>(`/tickets/${ticketId}/attachments`, "POST", formData);
+  return apiRequest<AttachmentResponse>(`/tickets/${ticketId}/attachments`, 'POST', formData);
 }
 
 /** Adressen till själva bilden, för <img src>. */
