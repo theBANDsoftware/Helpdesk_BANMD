@@ -11,62 +11,40 @@
   Skriv ärligt. Det här är bra underlag för er individuella reflektion.
 -->
 
-**Datum:**
-**Deltagare:**
-**Leds av:**
+**Datum:** 2026-11-20
+**Deltagare:** Adli Anabtawi, Bleart Rama, David Andersson, Noah Fältman, Mustafa Samir
+**Leds av:** Adli Anabtawi (PO), Noah Fältman(SM)
 
 ## Förra retrons åtgärder
 
-> **Exempel:**
->
-> | Åtgärd | Blev den av? | Hjälpte den? |
-> |---|---|---|
-> | PR:er granskas inom 24 timmar | Ja, nästan alltid | Ja, mycket färre PR:er som låg och väntade |
-
-| Åtgärd | Blev den av? | Hjälpte den? |
-|---|---|---|
-| | | |
+| Åtgärd                                                                            | Blev den av?                     | Hjälpte den? |
+| --------------------------------------------------------------------------------- | -------------------------------- | ------------ |
+| Var och en skriver sin egen rad direkt i Discord-tråden när standupen är slut.    | Vi behövde inte denna punkten.   | Nej          |
+| Scrum Master klistrar in dem i `standup.md` samma kväll.                          | Ja                               | ja           |
+| Retron hålls direkt efter reviewn, samma dag.                                     | Scrum Master i sprint 4 (Bleart) | ja           |
+| Tar någon över ett kort som ligger på en annan person, flyttas det i Jira direkt. | Nej                              | ?            |
 
 ## Vad gick bra?
 
-> **Exempel:**
-> - Standupen tog aldrig mer än 10 minuter.
-> - Lina och Jonas parprogrammerade API-kopplingen och båda förstår den nu.
-
--
--
+- Vi har gjort 16 av 18 kort plus 2 kort som va planenring och buggfixar
+- Hög närvaro på standupen. Alla vad med förutom Bleart på måndagen och Mustafa blev några minuter sen på fredagen.
 
 ## Vad gick mindre bra?
 
-> **Exempel:**
-> - PR:er låg ogranskade i upp till två dagar.
-> - Vi tog in för mycket. Två stories blev inte klara.
-> - Ingen visste att Amir satt fast med Docker förrän torsdag.
-
-- Dubblekolla när vi städar kod.
--
+- Missat all städa up kod.
+- Många merge konflikter p.g.a frontend styling.
 
 ## Åtgärder till nästa sprint
 
 <!-- Högst 2–3. Konkreta, med ansvarig. "Bli bättre på att kommunicera" är inte en åtgärd. -->
 
-> **Exempel:**
->
-> | Åtgärd | Ansvarig |
-> |---|---|
-> | PR:er granskas inom 24 timmar. | Amir påminner på standupen |
-> | Den som sitter fast mer än en timme säger till i Discord. | Alla |
-> | Vi tar in en story mindre än förra sprinten. | Sara (PO) |
-
-| Åtgärd | Ansvarig |
-|---|---|
-| | |
-| | |
+| Åtgärd                                     | Ansvarig |
+| ------------------------------------------ | -------- |
+| Styla medans man gör en komponent          | Alla     |
+| See till att man har tagit bort onödig kod | Alla     |
 
 ## Ändringar i Definition of Done eller gruppkontrakt
 
 <!-- Om ni ändrar något: uppdatera dokumentet och skriv här vad och varför. -->
-
-> **Exempel:** Ny punkt i gruppkontraktet: "Pull requests granskas inom 24 timmar."
 
 -
