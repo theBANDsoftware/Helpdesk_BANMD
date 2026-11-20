@@ -304,6 +304,11 @@ h3 {
   font-weight: 600;
 }
 
+.material-symbols-outlined {
+  margin: 0px 5px;
+  vertical-align: middle;
+}
+
 /* =========================================================
    Knappar & länkar
    ========================================================= */
@@ -563,6 +568,11 @@ input[type='radio']:focus-visible {
 .list-item {
   flex-direction: column;
   gap: var(--space-xs);
+}
+
+.list-item-warning {
+  background-color:  var(--danger-bg);
+  border-color: var(--danger-border);
 }
 
 .list-row-btn {

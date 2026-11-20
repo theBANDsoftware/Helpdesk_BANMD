@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { timestampToTimestring } from '../../shared/formatDate';
 import { assignTicket, categoryLabels, priorityLabels, statusLabels } from './ticketsApi';
 import { useSelectedUser } from '../users/selectedUserContext';
+import Icon from "../../shared/Icon";
 import type { TicketPriority, TicketSummary } from '../../Types';
 
 type Props = {
@@ -43,11 +44,16 @@ export default function TicketListItem({ data }: Props) {
 			setTakeError('Kunde inte ta ärendet. Försök igen.');
 		},
 	});
+
+  const createdAt = timestampToTimestring(data.createdAt);
+  const oldTicketWarning = isItAdmin && createdAt.warning && data.status != "WITHDRAWN" && data.status != "RESOLVED";
+  const warningIcon = <Icon name="schedule" error></Icon>;
+
 	return (
-		<li key={data.id} className="list-item">
+		<li key={data.id} className={"list-item"+((oldTicketWarning && isItAdmin)?" list-item-warning":"")}>
 			<div className="list-item-top">
 			<Link to={'/tickets/' + data.id} className="item-link">
-				<span className="item-title">{data.title}</span>
+				<span className="item-title">{(oldTicketWarning && isItAdmin)?warningIcon:""}{data.title}</span>
 			</Link>
 			<span className={priorityPillClass[data.priority]}>
 				{priorityLabels[data.priority]}
@@ -55,7 +61,7 @@ export default function TicketListItem({ data }: Props) {
 			</div>
 			<span className="item-meta">
 			{categoryLabels[data.category]} · {statusLabels[data.status]} ·{' '}
-			{timestampToTimestring(data.createdAt)}
+			{createdAt.time}
 			</span>
 			{isItAdmin && (
         <span className="item-meta">

@@ -22,6 +22,8 @@ import TicketComments from '../comments/TicketComments';
 import TicketAttachments from '../attachments/TicketAttachments';
 import TicketOwnerActions from './TicketOwnerActions';
 import TicketReopenAction from './TicketReopenAction';
+import { timestampToTimestring } from '../../shared/formatDate';
+import Icon from '../../shared/Icon';
 
 /** Visar all information om ett ärende. */
 export default function TicketDetail() {
@@ -212,6 +214,14 @@ export default function TicketDetail() {
     priorityMutation.mutate(e.target.value as TicketPriority);
   }
 
+	// IT-ansvariga ser "tid sedan" och en varning på gamla öppna ärenden, som i listan
+	const createdAt = query.data ? timestampToTimestring(query.data.createdAt) : null;
+	const oldTicketWarning =
+		!!createdAt?.warning &&
+		query.data?.status !== 'WITHDRAWN' &&
+		query.data?.status !== 'RESOLVED';
+	const warningIcon = <Icon name="schedule" error />;
+
   return (
     <>
       {query.isSuccess && (
@@ -226,7 +236,7 @@ export default function TicketDetail() {
         <a href="#" onClick={() => navigate(-1)} className="back-link">
           &lt; Tillbaka
         </a>
-        {query.isPending && <p>Hämtar ärendet …</p>}
+		{query.isPending && <p>Hämtar ärendet …</p>}
         {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
         )}
@@ -246,6 +256,14 @@ export default function TicketDetail() {
                     status: statusLabels[query.data.status],
                     priority: priorityLabels[query.data.priority],
                     assignedTo: query.data.assignedTo ?? 'Ej tilldelad',
+						createdAt: isItAdmin && createdAt ? (
+							<>
+								{oldTicketWarning && warningIcon}
+								{createdAt.time}
+							</>
+						) : (
+							query.data.createdAt
+						),
                   },
                   ticketColumns,
                   ['title', 'description'],
