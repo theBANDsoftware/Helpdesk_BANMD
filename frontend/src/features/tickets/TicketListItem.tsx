@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { formatDate } from '../../shared/formatDate';
+import { timestampToTimestring } from '../../shared/formatDate';
 import { assignTicket, categoryLabels, priorityLabels, statusLabels } from './ticketsApi';
 import { useSelectedUser } from '../users/selectedUserContext';
+import Icon from "../../shared/Icon";
 import type { TicketPriority, TicketSummary } from '../../Types';
 
 type Props = {
@@ -46,12 +47,15 @@ export default function TicketListItem({ data, onReporterClick }: Props) {
 		},
 	});
 
+  const createdAt = timestampToTimestring(data.createdAt);
+  const oldTicketWarning = isItAdmin && createdAt.warning && data.status != "WITHDRAWN" && data.status != "RESOLVED";
+  const warningIcon = <Icon name="schedule" error></Icon>;
+
 	return (
-    <>
-		<li key={data.id} className="list-item">
+		<li key={data.id} className={"list-item"+((oldTicketWarning && isItAdmin)?" list-item-warning":"")}>
 			<div className="list-item-top">
 			<Link to={'/tickets/' + data.id} className="item-link">
-				<span className="item-title">{data.title}</span>
+				<span className="item-title">{(oldTicketWarning && isItAdmin)?warningIcon:""}{data.title}</span>
 			</Link>
 			<span className={priorityPillClass[data.priority]}>
 				{priorityLabels[data.priority]}
@@ -59,7 +63,7 @@ export default function TicketListItem({ data, onReporterClick }: Props) {
 			</div>
 			<span className="item-meta">
 			{categoryLabels[data.category]} · {statusLabels[data.status]} ·{' '}
-			{formatDate(data.createdAt)}
+			{createdAt.time}
 			</span>
 			{isItAdmin && (
         <span className="item-meta">
@@ -92,23 +96,5 @@ export default function TicketListItem({ data, onReporterClick }: Props) {
 			)}
 				{takeError && <p className="error">{takeError}</p>}
 		</li>
-
-
-		{/* <li>
-			<Link to={'/tickets/' + data.id}>
-				<span className="ticket-title">{data.title}</span>
-			</Link>
-			<span className="ticket-meta">
-				{categoryLabels[data.category]} · {statusLabels[data.status]} ·{' '}
-				{isItAdmin && <>Prioritet: {priorityLabels[data.priority]} · </>}
-				{formatDate(data.createdAt)}
-			</span>
-			{isItAdmin && (
-				<span className="ticket-meta">
-					Anmälare: {data.createdBy} · Tilldelad: {data.assignedTo ?? 'Ej tilldelad'}
-				</span>
-			)}
-		</li> */}
-    </>
 	);
 }

@@ -98,16 +98,6 @@ export default function AllTickets() {
       )}
 
       <div className="inline-row">
-          {/* <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="ALL">Alla</option>
-            <option value="OPEN">Ej lösta</option>
-            <option value="NEW">{statusLabels.NEW}</option>
-            <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
-            <option value="RESOLVED">{statusLabels.RESOLVED}</option>
-            <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
-          </select>
-        </label> */}
-      {/* Sökkomponent */}
       <label className="inline-field">
         Visa
         <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
@@ -171,6 +161,7 @@ export default function AllTickets() {
     </section>
   );
 }
+
 
 function unassignedText(count: number): string {
   if (count === 0) return 'Alla ärenden är tilldelade';
