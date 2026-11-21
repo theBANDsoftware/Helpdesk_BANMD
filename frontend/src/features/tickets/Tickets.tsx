@@ -1,0 +1,198 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { categoryLabels, getAllTickets, statusLabels } from './ticketsApi';
+import type { categoryTicket, TicketPriority } from '../../Types';
+import TicketSearch from './TicketSearch';
+import { useSelectedUser } from '../users/selectedUserContext';
+import TicketListItem from './TicketListItem';
+
+const priorityOrder: Record<TicketPriority, number> = {
+  HIGH: 0,
+  MEDIUM: 1,
+  LOW: 2,
+};
+
+
+/** Alla ärenden från alla anmälare, nyaste först, filtrerade på status. För IT-ansvariga (TB-25, TB-31). */
+export default function AllTickets() {
+  const query = useQuery({
+    queryKey: ['tickets', 'all'],
+    queryFn: getAllTickets,
+  });
+  const [sortBy, setSortBy] = useState<'time' | 'priority'>('priority');
+  const [typeFilter, setTypeFilter] = useState('OPEN');
+  const [assignedFilter, setAssignedFilter] = useState("mine");
+	// Kategorin som IT har valt, eller ALL om alla kategorier visas (TB-76)
+	const [categoryFilter, setCategoryFilter] = useState<categoryTicket | 'ALL'>('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+  // Anmälaren som IT har klickat på, eller null om alla anmälare visas (TB-83)
+  const [reporterFilter, setReporterFilter] = useState<{ id: number; name: string } | null>(null);
+  const { user } = useSelectedUser();
+  const isItAdmin = user?.role === 'IT_ADMIN';
+
+  const unassignedCount = (query.data ?? []).filter(
+    (ticket) => ticket.status !== 'RESOLVED' && ticket.status !== 'WITHDRAWN' && !ticket.assignedTo,
+  ).length;
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+
+  // Filtrera på status
+  let filteredTickets = (query.data ?? []).filter((ticket) => {
+    if (typeFilter === 'ALL') return true;
+    if (typeFilter === 'OPEN') return ticket.status === 'NEW' || ticket.status === 'IN_PROGRESS';
+    return ticket.status === typeFilter;
+  });
+  
+  // Filtrera efter tilldelning
+  if(isItAdmin) {
+    filteredTickets = filteredTickets.filter((ticket) => {
+      if (assignedFilter === "mine") return ticket.assignedToId === user?.id;
+      if (assignedFilter === "unassigned") return ticket.assignedToId === null;
+      return true;
+    });
+  }
+
+	// Filtrera på kategori (TB-76)
+	if (categoryFilter !== 'ALL') {
+		filteredTickets = filteredTickets.filter((ticket) => ticket.category === categoryFilter);
+	}
+
+  // Filtrera på anmälaren som IT har klickat på (TB-83)
+  if (reporterFilter) {
+    filteredTickets = filteredTickets.filter((ticket) => ticket.createdById === reporterFilter.id);
+  }
+
+  // Filtrera på rubrik eller anmälare (skiftlägesokänsligt)
+  const visibleTickets = filteredTickets.filter((ticket) => {
+    if (!normalizedSearch) return true;
+    const titleMatch = ticket.title.toLowerCase().includes(normalizedSearch);
+    const creatorMatch = ticket.createdBy.toLowerCase().includes(normalizedSearch);
+    return titleMatch || creatorMatch;
+  });
+
+  const sortedTickets = query.isSuccess
+    ? [...visibleTickets].sort((a, b) => {
+        if (sortBy === 'priority') {
+          const diff = priorityOrder[a.priority] - priorityOrder[b.priority];
+          if (diff !== 0) return diff;
+        }
+        return b.createdAt.localeCompare(a.createdAt);
+      })
+    : [];
+
+  return (
+    <section className="card">
+      <div className="dashboard-hero">
+        <div className="dashboard-hero-top">
+          <h2 className="section-title">Ärenden</h2>
+        </div>
+        {/* Sökkomponent */}
+        <TicketSearch value={searchTerm} onChange={setSearchTerm} />
+      </div>
+
+      {query.isSuccess && isItAdmin && (
+        <p className={unassignedCount > 0 ? 'badge badge-warning' : 'badge'}>
+          {unassignedText(unassignedCount)}
+        </p>
+      )}
+
+      {reporterFilter && (
+        <p className="reporter-filter">
+          Anmälare: {reporterFilter.name}
+          <button type="button" className="btn" onClick={() => setReporterFilter(null)}>
+            Visa alla anmälare
+          </button>
+        </p>
+      )}
+
+      <div className="inline-row">
+      {/* filtrera på status på ärende */}
+      <label className="inline-field">
+        Visa
+        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+          <option value="ALL">Alla</option>
+          <option value="OPEN">Ej lösta</option>
+          <option value="NEW">{statusLabels.NEW}</option>
+          <option value="IN_PROGRESS">{statusLabels.IN_PROGRESS}</option>
+          <option value="RESOLVED">{statusLabels.RESOLVED}</option>
+          <option value="WITHDRAWN">{statusLabels.WITHDRAWN}</option>
+        </select>
+      </label>
+			{/* filtrera på kategori */}
+			{isItAdmin && (
+				<label className="inline-field">
+					Kategori
+					<select
+						value={categoryFilter}
+						onChange={(e) => setCategoryFilter(e.target.value as categoryTicket | 'ALL')}
+					>
+						<option value="ALL">Alla kategorier</option>
+						{(Object.keys(categoryLabels) as categoryTicket[]).map((category) => (
+							<option key={category} value={category}>
+								{categoryLabels[category]}
+							</option>
+						))}
+					</select>
+				</label>
+			)}
+      {isItAdmin && (
+      <div className="filterCategory">
+        {/* filtrera på tilldelning */}
+        <h3>Tilldelning</h3>
+        {[["all", "Alla"], ["mine", "Mina"], ["unassigned", "Ingen"]].map(type => {
+          return <label key={type[0]}>{type[1]}
+          <input type="radio" name="personal" value={type[0]} checked={assignedFilter === type[0]} onChange={(e) => setAssignedFilter(e.target.value)} />
+        </label>
+        })}
+      </div>
+      )}
+        {/* sortering */}
+        <label className="inline-field">
+          Sortera efter
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'time' | 'priority')}>
+            <option value="time">Tid</option>
+            <option value="priority">Prioritet</option>
+          </select>
+        </label>
+      </div>
+      {query.isPending && <p>Hämtar ärenden …</p>}
+
+
+      {query.isError && <p className="error">Kunde inte hämta ärendena.</p>}
+
+      {query.isSuccess && query.data.length === 0 && (
+        <p className="empty-state">Det finns inga ärenden än</p>
+      )}
+
+      {query.isSuccess && query.data.length > 0 && filteredTickets.length === 0 && (
+        <p className="empty-state">Inga ärenden matchar filtren</p>
+      )}
+
+      {query.isSuccess &&
+        filteredTickets.length > 0 &&
+        visibleTickets.length === 0 &&
+        normalizedSearch !== '' && <p className="empty-state">Inga ärenden matchar sökningen</p>}
+
+      {visibleTickets.length > 0 && (
+        <ul className="list">
+          {sortedTickets.map((ticket) => (
+            <TicketListItem
+              key={ticket.id}
+              data={ticket}
+              onReporterClick={
+                isItAdmin ? (id, name) => setReporterFilter({ id, name }) : undefined
+              }
+            ></TicketListItem>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+
+function unassignedText(count: number): string {
+  if (count === 0) return 'Alla ärenden är tilldelade';
+  if (count === 1) return '1 ärende är inte tilldelat';
+  return `${count} ärenden är inte tilldelade`;
+}

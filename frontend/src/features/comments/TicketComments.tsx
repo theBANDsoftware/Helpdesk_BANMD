@@ -12,14 +12,12 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
   const queryClient = useQueryClient();
   const [commentBody, setCommentBody] = useState('');
 
-  // Hämta kommentarerna för detta ärende
   const { data: comments } = useQuery({
     queryKey: ['comments', ticketId],
     queryFn: () => getComments(ticketId),
     enabled: !!ticketId,
   });
 
-  // Skapa en mutation för att skicka en ny kommentar
   const commentMutation = useMutation({
     mutationFn: (newComment: string) => addComment(ticketId, newComment),
     onSuccess: () => {
@@ -35,19 +33,18 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
   };
 
   return (
-    <div className="mt-8 border-t pt-6">
-      <h3 className="text-xl font-bold mb-4">Kommentarer</h3>
+    <div>
+      <h3 className="subsection-title">Kommentarer</h3>
 
-      {/* Lista alla befintliga kommentarer */}
-      <div className="space-y-4 mb-6">
+      <div className="card-list">
         {!comments || comments.length === 0 ? (
-          <p className="text-gray-500 italic">Inga kommentarer ännu.</p>
+          <p className="empty-state">Inga kommentarer ännu.</p>
         ) : (
           comments.map((comment: CommentResponse) => (
-            <div key={comment.id} className="bg-gray-50 p-4 rounded-md shadow-sm border">
-              <div className="flex justify-between text-sm text-gray-500 mb-2">
-                <span className="font-bold text-gray-700">{comment.author}</span>
-                <span>
+            <article key={comment.id} className="sub-card">
+              <div className="sub-card-header">
+                <span className="item-title">{comment.author}</span>
+                <time className="item-meta" dateTime={comment.createdAt}>
                   {new Date(comment.createdAt).toLocaleString('sv-SE', {
                     year: 'numeric',
                     month: '2-digit',
@@ -55,31 +52,37 @@ export default function TicketComments({ ticketId, canComment }: TicketCommentsP
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
-                </span>
+                </time>
               </div>
-              <p className="whitespace-pre-wrap">{comment.body}</p>
-            </div>
+              <p className="sub-card-body">{comment.body}</p>
+            </article>
           ))
         )}
       </div>
 
-      {/* Formulär - visas för IT-ansvariga och för den som anmält ärendet (TB-30) */}
       {canComment && (
-        <form onSubmit={handleCommentSubmit} className="flex flex-col gap-3">
-          <textarea
-            className="border border-gray-300 rounded-md p-3 w-full"
-            rows={3}
-            placeholder="Skriv en kommentar..."
-            value={commentBody}
-            onChange={(e) => setCommentBody(e.target.value)}
-          />
-          <button
-            type="submit"
-            disabled={!commentBody.trim() || commentMutation.isPending}
-            className="bg-blue-600 text-white py-2 px-4 rounded-md w-fit font-medium disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
-          >
-            {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
-          </button>
+        <form onSubmit={handleCommentSubmit} className="form-stack form-box">
+          <p className="helper-text">
+            Håll en saklig och tydlig ton – beskriv relevanta detaljer för ärendet.
+          </p>
+          <label className="form-field">
+            <textarea
+              className="textarea-autogrow"
+              rows={3}
+              placeholder="Skriv en kommentar..."
+              value={commentBody}
+              onChange={(e) => setCommentBody(e.target.value)}
+            />
+          </label>
+          <div className="btn-row">
+            <button
+              type="submit"
+              disabled={!commentBody.trim() || commentMutation.isPending}
+              className="btn btn-primary"
+            >
+              {commentMutation.isPending ? 'Skickar …' : 'Skicka'}
+            </button>
+          </div>
         </form>
       )}
     </div>

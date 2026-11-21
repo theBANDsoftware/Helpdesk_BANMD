@@ -46,7 +46,6 @@ export default function TicketAttachments({ ticketId, canUpload }: TicketAttachm
     },
   });
 
-  // Samma kontroller som backend, så att man får svar direkt utan att vänta på uppladdningen.
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
     setError(null);
@@ -72,17 +71,19 @@ export default function TicketAttachments({ ticketId, canUpload }: TicketAttachm
   const isFull = attachments.length >= MAX_ATTACHMENTS_PER_TICKET;
 
   return (
-    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}>
-      <h3>Bifogade bilder</h3>
+    <div className="section-divider">
+      <h3 className="subsection-title">Bifogade bilder</h3>
 
       {query.isPending && <p>Hämtar bilder …</p>}
       {query.isError && <p className="error">Kunde inte hämta bilderna.</p>}
-      {query.isSuccess && attachments.length === 0 && <p>Inga bilder bifogade.</p>}
+      {query.isSuccess && attachments.length === 0 && (
+        <p className="empty-state">Inga bilder bifogade.</p>
+      )}
 
       {attachments.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+        <div className="media-grid">
           {attachments.map((attachment) => (
-            <figure key={attachment.id} style={{ margin: 0, width: '180px' }}>
+            <figure key={attachment.id} className="media-card">
               {brokenImages.includes(attachment.id) ? (
                 <p className="error">Bilden kunde inte visas.</p>
               ) : (
@@ -90,22 +91,12 @@ export default function TicketAttachments({ ticketId, canUpload }: TicketAttachm
                   <img
                     src={attachmentUrl(ticketId, attachment.id)}
                     alt={attachment.filename}
-                    style={{
-                      width: '180px',
-                      height: '120px',
-                      objectFit: 'contain',
-                      borderRadius: '4px',
-                      // Ram och grå bakgrund, så att skärmdumpar med vit bakgrund syns tydligt
-                      border: '1px solid #ccc',
-                      backgroundColor: '#f2f2f2',
-                      padding: '4px',
-                      boxSizing: 'border-box',
-                    }}
+                    className="media-thumb"
                     onError={() => setBrokenImages((ids) => [...ids, attachment.id])}
                   />
                 </a>
               )}
-              <figcaption style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>
+              <figcaption className="media-caption">
                 {attachment.filename} · {attachment.uploadedBy}
               </figcaption>
             </figure>
@@ -114,30 +105,35 @@ export default function TicketAttachments({ ticketId, canUpload }: TicketAttachm
       )}
 
       {canUpload && !isFull && (
-        <form onSubmit={handleSubmit}>
-          <label
-            htmlFor="attachmentInput"
-            style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}
-          >
+        <form className="form-stack" onSubmit={handleSubmit}>
+          <label htmlFor="attachmentInput" className="form-field">
             Bifoga skärmdump
+            <input
+              id="attachmentInput"
+              ref={fileInput}
+              type="file"
+              accept={ALLOWED_ATTACHMENT_TYPES.join(',')}
+              onChange={handleFileChange}
+              disabled={uploadMutation.isPending}
+            />
           </label>
-          <input
-            id="attachmentInput"
-            ref={fileInput}
-            type="file"
-            accept={ALLOWED_ATTACHMENT_TYPES.join(',')}
-            onChange={handleFileChange}
-            disabled={uploadMutation.isPending}
-          />
-          <button type="submit" disabled={!selectedFile || uploadMutation.isPending}>
-            {uploadMutation.isPending ? 'Laddar upp …' : 'Ladda upp'}
-          </button>
-          <p style={{ fontSize: '0.8rem' }}>
+          <div className="btn-row">
+            <button
+              type="submit"
+              className="btn"
+              disabled={!selectedFile || uploadMutation.isPending}
+            >
+              {uploadMutation.isPending ? 'Laddar upp …' : 'Ladda upp'}
+            </button>
+          </div>
+          <p className="helper-text">
             PNG eller JPG, max 5 MB, högst {MAX_ATTACHMENTS_PER_TICKET} bilder per ärende.
           </p>
         </form>
       )}
-      {canUpload && isFull && <p>Ärendet har redan {MAX_ATTACHMENTS_PER_TICKET} bilder.</p>}
+      {canUpload && isFull && (
+        <p className="helper-text">Ärendet har redan {MAX_ATTACHMENTS_PER_TICKET} bilder.</p>
+      )}
       {error && <p className="error">{error}</p>}
     </div>
   );

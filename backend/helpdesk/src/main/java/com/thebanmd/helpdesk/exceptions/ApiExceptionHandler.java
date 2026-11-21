@@ -75,6 +75,12 @@ public class ApiExceptionHandler {
     }
 
     /** Fel filtyp, för stor fil eller för många bilder (TB-35). */
+    /** Status Löst utan lösning (TB-80). */
+    @ExceptionHandler(ResolutionRequiredException.class)
+    public ResponseEntity<Map<String, String>> handleResolutionRequired(ResolutionRequiredException e) {
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+    }
+
     @ExceptionHandler(InvalidAttachmentException.class)
     public ResponseEntity<Map<String, String>> handleInvalidAttachment(InvalidAttachmentException e) {
         return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

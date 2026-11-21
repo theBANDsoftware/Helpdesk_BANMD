@@ -28,7 +28,6 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState<string | null>(null);
 
-  // Visa det nya ärendet direkt i detaljvyn, och hämta om "Mina ärenden" och de andra listorna
   function showUpdated(updated: TicketDetailResponse) {
     queryClient.setQueryData(['tickets', ticket.id], updated);
     queryClient.invalidateQueries({ queryKey: ['tickets'] });
@@ -57,11 +56,9 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
     if (e instanceof ApiError && e.body && typeof e.body === 'object') {
       const body = e.body as Record<string, string>;
       if ('error' in body) {
-        // T.ex. 409: IT-ansvarig har hunnit ändra status medan man redigerade
         setError(body.error);
         return;
       }
-      // 400 från @Valid: ett meddelande per fält
       setFieldErrors(body as FieldErrors);
       setError('Kontrollera fälten.');
       return;
@@ -80,7 +77,6 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
 
   function handleSave(e: FormEvent) {
     e.preventDefault();
-    // Samma krav som när ärendet skapas
     const errors: FieldErrors = {};
     if (!title.trim() || title.length > 120) errors.title = 'Fyll i en rubrik (högst 120 tecken).';
     if (!description.trim()) errors.description = 'Fyll i en beskrivning.';
@@ -97,22 +93,27 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
   const isBusy = updateMutation.isPending || withdrawMutation.isPending;
 
   return (
-    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #333' }}>
+    <div className="section-divider">
       {!isEditing && (
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button type="button" onClick={startEditing} disabled={isBusy}>
+        <div className="btn-row">
+          <button type="button" className="btn" onClick={startEditing} disabled={isBusy}>
             Ändra
           </button>
-          <button type="button" onClick={handleWithdraw} disabled={isBusy}>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={handleWithdraw}
+            disabled={isBusy}
+          >
             {withdrawMutation.isPending ? 'Tar tillbaka …' : 'Ta tillbaka'}
           </button>
         </div>
       )}
 
       {isEditing && (
-        <form onSubmit={handleSave} noValidate>
-          <h3>Ändra ärendet</h3>
-          <label>
+        <form className="form-stack" onSubmit={handleSave} noValidate>
+          <h3 className="subsection-title">Ändra ärendet</h3>
+          <label className="form-field">
             Rubrik
             <input
               value={title}
@@ -123,7 +124,7 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
           </label>
           {fieldErrors.title && <p className="error">{fieldErrors.title}</p>}
 
-          <label>
+          <label className="form-field">
             Beskrivning
             <textarea
               value={description}
@@ -133,7 +134,7 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
           </label>
           {fieldErrors.description && <p className="error">{fieldErrors.description}</p>}
 
-          <label>
+          <label className="form-field">
             Kategori
             <select
               value={category}
@@ -149,11 +150,16 @@ export default function TicketOwnerActions({ ticket }: TicketOwnerActionsProps) 
           </label>
           {fieldErrors.category && <p className="error">{fieldErrors.category}</p>}
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button type="submit" disabled={isBusy}>
+          <div className="btn-row">
+            <button type="submit" className="btn btn-primary" disabled={isBusy}>
               {updateMutation.isPending ? 'Sparar …' : 'Spara'}
             </button>
-            <button type="button" onClick={() => setIsEditing(false)} disabled={isBusy}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setIsEditing(false)}
+              disabled={isBusy}
+            >
               Avbryt
             </button>
           </div>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation } from '@tanstack/react-query';
@@ -15,9 +16,9 @@ const fieldMessages: Record<Field, string> = {
 };
 
 export default function NewTicketForm() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<categoryTicket>("OTHER");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<categoryTicket>('OTHER');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const mutation = useMutation({
     mutationFn: createTicket,
@@ -41,36 +42,57 @@ export default function NewTicketForm() {
 
   return (
     <section className="card">
-      <h2>Anmäl ett fel</h2>
-      <form onSubmit={handleSubmit} noValidate>
-        <label>
+      <h2 className="section-title">Anmäl ett fel</h2>
+      {/* Många fel går att lösa själv, så visa vägen dit först (TB-77) */}
+      <p className="faq-hint">
+        Kolla gärna <Link to="/faq">Vanliga frågor</Link> först, kanske finns svaret redan där.
+      </p>
+      <form className="form-stack" onSubmit={handleSubmit} noValidate>
+        <label className="form-field">
           Rubrik
-          <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} aria-invalid={!!fieldErrors.title} />
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={120}
+            aria-invalid={!!fieldErrors.title}
+          />
         </label>
         {fieldErrors.title && <p className="error">{fieldErrors.title}</p>}
 
-        <label>
+        <label className="form-field">
           Beskrivning
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} aria-invalid={!!fieldErrors.description} />
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            aria-invalid={!!fieldErrors.description}
+          />
         </label>
         {fieldErrors.description && <p className="error">{fieldErrors.description}</p>}
 
-        <label>
+        <label className="form-field">
           Kategori
-          <select value={category} onChange={(e) => setCategory(e.target.value as categoryTicket)} aria-invalid={!!fieldErrors.category}>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as categoryTicket)}
+            aria-invalid={!!fieldErrors.category}
+          >
             {Object.entries(categoryLabels).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
+              <option key={value} value={value}>
+                {label}
+              </option>
             ))}
           </select>
         </label>
         {fieldErrors.category && <p className="error">{fieldErrors.category}</p>}
 
-        <button type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? 'Skickar …' : 'Skicka'}
-        </button>
+        <div className="btn-row">
+          <button type="submit" className="btn btn-primary" disabled={mutation.isPending}>
+            {mutation.isPending ? 'Skickar …' : 'Skicka'}
+          </button>
+        </div>
       </form>
 
-      {mutation.isSuccess && <p>Ärendet är skapat.</p>}
+      {mutation.isSuccess && <p className="success-message">Ärendet är skapat.</p>}
       {mutation.isError && <p className="error">{errorMessage(mutation.error)}</p>}
     </section>
   );
@@ -89,7 +111,12 @@ function validate(title: string, description: string): FieldErrors {
 
 // Backend svarar 400 med ett fel per fält, t.ex. {"title": "..."}. Texterna visas på svenska här.
 function fieldErrorsFromBackend(error: unknown): FieldErrors {
-  if (!(error instanceof ApiError) || error.status !== 400 || typeof error.body !== 'object' || error.body === null) {
+  if (
+    !(error instanceof ApiError) ||
+    error.status !== 400 ||
+    typeof error.body !== 'object' ||
+    error.body === null
+  ) {
     return {};
   }
   const errors: FieldErrors = {};
