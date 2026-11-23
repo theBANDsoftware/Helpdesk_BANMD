@@ -14,8 +14,8 @@
   Demot ska köras på riktigt, inte med skärmdumpar. Testa det innan.
 -->
 
-**Datum:**
-**Deltagare:**
+**Datum:** _[fyll i]_
+**Deltagare:** Adli Anabtawi, Bleart Rama, David Andersson, Noah Fältman, Mustafa Samir, läraren
 
 ## Del 1: Förberedelse
 
@@ -23,7 +23,7 @@
 
 <!-- Kopiera från planning.md. -->
 
-_[fyll i]_
+Användare loggar in med lösenord, och appen och dokumentationen är redo för slutredovisningen.
 
 
 **Uppnåddes sprintmålet?** Ja / Delvis / Nej
@@ -38,10 +38,19 @@ _[fyll i]_
 > | #4 | Lägga till en syssla | Lina |
 > | #7 | Visa lista med sysslor | Jonas |
 
+<!-- Alla kort i sprinten står här så länge. Flytta de som inte blir klara till "Blev inte klart". -->
+
 | Issue | Story | Visas av |
 |---|---|---|
-| | | |
-| | | |
+| TB-33 | Logga in med lösenord | Noah och Adli |
+| TB-79 | Se vilka ärenden som har ett nytt svar från anmälaren | Bleart |
+| TB-82 | Se mina liknande öppna ärenden när jag skriver en rubrik | Bleart |
+| TB-84 | Få notiser i appen när något händer i mina ärenden | David |
+| TB-63 | Tester för behörighetsreglerna i TicketService | Adli |
+| TB-60 | Tillbaka till användarlistan om den valda användaren inte finns | Mustafa |
+| TB-59 | Mina tilldelade ärenden hämtas med en SQL-fråga | Noah |
+| TB-89 | Ändra felaktig statistik till FAQ i mobilversion, och "vanliga frågor" till "FAQ" | Mustafa |
+| TB-65 | README och demoguide inför slutredovisningen | David |
 
 ### Blev inte klart
 
@@ -70,7 +79,7 @@ _[fyll i]_
 
 <!-- Något ni vill ha feedback på eller är osäkra på? -->
 
--
+- _[fyll i]_
 
 ## Del 2: Efter reviewn
 

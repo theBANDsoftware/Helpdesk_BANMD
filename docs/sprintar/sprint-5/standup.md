@@ -26,11 +26,11 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| Adli Anabtawi | | | | |
-| Bleart Rama | | | | |
-| David Andersson | | | | |
-| Noah Fältman | | | | |
-| Mustafa Samir | | | | |
+| Adli Anabtawi | Ja | – | Review, retro och planning | – |
+| Bleart Rama | Ja | – | Review, retro och planning | – |
+| David Andersson | Ja | – | Review, retro och planning | – |
+| Noah Fältman | Ja | – | Review, retro och planning | – |
+| Mustafa Samir | Ja | – | Review, retro och planning | – |
 
 ## Tisdag 2026-11-24
 
