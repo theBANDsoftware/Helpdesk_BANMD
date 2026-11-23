@@ -178,6 +178,27 @@ body {
   display: none;
 }
 
+/* Antalet olästa notiser ligger som en bubbla i hörnet på menylänken */
+.nav-link {
+	position: relative;
+}
+
+.notification-count {
+	position: absolute;
+	top: 0.1rem;
+	right: 0.25rem;
+	min-width: 1.1rem;
+	height: 1.1rem;
+	padding: 0 0.3rem;
+	border-radius: 999px;
+	background-color: var(--danger);
+	color: #fff;
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: 1.1rem;
+	text-align: center;
+}
+
 /* =========================================================
    Rubriker, texter, badges & pills
    ========================================================= */
@@ -295,6 +316,13 @@ h3 {
   background-color: var(--warning-bg);
   border-color: var(--warning-border);
   font-weight: 600;
+}
+
+.pill-info {
+	color: var(--accent);
+	background-color: var(--bg-selected);
+	border-color: var(--accent);
+	font-weight: 600;
 }
 
 .pill-danger {
@@ -573,6 +601,19 @@ input[type='radio']:focus-visible {
 .list-item-warning {
   background-color:  var(--danger-bg);
   border-color: var(--danger-border);
+}
+
+/* Olästa notiser, med en blå kant till vänster */
+.list-item-unread {
+	background-color: var(--bg-selected);
+	box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.list-item-unread .item-title {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-xs);
+	color: var(--accent);
 }
 
 .list-row-btn {

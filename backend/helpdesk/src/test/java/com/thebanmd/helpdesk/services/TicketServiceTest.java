@@ -42,7 +42,8 @@ class TicketServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
     private final CommentRepository commentRepository = mock(CommentRepository.class);
     private final TicketService service = new TicketService(
-            ticketRepository, Mappers.getMapper(TicketMapper.class), userRepository, commentRepository);
+            ticketRepository, Mappers.getMapper(TicketMapper.class), userRepository, commentRepository,
+			mock(NotificationService.class));
 
     private final CreateTicketRequest request =
             new CreateTicketRequest("Skrivaren skriver inte ut", "Det blinkar rött", Category.PRINTER);

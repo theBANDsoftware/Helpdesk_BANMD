@@ -35,6 +35,7 @@ public class TicketService {
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+	private final NotificationService notificationService;
 
     /** Skapar ett ärende med status NEW och den valda användaren som anmälare. */
     public void create(CreateTicketRequest ticket, Long createdById) {
@@ -71,7 +72,7 @@ public class TicketService {
      */
     @Transactional
     public TicketDetailResponse assignTicket(Long ticketId, AssignTicketRequest request, Long performedByUserId) {
-        requireItAdmin(performedByUserId, "tilldela ärenden");
+        User performingUser = requireItAdmin(performedByUserId, "tilldela ärenden");
 
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
@@ -84,6 +85,7 @@ public class TicketService {
         }
 
         Ticket updated = ticketRepository.save(ticket);
+		notificationService.ticketUpdated(updated, performingUser, "ändrade tilldelningen på");
         return ticketMapper.toDetailResponse(updated);
     }
 
@@ -113,6 +115,7 @@ public class TicketService {
         if (resolving) {
             commentRepository.save(new Comment(updated, performingUser, "Lösning: " + request.resolution().trim()));
         }
+		notificationService.ticketUpdated(updated, performingUser, "ändrade status på");
         return ticketMapper.toDetailResponse(updated);
     }
 

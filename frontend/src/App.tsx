@@ -10,6 +10,7 @@ import TicketDetail from './features/tickets/TicketDetail';
 import AllTickets from './features/tickets/Tickets';
 import TicketStatistics from './features/tickets/TicketStatistics';
 import FaqPage from './features/faq/FaqPage';
+import Notifications from './features/notifications/Notifications';
 import "./index.css"
 
 /**
@@ -66,6 +67,7 @@ export default function App() {
               <Route path="/tickets/:id" element={<TicketDetail />} />
               <Route path="/tickets/statistics" element={<TicketStatistics />} />
               <Route path="/faq" element={<FaqPage />} />
+							<Route path="/notifications" element={<Notifications />} />
             </Route>
           </Route>
 

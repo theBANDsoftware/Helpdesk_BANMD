@@ -24,15 +24,17 @@ Appen är ett enkelt ärendesystem för små organisationer, till exempel en sko
 6. IT-ansvarig ändrar status: Ny → Pågår → Löst
 7. Både anställd och IT-ansvarig kan skriva kommentarer på ett ärende
 8. En anställd kan läsa svar på vanliga problem innan hen anmäler ett fel (tillagd i sprint 4, beslut 15)
+9. Den som anmält ett ärende får en notis i appen när någon annan kommenterar, ändrar status på eller tilldelar ärendet (tillagd i sprint 5, TB-84)
+10. IT-ansvarig ger ett ärende prioriteten Hög, Medel eller Låg (tillagd i sprint 2, TB-32)
+11. Anmälaren kan bifoga skärmdumpar till ett ärende (tillagd i sprint 2, TB-35)
+12. IT-ansvarig ser hur många öppna ärenden det finns per kategori (tillagd i sprint 3, TB-36)
 
 ### Ingår inte i MVP:n
 
 - Riktig inloggning med lösenord eller Microsoft-/Google-konto
-- Prioritet och deadlines på ärenden
-- Bilagor och skärmdumpar
-- Notiser via mejl eller i appen
+- Deadlines på ärenden
+- Notiser via mejl
 - Skapa ärenden genom att mejla till en adress
-- Statistik och översiktspanel
 - Register över datorer och annan utrustning kopplat till ärenden
 - Stöd för flera organisationer i samma system
 - Mobilapp
@@ -54,8 +56,8 @@ Markerade med **MVP** eller **Senare**. Ordningen inom varje epic är ett först
 |---|---|---|
 | 3 | Som **anställd** vill jag skapa ett ärende med rubrik och beskrivning så att IT får veta vad som är fel. | MVP |
 | 4 | Som **anställd** vill jag välja en kategori (dator, skrivare, nätverk, konto, annat) så att IT direkt ser vad ärendet gäller. | MVP |
-| 5 | Som **anställd** vill jag ange hur bråttom det är så att det som stoppar mitt arbete blir åtgärdat först. | Senare |
-| 6 | Som **anställd** vill jag bifoga en skärmdump så att IT ser exakt vilket felmeddelande jag får. | Senare |
+| 5 | Som **anställd** vill jag ange hur bråttom det är så att det som stoppar mitt arbete blir åtgärdat först. | MVP (sprint 2, TB-32). Det är IT-ansvarig som sätter prioriteten. |
+| 6 | Som **anställd** vill jag bifoga en skärmdump så att IT ser exakt vilket felmeddelande jag får. | MVP (sprint 2, TB-35) |
 
 ### Epic: Följa sina ärenden
 
@@ -84,9 +86,9 @@ Markerade med **MVP** eller **Senare**. Ordningen inom varje epic är ett först
 
 | # | Story | |
 |---|---|---|
-| 15 | Som **IT-ansvarig** vill jag se hur många ärenden som är öppna per kategori så att jag ser var de återkommande problemen finns. | Senare |
+| 15 | Som **IT-ansvarig** vill jag se hur många ärenden som är öppna per kategori så att jag ser var de återkommande problemen finns. | MVP (sprint 3, TB-36) |
 
-**Summa:** 15 stories, varav 10 MVP och 5 senare.
+**Summa:** 15 stories, varav 13 MVP och 2 senare.
 
 ### Tekniska uppgifter (inte user stories)
 
