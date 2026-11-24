@@ -1,8 +1,11 @@
 package com.thebanmd.helpdesk.services;
 
+import com.thebanmd.helpdesk.dtos.AssignTicketRequest;
 import com.thebanmd.helpdesk.dtos.CreateTicketRequest;
+import com.thebanmd.helpdesk.dtos.TicketCategoryCountResponse;
 import com.thebanmd.helpdesk.dtos.TicketDetailResponse;
 import com.thebanmd.helpdesk.dtos.UpdateCategoryRequest;
+import com.thebanmd.helpdesk.dtos.UpdatePriorityRequest;
 import com.thebanmd.helpdesk.dtos.UpdateStatusRequest;
 import com.thebanmd.helpdesk.dtos.UpdateTicketRequest;
 import com.thebanmd.helpdesk.entities.Comment;
@@ -11,6 +14,7 @@ import com.thebanmd.helpdesk.entities.User;
 import com.thebanmd.helpdesk.enums.Category;
 import com.thebanmd.helpdesk.enums.Role;
 import com.thebanmd.helpdesk.enums.Status;
+import com.thebanmd.helpdesk.enums.TicketPriority;
 import com.thebanmd.helpdesk.exceptions.ForbiddenActionException;
 import com.thebanmd.helpdesk.exceptions.ResolutionRequiredException;
 import com.thebanmd.helpdesk.exceptions.TicketNotEditableException;
@@ -29,6 +33,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -356,5 +361,103 @@ class TicketServiceTest {
         assertThatThrownBy(() -> service.reopenTicket(10L, 1L))
                 .isInstanceOf(TicketNotEditableException.class);
         assertThat(ticket.getStatus()).isEqualTo(Status.IN_PROGRESS);
+    }
+
+    // ---- TB-63: bara IT-ansvariga får tilldela, ändra prioritet och se statistik ----
+    // Reglerna för att ändra status och kategori testas längre upp.
+
+    /** Annas ärende (id 1) med status NEW. Anna har id 1, Maria id 5 och Erik id 6, båda IT-ansvariga. */
+    private Ticket ettNyttArende() {
+        User anna = userWithId(1L, "Anna Lind", Role.EMPLOYEE);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(anna));
+        when(userRepository.findById(5L)).thenReturn(Optional.of(userWithId(5L, "Maria Nordin", Role.IT_ADMIN)));
+        when(userRepository.findById(6L)).thenReturn(Optional.of(userWithId(6L, "Erik Holm", Role.IT_ADMIN)));
+        Ticket ticket = new Ticket("Skrivaren", "Den blinkar", Category.PRINTER, anna);
+        ticket.setStatus(Status.NEW);
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+        return ticket;
+    }
+
+    @Test
+    void assignTicketTilldelarNarItAnsvarigTilldelar() {
+        Ticket ticket = ettNyttArende();
+
+        TicketDetailResponse response = service.assignTicket(1L, new AssignTicketRequest(6L), 5L);
+
+        assertThat(ticket.getAssignedTo().getId()).isEqualTo(6L);
+        assertThat(response.assignedTo()).isEqualTo("Erik Holm");
+        verify(ticketRepository).save(ticket);
+    }
+
+    @Test
+    void assignTicketKastarForbiddenOmAnstalldForsokerTilldela() {
+        Ticket ticket = ettNyttArende();
+
+        assertThatThrownBy(() -> service.assignTicket(1L, new AssignTicketRequest(6L), 1L))
+                .isInstanceOf(ForbiddenActionException.class)
+                .hasMessage("Bara IT-ansvariga kan tilldela ärenden");
+        assertThat(ticket.getAssignedTo()).isNull();
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void assignTicketKastarForbiddenOmAnstalldTilldelas() {
+        Ticket ticket = ettNyttArende();
+
+        assertThatThrownBy(() -> service.assignTicket(1L, new AssignTicketRequest(1L), 5L))
+                .isInstanceOf(ForbiddenActionException.class)
+                .hasMessage("Bara IT-ansvariga kan tilldelas ärenden");
+        assertThat(ticket.getAssignedTo()).isNull();
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void updatePriorityAndrarPrioritetNarItAnsvarigAndrar() {
+        Ticket ticket = ettNyttArende();
+
+        TicketDetailResponse response = service.updatePriority(1L, new UpdatePriorityRequest(TicketPriority.HIGH), 5L);
+
+        assertThat(ticket.getPriority()).isEqualTo(TicketPriority.HIGH);
+        assertThat(response.priority()).isEqualTo(TicketPriority.HIGH);
+    }
+
+    @Test
+    void updatePriorityKastarForbiddenOmAnstalldForsokerAndra() {
+        Ticket ticket = ettNyttArende();
+
+        assertThatThrownBy(() -> service.updatePriority(1L, new UpdatePriorityRequest(TicketPriority.HIGH), 1L))
+                .isInstanceOf(ForbiddenActionException.class)
+                .hasMessage("Bara IT-ansvariga kan ändra prioritet på ärenden");
+        assertThat(ticket.getPriority()).isEqualTo(TicketPriority.MEDIUM);
+        verify(ticketRepository, never()).save(any());
+    }
+
+    @Test
+    void getNumberOfTicketsPerCategoryRaknarOppnaArendenForItAnsvarig() {
+        User anna = userWithId(1L, "Anna Lind", Role.EMPLOYEE);
+        when(userRepository.findById(5L)).thenReturn(Optional.of(userWithId(5L, "Maria Nordin", Role.IT_ADMIN)));
+        when(ticketRepository.findByStatusIn(List.of(Status.NEW, Status.IN_PROGRESS))).thenReturn(List.of(
+                new Ticket("Skrivaren", "Den blinkar", Category.PRINTER, anna),
+                new Ticket("Skrivaren igen", "Papperet fastnar", Category.PRINTER, anna),
+                new Ticket("Wifi", "Försvinner i Ekan", Category.NETWORK, anna)));
+
+        List<TicketCategoryCountResponse> statistics = service.getNumberOfTicketsPerCategory(5L);
+
+        assertThat(statistics).hasSize(Category.values().length);
+        assertThat(statistics.get(0)).isEqualTo(new TicketCategoryCountResponse(Category.PRINTER, 2));
+        assertThat(statistics).contains(
+                new TicketCategoryCountResponse(Category.NETWORK, 1),
+                new TicketCategoryCountResponse(Category.COMPUTER, 0));
+    }
+
+    @Test
+    void getNumberOfTicketsPerCategoryKastarForbiddenForAnstalld() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userWithId(1L, "Anna Lind", Role.EMPLOYEE)));
+
+        assertThatThrownBy(() -> service.getNumberOfTicketsPerCategory(1L))
+                .isInstanceOf(ForbiddenActionException.class)
+                .hasMessage("Bara IT-ansvariga kan se statistik");
+        verify(ticketRepository, never()).findByStatusIn(any());
     }
 }
