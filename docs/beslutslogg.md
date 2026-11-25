@@ -40,6 +40,85 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 19. Token sparas i localStorage i frontend
+
+**Datum: 2026-11-25**
+**Status: Gäller**
+
+**Bakgrund:** Med JWT (beslut 16) måste frontend spara token någonstans mellan anropen och efter en omladdning av sidan.
+
+**Alternativ:**
+- `localStorage`
+- En cookie med `HttpOnly`, som JavaScript inte kan läsa
+
+**Beslut:** Token sparas i `localStorage` och skickas i headern `Authorization: Bearer <token>` från `shared/apiClient.ts`.
+
+**Varför:** Det är enklast och fungerar som det vi redan har, där den valda användaren sparas i webbläsaren. En `HttpOnly`-cookie är säkrare men kräver mer inställningar i backend, bland annat för CSRF.
+
+**Konsekvenser:**
+- All JavaScript på sidan kan läsa token. Om någon lyckas köra egen kod på sidan (XSS) kan token stjälas. Det är en känd nackdel som vi accepterar för det här projektet.
+- Loggar man ut tas token bort ur `localStorage`.
+
+## 18. Ny mapp `config/` i backend
+
+**Datum: 2026-11-25**
+**Status: Gäller**
+
+**Bakgrund:** Inloggningen (TB-33) behöver klasser med inställningar, till exempel för säkerheten och JWT. De passar inte i någon av mapparna i beslut 9.
+
+**Alternativ:**
+- Lägga klasserna i en befintlig mapp, t.ex. `services/`
+- En ny mapp, `config/`
+
+**Beslut:** En ny mapp, `config/`, för konfigurationsklasser.
+
+**Varför:** Inställningar är inte logik, så de hör inte hemma i `services/`. En egen mapp följer samma tanke som beslut 9, att koden sorteras efter typ av klass.
+
+**Konsekvenser:**
+- Kompletterar beslut 9. Backend har nu också mappen `config/`.
+- Projektstrukturen i README behöver uppdateras.
+
+## 17. Inloggning med e-post och lösenord
+
+**Datum: 2026-11-25**
+**Status: Gäller**
+
+**Bakgrund:** För att kunna logga in med lösenord (TB-33) behöver varje användare något att logga in med och ett lösenord. Tabellen `users` har bara namn och roll.
+
+**Alternativ:**
+- Logga in med namnet
+- Logga in med e-post
+
+**Beslut:** Man loggar in med e-post och lösenord. `users` får två nya kolumner, `email` och `password_hash`. Lösenordet sparas aldrig i klartext, bara som en hash.
+
+**Varför:** Namn är inte unika, men det är e-postadresser. Det är också så de flesta system fungerar, så det känns bekant för användarna.
+
+**Konsekvenser:**
+- Schemat ändras. Ett nytt SQL-skript i `database/` lägger till kolumnerna, och David kör det när PR:en är mergad (beslut 8).
+- Testanvändarna behöver e-post och lösenord för att man ska kunna logga in.
+- `docs/databasschema.md` uppdateras när skriptet finns.
+
+## 16. Inloggning med JWT i stället för `X-User-Id`
+
+**Datum: 2026-11-25**
+**Status: Gäller**
+
+**Bakgrund:** Med headern `X-User-Id` (beslut 10) kan vem som helst skicka vilket id som helst. Med riktig inloggning (TB-33) måste backend kunna lita på vem som gör anropet.
+
+**Alternativ:**
+- Behålla `X-User-Id`
+- Inloggning med session på servern
+- Inloggning med JWT (token)
+
+**Beslut:** Man loggar in och får en JWT av backend. Frontend skickar den på alla anrop, och backend läser vem användaren är från token i stället för från `X-User-Id`.
+
+**Varför:** `X-User-Id` är inget skydd. En token kan inte ändras utan att backend märker det. Med JWT behöver backend inte spara några sessioner, och token skickas från ett ställe i frontend, precis som headern i dag.
+
+**Konsekvenser:**
+- Ersätter beslut 10.
+- Rör allas kod: varje anrop från frontend ändras, och alla controllers som läser `X-User-Id` behöver ändras.
+- Var token sparas i frontend står i beslut 19.
+
 ## 15. Vanliga frågor tas in i MVP:n som en sida i frontend
 
 **Datum: 2026-11-18**
@@ -149,7 +228,7 @@ Kopiera den här för varje nytt beslut:
 ## 10. Vald användare skickas i headern `X-User-Id`
 
 **Datum: 2026-10-28**
-**Status: Gäller** 
+**Status: Ersatt av #16**
 
 **Bakgrund:** I MVP:n väljer man vem man är i en lista, utan lösenord (beslut 2). Backend måste ändå veta vem som gör anropet, till exempel vem som är anmälare när ett ärende skapas. Tills nu var anmälaren hårdkodad till användare 1.
 
@@ -169,7 +248,7 @@ Kopiera den här för varje nytt beslut:
 ## 9. Backend sorteras efter typ av klass
 
 **Datum: 2026-10-26**
-**Status: Gäller** 
+**Status: Gäller. Mappen `config/` är tillagd i #18.**
 
 **Bakgrund:** Skelettet sorterade backend efter funktion, med en mapp per funktion (`users/`). Inför den första storyn med ärenden behövde vi bestämma hur koden ska sorteras när den växer.
 

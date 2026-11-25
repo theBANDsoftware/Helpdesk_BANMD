@@ -91,7 +91,7 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 | Story | Vad den kräver | Typ av ändring |
 |---|---|---|
 | Ange hur bråttom det är (Should) | Kolumnen `urgency` i `tickets`, standardvärde Normal | Lägger till |
-| Logga in med lösenord (Should) | `email` och `password_hash` i `users` | Lägger till |
+| Logga in med lösenord (Should) | `email` och `password_hash` i `users` (beslut 17) | Lägger till, i sprint 5 (TB-33) |
 | Mejl när ärendet är löst (Could) | `email` i `users` (samma som ovan) | Lägger till |
 | Bifoga skärmdump (Could) | Ny tabell `attachments` kopplad till `tickets` | Klar i sprint 2 (`V3__skapa_attachments.sql`) |
 | Statistik per kategori (Could) | Inget nytt. Räknas fram ur befintlig data. | Ingen |
