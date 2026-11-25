@@ -26,11 +26,19 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
+<<<<<<< HEAD
 | Adli Anabtawi |Ja|-|Review, retro och planning|-|
 | Bleart Rama |Ja|-|Review, retro och planning. Scrum Master för sprinten |-|
 | David Andersson |Ja|-|Review, retro och planning. Delade ut korten som PO, skapade nya kort.|-|
 | Noah Fältman |Ja|-|Review, retro och planning|-|
 | Mustafa Samir |Ja|-|Review, retro och planning|-|
+=======
+| Adli Anabtawi | Ja | – | Review, retro och planning | – |
+| Bleart Rama | Ja | – | Review, retro och planning | – |
+| David Andersson | Ja | – | Review, retro och planning | – |
+| Noah Fältman | Ja | – | Review, retro och planning | – |
+| Mustafa Samir | Ja | – | Review, retro och planning | – |
+>>>>>>> 0991e2ae38776da10fc05a9e5f99665871e76258
 
 ## Tisdag 2026-11-24
 

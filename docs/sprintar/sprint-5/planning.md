@@ -12,21 +12,21 @@
 -->
 
 **Datum:** 2026-11-23
-**Deltagare:** _[fyll i]_
-**Product Owner denna sprint:** _[fyll i]_
-**Scrum Master denna sprint:** _[fyll i]_
+**Deltagare:** Adli Anabtawi, Bleart Rama, David Andersson, Noah Fältman, Mustafa Samir
+**Product Owner denna sprint:** David Andersson
+**Scrum Master denna sprint:** Bleart Rama
 
 ## Sprintmål
 
 <!-- En mening. Vad ska vara möjligt efter sprinten som inte var det innan? -->
 
-_[fyll i]_
+Användare loggar in med lösenord, och appen och dokumentationen är redo för slutredovisningen.
 
 ## Kapacitet
 
 <!-- Är någon borta eller har mindre tid den här veckan? -->
 
-_[fyll i: är någon borta eller har mindre tid den här veckan?]_
+Alla är med hela veckan.
 
 ## Från förra retron
 
@@ -41,14 +41,17 @@ _[fyll i: är någon borta eller har mindre tid den här veckan?]_
 
 | Issue | Story | Storlek | Ansvarig |
 |---|---|---|---|
-| TB-79 | Se vilka ärenden som har ett nytt svar från anmälaren | M | Bleart |
 | TB-82 | Se mina liknande öppna ärenden när jag skriver en rubrik | S | Bleart |
-| TB-33 | Logga in med lösenord | L | _[?]_ |
-| TB-65 | README och demoguide inför slutredovisningen | S | _[?]_ |
-| TB-88 | Uppdatera README och skapa demoguide | _[?]_ | David |
-| TB-89 | Ändra felaktig statistik till FAQ i mobilversion, och "vanliga frågor" till "FAQ" | _[?]_ | _[?]_ |
+| TB-79 | Se vilka ärenden som har ett nytt svar från anmälaren | M | Bleart |
+| TB-33 | Logga in med lösenord | L | Noah och Adli |
+| TB-65 | README och demoguide inför slutredovisningen | S | David |
+| TB-89 | Ändra felaktig statistik till FAQ i mobilversion, och "vanliga frågor" till "FAQ" | S | Mustafa |
+| TB-84 | Få notiser i appen när något händer i mina ärenden | L | David |
+| TB-63 | Tester för behörighetsreglerna i TicketService | M | Adli |
+| TB-60 | Tillbaka till användarlistan om den valda användaren inte finns | S | Mustafa |
+| TB-59 | Mina tilldelade ärenden hämtas med en SQL-fråga | S | Noah |
 
-**Totalt:** 2 S, 1 M, 1 L, och 2 kort utan storlek
+**Totalt:** 5 S, 2 M, 2 L
 <!-- Jämför med förra sprinten: hur mycket blev klart då? -->
 
 I sprint 4 blev 18 av 20 kort klara.
@@ -58,6 +61,5 @@ I sprint 4 blev 18 av 20 kort klara.
 <!-- Något ni inte vet hur man gör? Beroenden mellan stories? -->
 
 - **TB-79 och TB-82** blev inte klara i sprint 4 och följer med in i sprint 5.
-- **TB-65 och TB-88** verkar gälla samma sak, README och demoguide. Bestäm vilket kort som gäller och stäng det andra.
-- **SQL-skript för kolumnen `priority`** saknas fortfarande i `database/`. Det behövs före slutredovisningen i vecka 8.
+- **TB-33 Inloggning** görs av två personer, Noah och Adli. I Jira går det bara att ha en ansvarig, så där står Noah.
 - _[fyll i]_
