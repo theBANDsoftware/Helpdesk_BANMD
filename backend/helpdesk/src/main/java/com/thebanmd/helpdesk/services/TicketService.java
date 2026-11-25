@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -160,7 +161,15 @@ public class TicketService {
         }
 
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
-        return ticketMapper.toSummaryResponseList(tickets);
+
+        // Ärenden där anmälaren skrev den senaste kommentaren, bara Ny och Pågående (TB-79)
+        Set<Long> newReplyIds = commentRepository.findTicketIdsWhereLatestCommentIsByReporter(
+            List.of(Status.NEW, Status.IN_PROGRESS));
+
+        return tickets.stream()
+            .map(ticketMapper::toSummaryResponse)
+            .map(ticket -> newReplyIds.contains(ticket.id()) ? ticket.withNewReplyFromReporter() : ticket)
+            .toList();
     }
 
     /** Hämta alla öppna ärenden och räkna per kategori */
