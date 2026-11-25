@@ -26,21 +26,21 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| Adli Anabtawi | | | | |
-| Bleart Rama | | | | |
-| David Andersson | | | | |
-| Noah Fältman | | | | |
-| Mustafa Samir | | | | |
+| Adli Anabtawi |Ja|-|Review, retro och planning|-|
+| Bleart Rama |Ja|-|Review, retro och planning. Scrum Master för sprinten |-|
+| David Andersson |Ja|-|Review, retro och planning. Delade ut korten som PO, skapade nya kort.|-|
+| Noah Fältman |Ja|-|Review, retro och planning|-|
+| Mustafa Samir |Ja|-|Review, retro och planning|-|
 
 ## Tisdag 2026-11-24
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| Adli Anabtawi | | | | |
-| Bleart Rama | | | | |
-| David Andersson | | | | |
-| Noah Fältman | | | | |
-| Mustafa Samir | | | | |
+| Adli Anabtawi |Ja|Review, retro och planning|Gjort klar TB-63 Tester för behörighetsreglerna i TicketService|-|
+| Bleart Rama |Ja|Review, retro och planning. Scrum Master för sprinten|-|-|
+| David Andersson |Ja|Review, retro och planning. Delade ut korten som PO, skapade nya kort.|Gjort klart TB-84 Som användare vill jag få notiser i appen när något händer i mina ärenden|-|
+| Noah Fältman |Ja|Review, retro och planning|Fixat bugg TB-59 Mina tilldelade ärenden hämtas med en SQL-fråga|-|
+| Mustafa Samir |Ja|Review, retro och planning|-|-|
 
 ## Onsdag 2026-11-25
 
