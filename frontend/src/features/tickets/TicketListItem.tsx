@@ -57,8 +57,13 @@ export default function TicketListItem({ data, onReporterClick }: Props) {
 			<Link to={'/tickets/' + data.id} className="item-link">
 				<span className="item-title">{(oldTicketWarning && isItAdmin)?warningIcon:""}{data.title}</span>
 			</Link>
-			<span className={priorityPillClass[data.priority]}>
-				{priorityLabels[data.priority]}
+			<span className="pill-group">
+				{isItAdmin && data.hasNewReplyFromReporter && (
+					<span className="pill pill-info">Nytt svar</span>
+				)}
+				<span className={priorityPillClass[data.priority]}>
+					{priorityLabels[data.priority]}
+				</span>
 			</span>
 			</div>
 			<span className="item-meta">
