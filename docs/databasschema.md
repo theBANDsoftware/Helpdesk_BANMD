@@ -21,6 +21,8 @@ erDiagram
         bigint id PK
         varchar name "NOT NULL"
         enum role "EMPLOYEE | IT_ADMIN"
+        varchar email "NULL, unik, för inloggning"
+        varchar password_hash "NULL, BCrypt"
     }
     TICKETS {
         bigint id PK
@@ -56,7 +58,7 @@ erDiagram
 
 | Tabell | Innehåll |
 |---|---|
-| `users` | En person som använder appen, med rollen anställd (`EMPLOYEE`) eller IT-ansvarig (`IT_ADMIN`). Fylls med testdata från start, eftersom MVP:n inte har inloggning. |
+| `users` | En person som använder appen, med rollen anställd (`EMPLOYEE`) eller IT-ansvarig (`IT_ADMIN`). Fylls med testdata från start. Man loggar in med `email` och lösenord, som sparas som en BCrypt-hash i `password_hash` (TB-33). |
 | `tickets` | Ett ärende. Har alltid en anmälare (`created_by`) och kan vara tilldelat en IT-ansvarig (`assigned_to`) eller ingen. |
 | `comments` | En kommentar i ett ärende, skriven av en anställd eller en IT-ansvarig. |
 | `attachments` | En bifogad bild i ett ärende (TB-35). Själva bilden ligger i Backblaze B2 under `storage_key`, inte i databasen (beslut 11). |
@@ -81,7 +83,7 @@ Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i fler
 - **Kategori och status är enum och lagras som text** (`@Enumerated(EnumType.STRING)` i JPA). Värdena är få och ändras inte av användarna. Lagras som text så att databasen går att läsa och så att det går att byta till en egen tabell senare. Se beslut 5 i beslutsloggen.
 - **`tickets` har två kopplingar till `users`:** anmälare (`created_by`) och tilldelad (`assigned_to`). I JPA blir det två `@ManyToOne` med var sin `@JoinColumn`. Att `assigned_to` är tomt betyder "Ej tilldelad".
 - **Bara IT-ansvariga får tilldelas.** Det kan inte databasen kontrollera, så det görs i service-lagret.
-- **Inget fält för e-post eller lösenord än.** De läggs till med storyna om inloggning och mejl, så att schemat inte innehåller sådant som ingen story behöver.
+- **E-post och lösenord lades till med inloggningen (TB-33).** Båda får vara tomma, och en användare utan dem kan inte logga in. Lösenordet sparas aldrig i klartext, bara som en BCrypt-hash, och inga lösenord ligger i repot. David sätter dem för hand (se `database/README.md`).
 - **Förslag:** kommentarer tas bort tillsammans med sitt ärende (cascade). Ingen story tar bort ärenden, men det är bestämt om det behövs.
 
 ## Planerade utökningar
@@ -91,7 +93,7 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 | Story | Vad den kräver | Typ av ändring |
 |---|---|---|
 | Ange hur bråttom det är (Should) | Kolumnen `urgency` i `tickets`, standardvärde Normal | Lägger till |
-| Logga in med lösenord (Should) | `email` och `password_hash` i `users` | Lägger till |
+| Logga in med lösenord (Should) | `email` och `password_hash` i `users` | Klar i sprint 5 (`V5__inloggning.sql`) |
 | Mejl när ärendet är löst (Could) | `email` i `users` (samma som ovan) | Lägger till |
 | Bifoga skärmdump (Could) | Ny tabell `attachments` kopplad till `tickets` | Klar i sprint 2 (`V3__skapa_attachments.sql`) |
 | Statistik per kategori (Could) | Inget nytt. Räknas fram ur befintlig data. | Ingen |
@@ -104,5 +106,6 @@ Tabellerna skapas med SQL-skripten i [`database/`](../database/README.md), som D
 |---|---|
 | `V1__skapa_tabeller.sql` | `users`, `tickets` och `comments` enligt diagrammet ovan |
 | `V2__testdata.sql` | Fyra anställda, två IT-ansvariga, tre ärenden och tre kommentarer |
+| `V5__inloggning.sql` | `email` och `password_hash` i `users`, och e-post till testanvändarna (TB-33) |
 
 När schemat ändras läggs ett nytt skript till med nästa nummer. Ett skript som redan har körts ändras aldrig. Den som ändrar schemat säger till på standupen, och bara en i taget ändrar schemat.

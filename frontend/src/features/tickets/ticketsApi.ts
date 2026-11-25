@@ -71,7 +71,7 @@ export async function getTicket(id: number): Promise<TicketDetailResponse> {
   return apiRequest<TicketDetailResponse>(`/tickets/${id}`);
 }
 
-/** Skapar ett nytt ärende med anmälarens id i X-User-Id-headern */
+/** Skapar ett nytt ärende. Den som är inloggad blir anmälare (TB-33). */
 export async function createTicket(ticket: CreateTicketDTO): Promise<TicketDetailResponse> {
   return apiRequest<TicketDetailResponse>('/tickets', 'POST', ticket);
 }
@@ -101,57 +101,38 @@ export async function reopenTicket(ticketId: number): Promise<TicketDetailRespon
 export async function assignTicket(
   ticketId: number,
   assignedToUserId: number | null,
-  currentUserId: number,
 ): Promise<TicketDetailResponse> {
-  return apiRequest<TicketDetailResponse>(
-    `/tickets/${ticketId}/assign`,
-    'PUT',
-    { assignedToUserId },
-    { 'X-User-Id': currentUserId.toString() },
-  );
+  return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}/assign`, 'PUT', {
+    assignedToUserId,
+  });
 }
 
 /** Ändrar status på ärendet. Bara IT-ansvariga får göra det, backend svarar annars 403 (TB-27). */
 export async function updateTicketStatus(
   ticketId: number,
   status: StatusTicket,
-  currentUserId: number,
   resolution?: string,
 ): Promise<TicketDetailResponse> {
-  return apiRequest<TicketDetailResponse>(
-    `/tickets/${ticketId}/status`,
-    'PUT',
-    { status, resolution },
-    { 'X-User-Id': currentUserId.toString() },
-  );
+  return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}/status`, 'PUT', {
+    status,
+    resolution,
+  });
 }
 
 /** Ändrar kategori på ett ärende. Bara IT-ansvariga får göra det (TB-81). */
 export async function updateTicketCategory(
   ticketId: number,
   category: categoryTicket,
-  currentUserId: number,
 ): Promise<TicketDetailResponse> {
-  return apiRequest<TicketDetailResponse>(
-    `/tickets/${ticketId}/category`,
-    'PUT',
-    { category },
-    { 'X-User-Id': currentUserId.toString() },
-  );
+  return apiRequest<TicketDetailResponse>(`/tickets/${ticketId}/category`, 'PUT', { category });
 }
 
 /** Ändrar prioritet på ärendet. */
 export async function updateTicketPriority(
   ticketId: number,
   priority: TicketPriority,
-  currentUserId: number,
 ): Promise<TicketSummary[]> {
-  return apiRequest<TicketSummary[]>(
-    `/tickets/${ticketId}/priority`,
-    'PUT',
-    { priority },
-    { 'X-User-Id': currentUserId.toString() },
-  );
+  return apiRequest<TicketSummary[]>(`/tickets/${ticketId}/priority`, 'PUT', { priority });
 }
 
 /** Ärenden nyaste först. IT-ansvariga får alla, anställda bara sina egna. */

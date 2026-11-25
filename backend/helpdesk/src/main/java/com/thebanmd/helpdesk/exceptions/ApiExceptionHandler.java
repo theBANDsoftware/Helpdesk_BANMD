@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -37,17 +36,16 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(fieldErrors);
     }
 
-    /** Användaren i X-User-Id finns inte (beslut 10). */
+    /** Användaren i inloggningstoken finns inte längre i databasen (TB-33). */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUserNotFound(UserNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
 
-    /** Headern X-User-Id saknas, alltså är ingen användare vald (beslut 10). */
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<Map<String, String>> handleMissingHeader(MissingRequestHeaderException e) {
-        return ResponseEntity.badRequest()
-                .body(Map.of("error", "Ingen användare är vald. Headern " + e.getHeaderName() + " saknas."));
+    /** Fel e-post eller lösenord vid inloggning (TB-33). */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
     }
 
     /** Ärendet finns inte. Svarar 404. */

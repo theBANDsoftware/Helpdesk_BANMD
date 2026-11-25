@@ -35,8 +35,9 @@ export default function TicketListItem({ data, onReporterClick }: Props) {
 
 	const takeMutation = useMutation({
 		mutationFn: () => {
-			if (!user) throw new Error('Ingen användare är vald');
-			return assignTicket(data.id, user.id, user.id);
+			// Den inloggade tar ärendet, så hen blir också den som tilldelas
+			if (!user) throw new Error('Ingen är inloggad');
+			return assignTicket(data.id, user.id);
 		},
 		onSuccess: () => {
 			setTakeError(null);

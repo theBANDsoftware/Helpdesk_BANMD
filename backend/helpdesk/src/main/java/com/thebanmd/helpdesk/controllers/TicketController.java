@@ -1,5 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
+import com.thebanmd.helpdesk.config.CurrentUserId;
 import com.thebanmd.helpdesk.dtos.*;
 import com.thebanmd.helpdesk.services.TicketService;
 import jakarta.validation.Valid;
@@ -10,7 +11,7 @@ import java.util.List;
 
 /**
  * Endpoints för ärenden. Tar bara emot anropet och lämnar över till TicketService (DoD punkt 7).
- * Vem som anropar läses från headern X-User-Id (beslut 10).
+ * Vem som anropar läses ur inloggningstoken med @CurrentUserId (TB-33).
  */
 @RestController
 @RequestMapping("/api/tickets")
@@ -26,20 +27,20 @@ public class TicketController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid @RequestBody CreateTicketRequest ticket,
-                       @RequestHeader("X-User-Id") Long userId) {
+                       @CurrentUserId Long userId) {
         ticketService.create(ticket, userId);
     }
 
     /** Ärenden nyaste först. IT-ansvariga får alla, anställda bara sina egna (TB-25, TB-46, TB-78). */
     @GetMapping
-    public List<TicketSummaryResponse> getAllTickets(@RequestHeader("X-User-Id") Long userId) {
+    public List<TicketSummaryResponse> getAllTickets(@CurrentUserId Long userId) {
         return ticketService.getAllTickets(userId);
     }
 
     /** Ett ärende med alla detaljer. 403 om man varken är anmälare eller IT-ansvarig, 404 om det inte finns. */
     @GetMapping("/{id}")
     public TicketDetailResponse findById(@PathVariable Long id,
-                                         @RequestHeader("X-User-Id") Long userId) {
+                                         @CurrentUserId Long userId) {
         return ticketService.findById(id, userId);
     }
 
@@ -48,7 +49,7 @@ public class TicketController {
     public TicketDetailResponse updateTicket(
         @PathVariable Long id,
         @Valid @RequestBody UpdateTicketRequest request,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.updateTicket(id, request, userId);
     }
 
@@ -56,7 +57,7 @@ public class TicketController {
     @PostMapping("/{id}/withdraw")
     public TicketDetailResponse withdrawTicket(
         @PathVariable Long id,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.withdrawTicket(id, userId);
     }
 
@@ -67,7 +68,7 @@ public class TicketController {
     @PostMapping("/{id}/reopen")
     public TicketDetailResponse reopenTicket(
         @PathVariable Long id,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.reopenTicket(id, userId);
     }
 
@@ -76,7 +77,7 @@ public class TicketController {
     public TicketDetailResponse assignTicket(
         @PathVariable Long id,
         @RequestBody AssignTicketRequest request,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.assignTicket(id, request, userId);
     }
 
@@ -85,14 +86,14 @@ public class TicketController {
     public TicketDetailResponse updateStatus(
         @PathVariable Long id,
         @Valid @RequestBody UpdateStatusRequest request,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.updateStatus(id, request, userId);
     }
     @PutMapping("/{id}/category")
     public TicketDetailResponse updateCategory(
         @PathVariable Long id,
         @Valid @RequestBody UpdateCategoryRequest request,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.updateCategory(id, request, userId);
     }
 
@@ -100,13 +101,13 @@ public class TicketController {
     public TicketDetailResponse updatePriority(
         @PathVariable Long id,
         @Valid @RequestBody UpdatePriorityRequest request,
-        @RequestHeader("X-User-Id") Long userId) {
+        @CurrentUserId Long userId) {
         return ticketService.updatePriority(id, request, userId);
     }
 
     /** Statistik över öppna ärenden (TB-36). */
     @GetMapping("/ticketspercategory")
-    public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(@RequestHeader("X-User-Id") Long userId) {
+    public List<TicketCategoryCountResponse> getNumberOfTicketsPerCategory(@CurrentUserId Long userId) {
         return ticketService.getNumberOfTicketsPerCategory(userId);
     }
 }

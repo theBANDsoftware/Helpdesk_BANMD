@@ -2,8 +2,8 @@ import { Navigate, Outlet } from 'react-router';
 import { useSelectedUser } from './selectedUserContext';
 
 /**
- * Skyddar alla sidor utom användarlistan. Är ingen användare vald skickas man
- * till listan, även om man skrev in adressen direkt (AK 5).
+ * Skyddar alla sidor utom inloggningen. Är ingen inloggad skickas man till
+ * inloggningen, även om man skrev in adressen direkt (TB-33).
  */
 export function RequireUser() {
   const { user } = useSelectedUser();
