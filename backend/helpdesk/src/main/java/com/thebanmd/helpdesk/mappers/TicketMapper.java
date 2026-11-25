@@ -30,6 +30,7 @@ public interface TicketMapper {
     @Mapping(target = "createdById", source = "createdBy.id")
     @Mapping(target = "assignedTo", source = "assignedTo.name")
     @Mapping(target = "assignedToId", source = "assignedTo.id")
+    @Mapping(target = "hasNewReplyFromReporter", constant = "false")
     TicketSummaryResponse toSummaryResponse(Ticket ticket);
 
     List<TicketSummaryResponse> toSummaryResponseList(List<Ticket> tickets);

@@ -304,6 +304,22 @@ h3 {
   font-weight: 600;
 }
 
+/* "Nytt svar" i ärendelistan (TB-79) */
+.pill-info {
+  color: var(--accent);
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+  font-weight: 600;
+}
+
+/* Märken till höger i en listrad, t.ex. "Nytt svar" och prioritet */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+}
+
 .material-symbols-outlined {
   margin: 0px 5px;
   vertical-align: middle;
@@ -971,8 +987,10 @@ input[type='radio']:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-/* Vanliga frågor (TB-77) */
 }
+
+/* FAQ (TB-77) */
+
 .faq-section {
   margin-bottom: 1.5rem;
 }

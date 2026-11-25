@@ -39,8 +39,8 @@ const menuLinks: MenuLink[] = [
   },
   {
     to: '/faq',
-    label: 'Vanliga frågor',
-    shortLabel: 'Statistik',
+    label: 'FAQ',
+    shortLabel: 'FAQ',
     icon: '?',
     roles: ['EMPLOYEE', 'IT_ADMIN'],
   },
