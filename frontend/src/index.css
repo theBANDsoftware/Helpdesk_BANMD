@@ -971,8 +971,10 @@ input[type='radio']:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-/* Vanliga frågor (TB-77) */
 }
+
+/* FAQ (TB-77) */
+
 .faq-section {
   margin-bottom: 1.5rem;
 }

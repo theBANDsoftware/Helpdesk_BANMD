@@ -3,7 +3,7 @@ import { categoryLabels } from '../tickets/ticketsApi';
 import { faqSections } from './faqData';
 
 /**
- * Vanliga frågor (TB-77). En sida med vanliga problem och korta lösningar,
+ * FAQ (TB-77). En sida med vanliga problem och korta lösningar,
  * så att den som har ett enkelt fel kan lösa det själv i stället för att anmäla.
  *
  * Svaren fälls ut med <details> och <summary>, som webbläsaren själv gör
@@ -12,7 +12,7 @@ import { faqSections } from './faqData';
 export default function FaqPage() {
   return (
     <section className="card">
-      <h2>Vanliga frågor</h2>
+      <h2>FAQ</h2>
       <p>Här är de problem IT får flest ärenden om. Klicka på en fråga för att se svaret.</p>
 
       {faqSections.map((section) => (
