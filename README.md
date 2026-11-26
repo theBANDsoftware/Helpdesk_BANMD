@@ -82,7 +82,7 @@ npm run dev
 | Var | Kommando | Vad det gör |
 |---|---|---|
 | `backend/helpdesk/` | `./mvnw spring-boot:run` | Startar backend på port 8080 |
-| `backend/helpdesk/` | `./mvnw test` | Kör testerna. De behöver ingen databas. |
+| `backend/helpdesk/` | `./mvnw test` | Kör testerna. De behöver ingen databas. Se [docs/tester.md](docs/tester.md). |
 | `frontend/` | `npm run dev` | Startar frontend på port 5173 |
 | `frontend/` | `npm run build` | Typkontrollerar och bygger frontend |
 | `frontend/` | `npm run lint` | Letar efter vanliga fel i koden |
