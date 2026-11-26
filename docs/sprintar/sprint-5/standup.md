@@ -56,11 +56,11 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| Adli Anabtawi | | | | |
-| Bleart Rama | | | | |
-| David Andersson | | | | |
-| Noah Fältman | | | | |
-| Mustafa Samir | | | | |
+| Adli Anabtawi |Ja|Jobbat med TB-33 login tillsammans med Noah|(TB-33) har pushats ut, Adli och Noah läser igenom den och kolla så att dem är nöjda med den, sen gör dem en PRom PR.|-|
+| Bleart Rama |Ja|Färdig med TB-79 Som IT-ansvarig vill jag se vilka ärenden som har ett nytt svar från anmälaren|Klar med TB-82: Som anställd vill jag se mina liknande öppna ärenden när jag skriver en rubrik|-|
+| David Andersson |Ja|Skapar kort för TB-90 Bugfix: skalning av huvudfönster i ticketdetail som Noah hittade|Klar med Bugfix: skalning av huvudfönster i ticketdetail|-|
+| Noah Fältman |Ja|Jobbat med TB-33 login tillsammans med Adli. Hittat annat fel på hemsidan, ska skapas Jira kort för det|(TB-33) har pushats ut, Adli och Noah läser igenom den och kolla så att dem är nöjda med den, sen gör dem en PRom PR. Hittat bugg på tillbaka knappen, funkar inte på firefox.|-|
+| Mustafa Samir |Ja|Gjort klar TB-89 Ändra felaktig statistik till FAQ i mobilversion, och "vanliga frågor" till "FAQ"|Klar med TB-60 Tillbaka till användarlistan om den valda användaren inte finns|-|
 
 ## Fredag 2026-11-27
 
