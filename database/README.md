@@ -9,7 +9,8 @@ SQL-skripten som skapar databasen på Davids VPS. De körs för hand, i nummeror
 | `V2__testdata.sql` | Lägger in testanvändare, ärenden och kommentarer | David, en gång |
 | `V3__skapa_attachments.sql` | Skapar tabellen `attachments` för bifogade skärmdumpar (TB-35) | David, när TB-35 är mergad |
 | `V4__status_aterkallad.sql` | Lägger till status `WITHDRAWN` (Återkallad) i `tickets` (TB-51) | David, när TB-51 är mergad |
-| `V5__inloggning.sql` | Lägger till `email` och `password_hash` i `users` och ger testanvändarna e-post (TB-33). Lösenorden sätts för hand, se nedan. | David, när TB-33 är mergad |
+| `V5__skapa_notifications.sql` | Skapar tabellen `notifications` för notiser i appen (TB-84) | David, när TB-84 är mergad |
+| `V6__inloggning.sql` | Lägger till `email` och `password_hash` i `users` och ger testanvändarna e-post (TB-33). Lösenorden sätts för hand, se nedan. | David, när TB-33 är mergad |
 
 ```bash
 mariadb -u root -p < database/00-forbered-vps.sql
@@ -17,7 +18,8 @@ mariadb -u david -p helpdesk < database/V1__skapa_tabeller.sql
 mariadb -u david -p helpdesk < database/V2__testdata.sql
 mariadb -u david -p helpdesk < database/V3__skapa_attachments.sql
 mariadb -u david -p helpdesk < database/V4__status_aterkallad.sql
-mariadb -u david -p helpdesk < database/V5__inloggning.sql
+mariadb -u david -p helpdesk < database/V5__skapa_notifications.sql
+mariadb -u david -p helpdesk < database/V6__inloggning.sql
 ```
 
 ## Innan första körningen
@@ -26,7 +28,7 @@ Lösenorden i `00-forbered-vps.sql` är platshållare (`BYT-UT-1` till `BYT-UT-5
 
 ## Sätta lösenord (TB-33)
 
-Inga lösenord får ligga i repot, så `V5__inloggning.sql` sätter bara e-post. Tills en användare har ett lösenord kan den inte logga in. Lösenordet sparas som en BCrypt-hash, aldrig i klartext.
+Inga lösenord får ligga i repot, så `V6__inloggning.sql` sätter bara e-post. Tills en användare har ett lösenord kan den inte logga in. Lösenordet sparas som en BCrypt-hash, aldrig i klartext.
 
 1. Skapa en hash av lösenordet. På VPS:en finns `htpasswd` i paketet `apache2-utils`:
 

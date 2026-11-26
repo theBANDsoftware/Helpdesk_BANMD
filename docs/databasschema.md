@@ -16,6 +16,8 @@ erDiagram
     USERS ||--o{ COMMENTS : skriver
     TICKETS ||--o{ ATTACHMENTS : har
     USERS ||--o{ ATTACHMENTS : "laddar upp"
+    USERS ||--o{ NOTIFICATIONS : "får (recipient_id)"
+    TICKETS ||--o{ NOTIFICATIONS : gäller
 
     USERS {
         bigint id PK
@@ -52,6 +54,14 @@ erDiagram
         bigint size_bytes "NOT NULL"
         datetime created_at
     }
+    NOTIFICATIONS {
+        bigint id PK
+        bigint recipient_id FK "NOT NULL"
+        bigint ticket_id FK "NOT NULL"
+        varchar text "NOT NULL, max 255"
+        datetime created_at
+        datetime read_at "NULL = oläst"
+    }
 ```
 
 ## Tabeller
@@ -62,6 +72,7 @@ erDiagram
 | `tickets` | Ett ärende. Har alltid en anmälare (`created_by`) och kan vara tilldelat en IT-ansvarig (`assigned_to`) eller ingen. |
 | `comments` | En kommentar i ett ärende, skriven av en anställd eller en IT-ansvarig. |
 | `attachments` | En bifogad bild i ett ärende (TB-35). Själva bilden ligger i Backblaze B2 under `storage_key`, inte i databasen (beslut 11). |
+| `notifications` | En notis till den som anmält ett ärende, när någon annan har kommenterat, ändrat status eller tilldelat det (TB-84). `read_at` är tom tills notisen är läst. |
 
 Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i flera databaser.
 
@@ -77,6 +88,7 @@ Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i fler
 | Tilldela ett ärende | `tickets.assigned_to` |
 | Kommentera / Svara på kommentarer | `comments` |
 | Bifoga skärmdump | `attachments`, plus bildfilen i B2 |
+| Notiser i appen | `notifications`, plus `tickets` för vilket ärende notisen gäller |
 
 ## Designval
 
@@ -93,7 +105,7 @@ Ingen story i backloggen kräver att strukturen ändras. Alla senare stories lä
 | Story | Vad den kräver | Typ av ändring |
 |---|---|---|
 | Ange hur bråttom det är (Should) | Kolumnen `urgency` i `tickets`, standardvärde Normal | Lägger till |
-| Logga in med lösenord (Should) | `email` och `password_hash` i `users` | Klar i sprint 5 (`V5__inloggning.sql`) |
+| Logga in med lösenord (Should) | `email` och `password_hash` i `users` | Klar i sprint 5 (`V6__inloggning.sql`) |
 | Mejl när ärendet är löst (Could) | `email` i `users` (samma som ovan) | Lägger till |
 | Bifoga skärmdump (Could) | Ny tabell `attachments` kopplad till `tickets` | Klar i sprint 2 (`V3__skapa_attachments.sql`) |
 | Statistik per kategori (Could) | Inget nytt. Räknas fram ur befintlig data. | Ingen |
@@ -106,6 +118,6 @@ Tabellerna skapas med SQL-skripten i [`database/`](../database/README.md), som D
 |---|---|
 | `V1__skapa_tabeller.sql` | `users`, `tickets` och `comments` enligt diagrammet ovan |
 | `V2__testdata.sql` | Fyra anställda, två IT-ansvariga, tre ärenden och tre kommentarer |
-| `V5__inloggning.sql` | `email` och `password_hash` i `users`, och e-post till testanvändarna (TB-33) |
+| `V6__inloggning.sql` | `email` och `password_hash` i `users`, och e-post till testanvändarna (TB-33) |
 
 När schemat ändras läggs ett nytt skript till med nästa nummer. Ett skript som redan har körts ändras aldrig. Den som ändrar schemat säger till på standupen, och bara en i taget ändrar schemat.

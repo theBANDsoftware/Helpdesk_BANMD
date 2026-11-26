@@ -78,7 +78,7 @@ npm run dev
 | Kunde inte nå backend | Backend är inte startad, eller startade med fel. Titta i terminal 1. |
 | Databasen svarar inte: ${DB_URL} | `backend/helpdesk/.env` saknas eller ligger i fel mapp. Gör steg 2 och starta om backend. |
 | Databasen svarar inte: … (något annat) | Fel i `backend/helpdesk/.env`, VPS:en är nere, eller din IP-adress släpps inte in. Backend startar ändå, så du kan rätta `.env` och starta om. |
-| Fel e-post eller lösenord. | Fel uppgifter, eller så har David inte satt lösenorden eller kört `database/V5__inloggning.sql` än. |
+| Fel e-post eller lösenord. | Fel uppgifter, eller så har David inte satt lösenorden eller kört `database/V6__inloggning.sql` än. |
 | Man loggas ut av sig själv | Inloggningen gäller i 8 timmar. Utan `JWT_SECRET` i `.env` loggas alla också ut när backend startas om. |
 
 ## Kommandon
@@ -86,7 +86,7 @@ npm run dev
 | Var | Kommando | Vad det gör |
 |---|---|---|
 | `backend/helpdesk/` | `./mvnw spring-boot:run` | Startar backend på port 8080 |
-| `backend/helpdesk/` | `./mvnw test` | Kör testerna. De behöver ingen databas. |
+| `backend/helpdesk/` | `./mvnw test` | Kör testerna. De behöver ingen databas. Se [docs/tester.md](docs/tester.md). |
 | `frontend/` | `npm run dev` | Startar frontend på port 5173 |
 | `frontend/` | `npm run build` | Typkontrollerar och bygger frontend |
 | `frontend/` | `npm run lint` | Letar efter vanliga fel i koden |

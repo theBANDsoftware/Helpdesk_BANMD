@@ -1,5 +1,5 @@
 -- TB-33 Logga in med lösenord. Se docs/inloggning.md.
--- Körs för hand i develop-databasen, efter V4 (beslut 8). Se database/README.md.
+-- Körs för hand i develop-databasen, efter V5 (beslut 8). Se database/README.md.
 --
 -- Man loggar in med e-post och lösenord. Lösenordet sparas aldrig i klartext,
 -- bara som en BCrypt-hash. En användare utan e-post eller lösenord kan inte logga in.

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router';
 import { useSelectedUser } from './selectedUserContext';
 import type { Role } from './usersApi';
+import NotificationCount from '../notifications/NotificationCount';
 
 type MenuLink = {
   to: string;
@@ -37,6 +38,13 @@ const menuLinks: MenuLink[] = [
     icon: '▤',
     roles: ['IT_ADMIN'],
   },
+	{
+		to: '/notifications',
+		label: 'Notiser',
+		shortLabel: 'Notiser',
+		icon: '◉',
+		roles: ['EMPLOYEE', 'IT_ADMIN'],
+	},
   {
     to: '/faq',
     label: 'FAQ',
@@ -58,15 +66,17 @@ export function NavMenu() {
 
   return (
     <nav className="nav-menu" aria-label="Huvudmeny">
-      {visibleLinks.map((link) => (
-        <NavLink key={link.to} to={link.to} end className="nav-link">
-          <span className="nav-icon" aria-hidden="true">
-            {link.icon}
-          </span>
-          <span className="nav-label-mobile">{link.shortLabel}</span>
-          <span className="nav-label-desktop">{link.label}</span>
-        </NavLink>
-      ))}
+		{visibleLinks.map((link) => (
+			<NavLink key={link.to} to={link.to} end className="nav-link">
+				<span className="nav-icon" aria-hidden="true">
+					{link.icon}
+				</span>
+				<span className="nav-label-mobile">{link.shortLabel}</span>
+				<span className="nav-label-desktop">{link.label}</span>
+				{/* Antalet olästa ligger som en bubbla över notislänken */}
+				{link.to === '/notifications' && <NotificationCount />}
+			</NavLink>
+		))}
     </nav>
   );
 }

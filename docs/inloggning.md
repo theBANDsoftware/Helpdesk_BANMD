@@ -178,7 +178,7 @@ Alla sökvägar under `backend/helpdesk/src/main/java/com/thebanmd/helpdesk/`.
 | `repositories/UserRepository.java` | Ny metod `findByEmail`. |
 
 Övriga ändringar:
-- **`TicketController`, `CommentController` och `AttachmentController`:** `@RequestHeader("X-User-Id") Long userId` är utbytt mot `@CurrentUserId Long userId` på 13 ställen. Services och repositories är oförändrade. De får fortfarande ett `userId`, så alla behörighetsregler fungerar som förut.
+- **`TicketController`, `CommentController`, `AttachmentController` och `NotificationController`:** `@RequestHeader("X-User-Id") Long userId` är utbytt mot `@CurrentUserId Long userId` på 16 ställen. Services och repositories är oförändrade. De får fortfarande ett `userId`, så alla behörighetsregler fungerar som förut.
 - **`ApiExceptionHandler`:** hanteraren för saknad `X-User-Id` är borttagen, och en hanterare för `InvalidCredentialsException` (401) är tillagd.
 - **`application.properties`:** `security.jwt.secret` (från `JWT_SECRET`) och `security.jwt.expires-in=8h`.
 - **`.env.example`:** raden `JWT_SECRET`.
@@ -287,10 +287,10 @@ Det här är medvetna förenklingar. Bra att kunna förklara vid redovisningen.
 
 | Det händer | Det betyder |
 |---|---|
-| "Fel e-post eller lösenord." fast uppgifterna är rätt | Lösenordet är inte satt i databasen än, eller så är `V5__inloggning.sql` inte körd. Fråga David. |
+| "Fel e-post eller lösenord." fast uppgifterna är rätt | Lösenordet är inte satt i databasen än, eller så är `V6__inloggning.sql` inte körd. Fråga David. |
 | "Fyll i både e-post och lösenord." | Ett av fälten är tomt. |
 | Man loggas ut av sig själv | Token har gått ut (8 timmar), eller backend har startats om utan `JWT_SECRET` i `.env`. |
 | Backend startar inte: "JWT_SECRET måste vara minst 32 tecken lång." | Nyckeln i `.env` är för kort. Skapa en ny med `openssl rand -base64 32`. |
 | Alla anrop i Swagger ger 401 | Du har inte tryckt **Authorize**, eller token har gått ut. Logga in igen (avsnitt 1.3). |
 | En ny endpoint ger 400 med ett fel om att headern `X-User-Id` saknas | Endpointen använder fortfarande `@RequestHeader("X-User-Id")`. Byt till `@CurrentUserId` (avsnitt 5). |
-| Databasfel om kolumnen `email` | `V5__inloggning.sql` är inte körd i databasen. |
+| Databasfel om kolumnen `email` | `V6__inloggning.sql` är inte körd i databasen. |

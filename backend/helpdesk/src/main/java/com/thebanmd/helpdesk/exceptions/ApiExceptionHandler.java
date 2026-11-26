@@ -72,6 +72,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
 
+	/** Notisen finns inte, eller är någon annans (TB-84). */
+	@ExceptionHandler(NotificationNotFoundException.class)
+	public ResponseEntity<Map<String, String>> handleNotificationNotFound(NotificationNotFoundException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+	}
+
     /** Fel filtyp, för stor fil eller för många bilder (TB-35). */
     /** Status Löst utan lösning (TB-80). */
     @ExceptionHandler(ResolutionRequiredException.class)

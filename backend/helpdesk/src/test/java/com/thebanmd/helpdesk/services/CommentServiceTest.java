@@ -34,7 +34,8 @@ class CommentServiceTest {
     private final TicketRepository ticketRepository = mock(TicketRepository.class);
     private final UserRepository userRepository = mock(UserRepository.class);
     private final CommentService service = new CommentService(
-            commentRepository, ticketRepository, userRepository, Mappers.getMapper(CommentMapper.class));
+            commentRepository, ticketRepository, userRepository, Mappers.getMapper(CommentMapper.class),
+			mock(NotificationService.class));
 
     private final User omar = user(2L, "Omar Haddad", Role.EMPLOYEE);
     private final User anna = user(1L, "Anna Lind", Role.EMPLOYEE);
