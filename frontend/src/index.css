@@ -1143,3 +1143,26 @@ input[type='radio']:focus-visible {
 .link-button:hover {
   color: var(--accent-hover);
 }
+
+/* Liknande öppna ärenden när man skriver en rubrik (TB-82) */
+.similar-tickets {
+  padding: 0.75rem var(--space-md);
+  color: var(--warning-text);
+  background-color: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius);
+}
+
+.similar-tickets-title {
+  margin: 0 0 var(--space-xs) 0;
+  font-weight: 600;
+}
+
+.similar-tickets ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.similar-tickets a {
+  overflow-wrap: anywhere;
+}
