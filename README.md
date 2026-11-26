@@ -101,6 +101,7 @@ backend/helpdesk/src/main/java/com/thebanmd/helpdesk/
   entities/                   ← en klass per tabell, t.ex. User, och enums som Role
   dtos/                       ← det som skickas till och från frontend, t.ex. UserResponse
   exceptions/                 ← gemensam felhantering, t.ex. 503 när databasen inte svarar
+  config/                     ← inställningar som inte är controllers, services eller annat, t.ex. säkerhet och JWT för inloggningen
 
 frontend/src/
   App.tsx                     ← routern: en rad per sida
@@ -118,7 +119,7 @@ frontend/src/
 database/                     ← SQL-skripten för databasen, körs av David
 ```
 
-Strukturen i backend är beslut 9 i beslutsloggen. En ny funktion, till exempel ärenden, får därför en fil i varje mapp: `TicketController`, `TicketService`, `TicketRepository`, `Ticket` och sina dto:er. Frontend är fortfarande sorterad efter funktion och får mappen `frontend/src/features/tickets/`.
+Strukturen i backend är beslut 9 i beslutsloggen, och mappen `config/` är tillagd i beslut 18. En ny funktion, till exempel ärenden, får därför en fil i varje mapp: `TicketController`, `TicketService`, `TicketRepository`, `Ticket` och sina dto:er. Frontend är fortfarande sorterad efter funktion och får mappen `frontend/src/features/tickets/`.
 
 Frontend anropar alltid `/api/...`. Under utveckling skickar Vite vidare de anropen till backend på port 8080, så backend behöver ingen CORS-inställning.
 
