@@ -14,7 +14,7 @@ type State =
  */
 export function UserList() {
   const [state, setState] = useState<State>({ kind: 'loading' });
-  const { user: selectedUser, selectUser } = useSelectedUser();
+  const { user: selectedUser, selectUser, userWasRemoved } = useSelectedUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +36,12 @@ export function UserList() {
   return (
     <section className="card">
       <h2 className="section-title">Vem är du?</h2>
+      {/* Blev man skickad hit för att användaren tagits bort behöver man veta varför (TB-60) */}
+      {userWasRemoved && (
+        <p className="notice-removed">
+          Användaren du hade valt finns inte längre. Välj en annan för att fortsätta.
+        </p>
+      )}
       {state.kind === 'loading' && <p>Hämtar användare …</p>}
       {state.kind === 'ok' && state.users.length === 0 && (
         <p className="empty-state">Det finns inga användare i databasen. Har testdatan lagts in?</p>

@@ -6,6 +6,8 @@ export type SelectedUserContextValue = {
   user: User | null;
   selectUser: (user: User) => void;
   clearUser: () => void;
+  /** Sant när valet tömdes för att backend svarade att användaren inte finns (TB-60). */
+  userWasRemoved: boolean;
 };
 
 export const SelectedUserContext = createContext<SelectedUserContextValue | null>(null);

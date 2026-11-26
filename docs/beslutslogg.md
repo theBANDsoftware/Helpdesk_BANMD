@@ -40,6 +40,24 @@ Kopiera den här för varje nytt beslut:
 
 <!-- Era beslut nedan, nyaste överst. -->
 
+## 16. Backend märker 404 för användaren med ett fält i svaret
+
+**Datum: 2026-11-26**
+**Status: Gäller**
+
+**Bakgrund:** Enligt beslut 10 svarar backend 404 när användaren i X-User-Id inte finns, så att frontend kan skicka tillbaka till listan "Vem är du?". Men flera andra saker svarar också 404: ett ärende, en bild eller en notis som inte finns. Frontend behövde kunna se skillnad på dem, annars kastas man ut ur ett vanligt felärende också.
+
+**Alternativ:**
+- Läsa felmeddelandets text och leta efter ordet "Användaren"
+- Ett eget fält i svaret, `"code": "USER_NOT_FOUND"`
+- En egen HTTP-status, t.ex. 409, bara för den valda användaren
+
+**Beslut:** Ett fält `code` i svaret.
+
+**Varför:** Koden är till för program och felmeddelandet för människor, så texten går att skriva om utan att frontend slutar fungera. En egen status hade brutit mot vad statuskoderna betyder, eftersom resursen faktiskt inte finns.
+
+**Konsekvenser:** `ApiExceptionHandler` lägger `"code": "USER_NOT_FOUND"` i svaret när `UserNotFoundException` kastas, vilket täcker alla endpoints som läser X-User-Id. Alla andra 404 saknar fältet, och då rör frontend aldrig valet av användare. Behövs fler sådana koder framåt läggs de till på samma ställe.
+
 ## 15. Vanliga frågor tas in i MVP:n som en sida i frontend
 
 **Datum: 2026-11-18**

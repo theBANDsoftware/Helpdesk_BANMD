@@ -1,5 +1,9 @@
-import { useState, type ReactNode } from 'react';
-import { readSelectedUser, writeSelectedUser } from '../../shared/selectedUserStorage';
+import { useEffect, useState, type ReactNode } from 'react';
+import {
+  SELECTED_USER_REMOVED_EVENT,
+  readSelectedUser,
+  writeSelectedUser,
+} from '../../shared/selectedUserStorage';
 import { SelectedUserContext } from './selectedUserContext';
 import { roleLabels, type User } from './usersApi';
 
@@ -9,19 +13,37 @@ import { roleLabels, type User } from './usersApi';
  */
 export function SelectedUserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => toUser(readSelectedUser()));
+  const [userWasRemoved, setUserWasRemoved] = useState(false);
+
+  /*
+   * Svarade backend 404 för användaren har apiClient redan tömt localStorage och
+   * skickat eventet. Här nollas state också, och då skickar RequireUser vidare
+   * till listan "Vem är du?" i stället för att sidan visar ett felmeddelande (TB-60).
+   */
+  useEffect(() => {
+    function handleUserRemoved() {
+      setUser(null);
+      setUserWasRemoved(true);
+    }
+
+    window.addEventListener(SELECTED_USER_REMOVED_EVENT, handleUserRemoved);
+    return () => window.removeEventListener(SELECTED_USER_REMOVED_EVENT, handleUserRemoved);
+  }, []);
 
   function selectUser(selected: User) {
     writeSelectedUser(selected);
     setUser(selected);
+    setUserWasRemoved(false);
   }
 
   function clearUser() {
     writeSelectedUser(null);
     setUser(null);
+    setUserWasRemoved(false);
   }
 
   return (
-    <SelectedUserContext.Provider value={{ user, selectUser, clearUser }}>
+    <SelectedUserContext.Provider value={{ user, selectUser, clearUser, userWasRemoved }}>
       {children}
     </SelectedUserContext.Provider>
   );

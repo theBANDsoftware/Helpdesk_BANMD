@@ -1,4 +1,4 @@
-import { readSelectedUserId } from './selectedUserStorage';
+import { clearSelectedUserNotFound, readSelectedUserId } from './selectedUserStorage';
 
 /**
  * Gemensam funktion för alla anrop till backend. Varje funktion (features/...)
@@ -15,6 +15,9 @@ export class ApiError extends Error {
   }
 }
 
+/** Backend sätter fältet code till det här när användaren i X-User-Id inte finns (TB-60). */
+const USER_NOT_FOUND = 'USER_NOT_FOUND';
+
 /**
  * Lägger till den valda användaren i headern X-User-Id, så att backend vet
  * vem som gör anropet (beslut 10). Är ingen vald skickas ingen header.
@@ -22,6 +25,19 @@ export class ApiError extends Error {
 function withSelectedUser(headers: Record<string, string>): Record<string, string> {
   const userId = readSelectedUserId();
   return userId === null ? headers : { ...headers, 'X-User-Id': String(userId) };
+}
+
+/**
+ * Sant bara när 404 handlar om användaren i X-User-Id, t.ex. om den tagits bort
+ * ur databasen. Vi läser fältet code och inte felmeddelandet, så att texten går
+ * att ändra utan att den här kontrollen slutar fungera. Ett 404 för ett ärende
+ * som inte finns saknar fältet och rör därför aldrig valet av användare (TB-60).
+ */
+function isUserNotFound(status: number, body: unknown): boolean {
+  if (status !== 404 || typeof body !== 'object' || body === null) {
+    return false;
+  }
+  return (body as { code?: unknown }).code === USER_NOT_FOUND;
 }
 
 // Metod som hanterar alla HTTP-requests (GET, POST, PUT osv)
@@ -58,6 +74,11 @@ export async function apiRequest<T>(
   const body: unknown = await response.json().catch(() => null);
 
   if (!response.ok) {
+    // Finns inte användaren längre töms valet, så att man skickas till listan
+    // "Vem är du?" i stället för att fastna på ett felmeddelande (TB-60).
+    if (isUserNotFound(response.status, body)) {
+      clearSelectedUserNotFound();
+    }
     throw new ApiError(response.status, body);
   }
 
