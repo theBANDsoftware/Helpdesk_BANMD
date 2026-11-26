@@ -26,19 +26,11 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-<<<<<<< HEAD
 | Adli Anabtawi |Ja|-|Review, retro och planning|-|
 | Bleart Rama |Ja|-|Review, retro och planning. Scrum Master för sprinten |-|
 | David Andersson |Ja|-|Review, retro och planning. Delade ut korten som PO, skapade nya kort.|-|
 | Noah Fältman |Ja|-|Review, retro och planning|-|
 | Mustafa Samir |Ja|-|Review, retro och planning|-|
-=======
-| Adli Anabtawi | Ja | – | Review, retro och planning | – |
-| Bleart Rama | Ja | – | Review, retro och planning | – |
-| David Andersson | Ja | – | Review, retro och planning | – |
-| Noah Fältman | Ja | – | Review, retro och planning | – |
-| Mustafa Samir | Ja | – | Review, retro och planning | – |
->>>>>>> 0991e2ae38776da10fc05a9e5f99665871e76258
 
 ## Tisdag 2026-11-24
 
@@ -54,11 +46,11 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| Adli Anabtawi | | | | |
-| Bleart Rama | | | | |
-| David Andersson | | | | |
-| Noah Fältman | | | | |
-| Mustafa Samir | | | | |
+| Adli Anabtawi |Ja|Gjort klar TB-63 Tester för behörighetsreglerna i TicketService|Jobbat med TB-33 login tillsammans med Noah|-|
+| Bleart Rama |Ja|-|Färdig med TB-79 Som IT-ansvarig vill jag se vilka ärenden som har ett nytt svar från anmälaren|-|
+| David Andersson |Ja|Gjort klart TB-84 Som användare vill jag få notiser i appen när något händer i mina ärenden|Skapar kort för TB-90 Bugfix: skalning av huvudfönster i ticketdetail som Noah hittade|-|
+| Noah Fältman |Ja|Fixat bugg TB-59 Mina tilldelade ärenden hämtas med en SQL-fråga|Jobbat med TB-33 login tillsammans med Adli. Hittat annat fel på hemsidan, ska skapas Jira kort för det|-|
+| Mustafa Samir |Ja|-|Gjort klar TB-89 Ändra felaktig statistik till FAQ i mobilversion, och "vanliga frågor" till "FAQ"|-|
 
 ## Torsdag 2026-11-26
 
