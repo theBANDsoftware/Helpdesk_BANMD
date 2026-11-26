@@ -1,3 +1,4 @@
+import SimilarTickets from './SimilarTickets';
 import { Link } from 'react-router';
 import { useState } from "react";
 import type { FormEvent } from "react";
@@ -58,6 +59,7 @@ export default function NewTicketForm() {
           />
         </label>
         {fieldErrors.title && <p className="error">{fieldErrors.title}</p>}
+        <SimilarTickets title={title} />
 
         <label className="form-field">
           Beskrivning
