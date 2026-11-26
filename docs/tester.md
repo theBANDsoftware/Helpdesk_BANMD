@@ -12,9 +12,9 @@ Det riktar sig till alla i gruppen, även den som inte har skrivit ett test för
 
 ## Kort sammanfattning
 
-- Det finns **46 tester** i fem testklasser, i `backend/helpdesk/src/test/java/com/thebanmd/helpdesk/`.
+- Det finns **62 tester** i åtta testklasser, i `backend/helpdesk/src/test/java/com/thebanmd/helpdesk/`.
 - De kör på några sekunder och behöver **ingen databas, ingen `.env`-fil och ingen internetuppkoppling**.
-- De testar **servicelagret**, där reglerna för vem som får göra vad finns.
+- De testar **servicelagret**, där reglerna för vem som får göra vad finns, och att **inloggningen** släpper igenom och stoppar rätt anrop.
 - De körs med `./mvnw test` i mappen `backend/helpdesk`.
 
 Testerna ersätter inte de manuella testerna i Definition of Done. Acceptanskriterierna ska fortfarande testas för hand av både den som byggt storyn och granskaren. Testerna är ett skyddsnät: de säger till direkt om någon av misstag råkar ta sönder en regel som redan fungerade.
@@ -76,7 +76,7 @@ VS Code behöver tillägget **Extension Pack for Java**.
 Går allt igenom avslutar Maven med:
 
 ```
-[INFO] Tests run: 46, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 62, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 
@@ -99,8 +99,8 @@ Backenden är uppbyggd som controller → service → repository (se `README.md`
 | Lager | Testas automatiskt? | Varför |
 |---|---|---|
 | **Service** (t.ex. `TicketService`) | **Ja** | Här finns alla regler: vem som får göra vad, vilka statusar som är tillåtna, att en lösning krävs osv. |
-| Controller | Nej | Den tar bara emot anropet och skickar vidare till servicen. |
-| `ApiExceptionHandler` | Nej | Vilken statuskod ett fel ger (t.ex. 403, 404, 409) testas för hand i webbläsaren eller Swagger. |
+| Controller | Delvis | `SecurityConfigTest` kontrollerar att anrop utan giltig token stoppas, och att rätt användar-id når controllern. Annars tar controllern bara emot anropet och skickar vidare till servicen. |
+| `ApiExceptionHandler` | Delvis | 401 och 400 vid inloggning testas i `SecurityConfigTest`. Övriga statuskoder (t.ex. 403, 404, 409) testas för hand i webbläsaren eller Swagger. |
 | Repository och SQL | Nej | Det skulle kräva en riktig databas. Frågorna testas när appen körs mot develop-databasen. |
 | Frontend | Nej | Testas för hand enligt Definition of Done. |
 
@@ -121,6 +121,7 @@ Allt följer med i `spring-boot-starter-test`, så inget behöver installeras.
 | **AssertJ** | Kontrollerar resultatet | `assertThat(...)`, `assertThatThrownBy(...)`, `.isEqualTo(...)`, `.hasMessage(...)` |
 | **MapStruct** | Den riktiga mappern används, inte en mock | `Mappers.getMapper(TicketMapper.class)` |
 | **ReflectionTestUtils** (Spring) | Sätter id på en användare, eftersom `User` inte har någon `setId` | `ReflectionTestUtils.setField(user, "id", 5L)` |
+| **MockMvc** (Spring) | Skickar låtsade HTTP-anrop genom Spring Security och en controller, utan att starta en server | `@WebMvcTest`, `mockMvc.perform(get("/api/tickets"))`, `status().isUnauthorized()` |
 
 ### Varför ingen databas behövs: mockar
 
@@ -282,6 +283,43 @@ Storyn om att bifoga en skärmdump. B2 ersätts av `FakeStorage`, en lagring i m
 | `downloadViaFelArendeGerNotFound` | En bild går inte att hämta via ett annat ärendes adress. |
 | `cleanFilenameTarBortSokvagar` | Sökvägar i filnamn tas bort (`C:\Users\anna\fel.png` blir `fel.png`, `../../etc/passwd` blir `passwd`), och ett filnamn som saknas blir `bild`. |
 
+### `NotificationServiceTest` (3 tester): notiser
+
+Notiserna i appen. Ärendet är Omars (id 2).
+
+| Test | Kontrollerar |
+|---|---|
+| `anmalarenFarNotisNarNagonAnnanKommenterar` | När Maria kommenterar Omars ärende får Omar en notis med texten "Maria Nordin kommenterade ditt ärende ...". |
+| `ingenNotisNarAnmalarenSjalvGorAndringen` | Gör Omar ändringen själv får han ingen notis. |
+| `manKanInteMarkeraNagonAnnansNotisSomLast` | Man kan bara markera sina egna notiser som lästa. |
+
+### `AuthServiceTest` (5 tester): inloggningen
+
+Inloggning med e-post och lösenord. `UserRepository` är en mock, men BCrypt och JWT är de riktiga, så testerna visar att lösenordet verkligen kontrolleras och att token verkligen går att läsa. Mer om inloggningen i [inloggning.md](inloggning.md).
+
+| Test | Kontrollerar |
+|---|---|
+| `loginGerTokenMedAnvandarensId` | Rätt lösenord ger en token med Marias id (5) som `sub`, rollen IT_ADMIN och 8 timmars giltighet. Svaret innehåller hennes namn och roll. |
+| `loginGodtarStoraBokstaverOchMellanslagIEposten` | `"  Maria.Nordin@Helpdesk.test "` fungerar lika bra som `maria.nordin@helpdesk.test`. |
+| `loginKastarInvalidCredentialsVidFelLosenord` | Fel lösenord ger `InvalidCredentialsException` med "Fel e-post eller lösenord." |
+| `loginKastarSammaFelForEpostSomInteFinns` | En e-post som inte finns ger exakt samma meddelande, så att ingen kan prova sig fram till vilka adresser som finns. |
+| `loginKastarInvalidCredentialsOmAnvandarenSaknarLosenord` | En användare som saknar lösenord i databasen kan inte logga in. |
+
+### `SecurityConfigTest` (8 tester): vilka anrop som kräver inloggning
+
+Ligger i `config/`, inte i `services/`. Testet startar bara webblagret (`@WebMvcTest`) med `TicketController` och `AuthController` och skickar låtsade HTTP-anrop med MockMvc. Servicarna är mockar, så testerna handlar bara om token och inte om reglerna i servicarna. Token i testerna signeras med samma nyckel som `SecurityConfig` använder.
+
+| Test | Kontrollerar |
+|---|---|
+| `anropUtanTokenSvarar401` | Ett anrop utan token får 401, och servicen anropas aldrig. |
+| `anropMedTokenGerControllernAnvandarensId` | En giltig token med id 5 gör att servicen anropas med `userId` 5. Det visar att `@CurrentUserId` läser rätt id ur token. |
+| `felaktigTokenSvarar401` | En trasig token får 401. |
+| `utgangenTokenSvarar401` | En token som har gått ut får 401. |
+| `headernXUserIdGerIngenAtkomstLangre` | Den gamla headern `X-User-Id` ger ingen åtkomst längre. |
+| `inloggningKraverIngenToken` | Inloggningen går att anropa utan token och svarar med token och användare. |
+| `felLosenordSvarar401MedMeddelande` | Fel lösenord ger 401 med `{"error": "Fel e-post eller lösenord."}`. |
+| `tomtLosenordSvarar400` | Tomt lösenord ger 400 med `{"password": "Lösenord krävs"}`. |
+
 ### `TicketServiceTest` (31 tester): ärenden
 
 Den största testklassen. Testerna är grupperade efter story, med en kommentar (`// ---- ... ----`) före varje grupp.
@@ -381,6 +419,9 @@ Den här tabellen visar alla regler om vem som får göra vad, och vilka tester 
 | Bara anmälaren får öppna sitt ärende igen | `TicketService.reopenTicket` | `reopenTicketNekasForAnnanAnvandare` | `reopenTicketGorLostArendePagaende` |
 | IT och anmälaren får kommentera | `CommentService.createComment` | `annanAnstalldFarInteKommentera` | `itAnsvarigFarKommenteraArendet`, `anmalarenFarSvaraISittEgetArende` |
 | IT och anmälaren får bifoga bilder | `AttachmentService.upload` | `annanAnstalldFarInteBifoga` | `anmalarenKanBifogaPng`, `itAnsvarigKanBifogaTillAndrasArende` |
+| Bara mottagaren får markera en notis som läst | `NotificationService.markAsRead` | `manKanInteMarkeraNagonAnnansNotisSomLast` | – |
+| Alla anrop utom inloggningen kräver giltig token | `SecurityConfig` | `anropUtanTokenSvarar401`, `felaktigTokenSvarar401`, `utgangenTokenSvarar401`, `headernXUserIdGerIngenAtkomstLangre` | `anropMedTokenGerControllernAnvandarensId` |
+| Bara rätt e-post och lösenord ger en token | `AuthService.login` | `loginKastarInvalidCredentialsVidFelLosenord`, `loginKastarSammaFelForEpostSomInteFinns` | `loginGerTokenMedAnvandarensId` |
 
 **Regler som inte har tester än:**
 

@@ -26,6 +26,14 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role;
 
+    /** Det man loggar in med (TB-33). Null för en användare som inte kan logga in. */
+    @Column(unique = true)
+    private String email;
+
+    /** BCrypt-hash av lösenordet. Lösenordet sparas aldrig i klartext (TB-33). */
+    @Column(name = "password_hash", length = 100)
+    private String passwordHash;
+
     /** Krävs av JPA. */
     protected User() {
     }
@@ -45,5 +53,13 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 }

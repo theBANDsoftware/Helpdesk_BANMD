@@ -17,7 +17,7 @@ Ett enkelt ärendesystem där anställda på en liten organisation anmäler IT-f
 | Del | Teknik |
 |---|---|
 | Frontend | React 19 med TypeScript, Vite, React Router |
-| Backend | Java 21, Spring Boot 4 (Web, Data JPA, Validation) |
+| Backend | Java 21, Spring Boot 4 (Web, Data JPA, Validation, Security med JWT) |
 | Databas | MariaDB på Davids VPS |
 
 Varför vi valt den här stacken står i [beslutsloggen](docs/beslutslogg.md).
@@ -29,6 +29,7 @@ Varför vi valt den här stacken står i [beslutsloggen](docs/beslutslogg.md).
 - **Java 21**: kontrollera med `java -version`
 - **Node.js 22** eller senare: kontrollera med `node -v`
 - **Databasuppgifter** till MariaDB på Davids VPS: adress, användarnamn och lösenord. Fråga David. Uppgifterna skickas aldrig i chatten eller läggs i repot.
+- **Lösenordet till testanvändarna**, för att logga in i appen. Det får du också av David, privat.
 
 Maven behöver du inte installera. Repot innehåller `mvnw`, som laddar ner rätt version själv.
 
@@ -39,13 +40,15 @@ git clone https://github.com/theBANDsoftware/Helpdesk_BANMD.git
 cd Helpdesk_BANMD
 ```
 
-### 2. Lägg in databasuppgifterna
+### 2. Lägg in databasuppgifterna och JWT-nyckeln
 
 ```bash
 cp backend/helpdesk/.env.example backend/helpdesk/.env
 ```
 
 Öppna `backend/helpdesk/.env` och fyll i adress, användarnamn och lösenord. `DB_URL` är bara adress, port och databas, t.ex. `123.45.67.89:3306/helpdesk`, utan `jdbc:mariadb://`. Filen finns i `.gitignore` och följer aldrig med i en commit.
+
+Fyll också i `JWT_SECRET`, nyckeln som signerar inloggningen. Skapa en egen med `openssl rand -base64 32` och klistra in resultatet. Den måste vara minst 32 tecken. Mer om inloggningen finns i [docs/inloggning.md](docs/inloggning.md).
 
 Databasen och tabellerna på VPS:en skapas av David med skripten i [`database/`](database/README.md). Det behöver du inte göra själv.
 
@@ -56,7 +59,7 @@ cd backend/helpdesk
 ./mvnw spring-boot:run
 ```
 
-På Windows: `mvnw.cmd spring-boot:run`. Första gången tar det en stund, eftersom Maven laddar ner alla beroenden. Backend är igång när det står `Started HelpdeskApplication` och svarar på http://localhost:8080/api/users. API-dokumentationen finns på http://localhost:8080/swagger-ui.html.
+På Windows: `mvnw.cmd spring-boot:run`. Första gången tar det en stund, eftersom Maven laddar ner alla beroenden. Backend är igång när det står `Started HelpdeskApplication`. API-dokumentationen finns på http://localhost:8080/swagger-ui.html. Där loggar du in med `POST /api/auth/login` och klistrar in token under **Authorize** (se [docs/inloggning.md](docs/inloggning.md)). Alla anrop utom inloggningen kräver token, så http://localhost:8080/api/tickets svarar 401 i webbläsaren. Det är rätt.
 
 ### 4. Starta frontend (terminal 2)
 
@@ -66,7 +69,7 @@ npm install
 npm run dev
 ```
 
-Öppna http://localhost:5173. Om allt fungerar visar sidan *Vem är du?* och en lista med användarna från databasen. Då når frontend backend, och backend når databasen. Sidan hämtar bara när den laddas, så ladda om den om du startade frontend innan backend var klar.
+Öppna http://localhost:5173. Sidan visar *Logga in*. Logga in med en av testanvändarna, t.ex. `maria.nordin@helpdesk.test` (IT-ansvarig) eller `anna.lind@helpdesk.test` (anställd), och lösenordet från David. Alla testanvändare finns i [docs/inloggning.md](docs/inloggning.md). Kommer du in når frontend backend, och backend når databasen.
 
 ### Om något inte fungerar
 
@@ -75,7 +78,8 @@ npm run dev
 | Kunde inte nå backend | Backend är inte startad, eller startade med fel. Titta i terminal 1. |
 | Databasen svarar inte: ${DB_URL} | `backend/helpdesk/.env` saknas eller ligger i fel mapp. Gör steg 2 och starta om backend. |
 | Databasen svarar inte: … (något annat) | Fel i `backend/helpdesk/.env`, VPS:en är nere, eller din IP-adress släpps inte in. Backend startar ändå, så du kan rätta `.env` och starta om. |
-| Det finns inga användare i databasen | Tabellerna finns men testdatan saknas. Be David köra `database/V2__testdata.sql`. |
+| Fel e-post eller lösenord. | Fel uppgifter, eller så har David inte satt lösenorden eller kört `database/V6__inloggning.sql` än. |
+| Man loggas ut av sig själv | Inloggningen gäller i 8 timmar. Utan `JWT_SECRET` i `.env` loggas alla också ut när backend startas om. |
 
 ## Kommandon
 
@@ -95,6 +99,7 @@ Backend är uppdelad efter **typ av klass**: alla controllers i en mapp, alla se
 ```
 backend/helpdesk/src/main/java/com/thebanmd/helpdesk/
   HelpdeskApplication.java
+  config/                     ← inställningar, t.ex. SecurityConfig för inloggningen
   controllers/                ← tar emot anropen, t.ex. UserController
   services/                   ← logiken, t.ex. UserService
   repositories/               ← pratar med databasen (Spring Data JPA), t.ex. UserRepository
@@ -110,7 +115,7 @@ frontend/src/
       TicketDetail.tsx
       ticketsApi.ts
     users/                    ← en mapp per funktion
-      UserList.tsx
+      LoginForm.tsx
       usersApi.ts
   shared/
     apiClient.ts              ← alla anrop till backend går härigenom
@@ -130,6 +135,7 @@ Frontend anropar alltid `/api/...`. Under utveckling skickar Vite vidare de anro
 | [Definition of Done](docs/definition-of-done.md) | När en story räknas som klar |
 | [MVP](docs/mvp.md) | Vad som ingår i första versionen |
 | [Databasschema](docs/databasschema.md) | Tabeller och relationer |
+| [Inloggning](docs/inloggning.md) | Hur inloggningen med JWT fungerar, testanvändare och felsökning |
 | [Beslutslogg](docs/beslutslogg.md) | Viktiga beslut och varför |
 | [Sprintar](docs/sprintar/) | Planning, standups, review och retro per sprint |
 | [Individuella reflektioner](docs/reflektioner/) | En per person, lämnas in vecka 8 |

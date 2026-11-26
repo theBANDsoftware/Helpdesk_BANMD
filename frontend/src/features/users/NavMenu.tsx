@@ -54,7 +54,7 @@ const menuLinks: MenuLink[] = [
   },
 ];
 
-/** Menyn i sidhuvudet. Visas bara när någon är vald, och visar bara länkarna för användarens roll. */
+/** Menyn i sidhuvudet. Visas bara när någon är inloggad, och visar bara länkarna för användarens roll. */
 export function NavMenu() {
   const { user } = useSelectedUser();
 

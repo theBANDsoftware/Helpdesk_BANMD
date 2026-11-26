@@ -1,5 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
+import com.thebanmd.helpdesk.config.CurrentUserId;
 import com.thebanmd.helpdesk.dtos.CommentResponse;
 import com.thebanmd.helpdesk.dtos.CreateCommentRequest;
 import com.thebanmd.helpdesk.services.CommentService;
@@ -29,7 +30,7 @@ public class CommentController {
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentResponse> addComment(
         @PathVariable Long id,
-        @RequestHeader("X-User-Id") Long userId,
+        @CurrentUserId Long userId,
         @Valid @RequestBody CreateCommentRequest request
     ) {
         CommentResponse response = commentService.createComment(id, userId, request);

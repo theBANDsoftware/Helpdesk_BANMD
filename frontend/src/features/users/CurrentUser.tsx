@@ -1,18 +1,22 @@
 import { useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelectedUser } from './selectedUserContext';
 import { roleLabels } from './usersApi';
 
-/** Namn, roll och "Byt användare" i sidhuvudet (AK 2 och 4). Visas bara när någon är vald. */
+/** Namn, roll och "Logga ut" i sidhuvudet (TB-33). Visas bara när någon är inloggad. */
 export function CurrentUser() {
-  const { user, clearUser } = useSelectedUser();
+  const { user, logOut } = useSelectedUser();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   if (user === null) {
     return null;
   }
 
-  function switchUser() {
-    clearUser();
+  function handleLogOut() {
+    logOut();
+    // Töm allt som hämtats, så att nästa person som loggar in inte ser den förras ärenden
+    queryClient.clear();
     navigate('/');
   }
 
@@ -21,8 +25,8 @@ export function CurrentUser() {
       <span>
         {user.name} <span className="pill">{roleLabels[user.role]}</span>
       </span>
-      <button type="button" className="btn" onClick={switchUser}>
-        Byt användare
+      <button type="button" className="btn" onClick={handleLogOut}>
+        Logga ut
       </button>
     </div>
   );
