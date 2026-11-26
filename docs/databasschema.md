@@ -16,6 +16,8 @@ erDiagram
     USERS ||--o{ COMMENTS : skriver
     TICKETS ||--o{ ATTACHMENTS : har
     USERS ||--o{ ATTACHMENTS : "laddar upp"
+    USERS ||--o{ NOTIFICATIONS : "får (recipient_id)"
+    TICKETS ||--o{ NOTIFICATIONS : gäller
 
     USERS {
         bigint id PK
@@ -50,6 +52,14 @@ erDiagram
         bigint size_bytes "NOT NULL"
         datetime created_at
     }
+    NOTIFICATIONS {
+        bigint id PK
+        bigint recipient_id FK "NOT NULL"
+        bigint ticket_id FK "NOT NULL"
+        varchar text "NOT NULL, max 255"
+        datetime created_at
+        datetime read_at "NULL = oläst"
+    }
 ```
 
 ## Tabeller
@@ -60,6 +70,7 @@ erDiagram
 | `tickets` | Ett ärende. Har alltid en anmälare (`created_by`) och kan vara tilldelat en IT-ansvarig (`assigned_to`) eller ingen. |
 | `comments` | En kommentar i ett ärende, skriven av en anställd eller en IT-ansvarig. |
 | `attachments` | En bifogad bild i ett ärende (TB-35). Själva bilden ligger i Backblaze B2 under `storage_key`, inte i databasen (beslut 11). |
+| `notifications` | En notis till den som anmält ett ärende, när någon annan har kommenterat, ändrat status eller tilldelat det (TB-84). `read_at` är tom tills notisen är läst. |
 
 Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i flera databaser.
 
@@ -75,6 +86,7 @@ Tabellen heter `users` och inte `user`, eftersom `user` är ett nyckelord i fler
 | Tilldela ett ärende | `tickets.assigned_to` |
 | Kommentera / Svara på kommentarer | `comments` |
 | Bifoga skärmdump | `attachments`, plus bildfilen i B2 |
+| Notiser i appen | `notifications`, plus `tickets` för vilket ärende notisen gäller |
 
 ## Designval
 

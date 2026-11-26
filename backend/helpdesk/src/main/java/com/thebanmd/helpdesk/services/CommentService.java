@@ -27,6 +27,7 @@ public class CommentService {
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
+	private final NotificationService notificationService;
 
     /** Hämtar alla kommentarer på ett ärende, äldst först. Kastar TicketNotFoundException om ärendet inte finns. */
     public List<CommentResponse> getComments(Long ticketId) {
@@ -62,6 +63,7 @@ public class CommentService {
         // 4. Skapa och spara kommentaren
         Comment comment = new Comment(ticket, author, request.body());
         Comment savedComment = commentRepository.save(comment);
+		notificationService.ticketUpdated(ticket, author, "kommenterade");
 
         // 5. Mappa tillbaka till en DTO för att skicka till frontend
         return commentMapper.toResponse(savedComment);
