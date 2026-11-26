@@ -229,9 +229,9 @@ export default function TicketDetail() {
         </section>
       )}
       <section className="card ticket-detail-pane">
-        <a href="#" onClick={() => navigate(-1)} className="back-link">
+        <button onClick={() => navigate(-1)} className="back-link btn">
           &lt; Tillbaka
-        </a>
+        </button>
 		{query.isPending && <p>Hämtar ärendet …</p>}
         {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>
