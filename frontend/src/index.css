@@ -43,7 +43,7 @@
   --font-size-xl: 1.3rem;
   --line-height-base: 1.55;
 
-  --sidebar-width: 15rem;
+  --sidebar-width: 10rem;
   --max-width-narrow: 32rem;
   --max-width-form: 40rem;
   --max-width-text: 65ch;
@@ -773,7 +773,8 @@ input[type='radio']:focus-visible {
 .ticket-comments-pane {
   order: 2;
   width: 26rem;
-  flex-shrink: 0;
+  flex: 1;
+  flex-shrink: 0.5;
   margin-left: auto;
   padding: var(--space-lg);
   background-color: var(--bg-page);
