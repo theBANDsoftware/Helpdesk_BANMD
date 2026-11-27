@@ -750,6 +750,13 @@ input[type='radio']:focus-visible {
   overflow-wrap: anywhere;
 }
 
+.data-table tr th {
+  padding-left: 0px;
+}
+.data-table tr td:last-of-type {
+  padding-right: 0px;
+}
+
 .data-table tr:last-child th,
 .data-table tr:last-child td {
   border-bottom: none;
@@ -795,10 +802,12 @@ input[type='radio']:focus-visible {
 }
 
 .ticket-detail-table th {
-  width: 11rem;
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--text-muted);
+  white-space: normal;
+	word-break: keep-all;
+	overflow-wrap: normal;
 }
 
 .ticket-detail-pane .section-divider.inline-field {
