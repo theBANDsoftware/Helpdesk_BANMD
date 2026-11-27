@@ -18,7 +18,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @EntityGraph(attributePaths = {"createdBy", "assignedTo"})
     List<Ticket> findAllByOrderByCreatedAtDescIdDesc();
 
-    List<Ticket> findByAssignedToIdOrderByCreatedAtDesc(Long assignedToId);
-
     List<Ticket> findByStatusIn(Collection<Status> statuses);
 }
