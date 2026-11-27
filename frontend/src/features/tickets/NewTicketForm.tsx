@@ -1,3 +1,4 @@
+import SimilarTickets from './SimilarTickets';
 import { Link } from 'react-router';
 import { useState } from "react";
 import type { FormEvent } from "react";
@@ -45,7 +46,7 @@ export default function NewTicketForm() {
       <h2 className="section-title">Anmäl ett fel</h2>
       {/* Många fel går att lösa själv, så visa vägen dit först (TB-77) */}
       <p className="faq-hint">
-        Kolla gärna <Link to="/faq">Vanliga frågor</Link> först, kanske finns svaret redan där.
+        Kolla gärna <Link to="/faq">FAQ</Link> först, kanske finns svaret redan där.
       </p>
       <form className="form-stack" onSubmit={handleSubmit} noValidate>
         <label className="form-field">
@@ -58,6 +59,7 @@ export default function NewTicketForm() {
           />
         </label>
         {fieldErrors.title && <p className="error">{fieldErrors.title}</p>}
+        <SimilarTickets title={title} />
 
         <label className="form-field">
           Beskrivning

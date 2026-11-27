@@ -43,7 +43,7 @@
   --font-size-xl: 1.3rem;
   --line-height-base: 1.55;
 
-  --sidebar-width: 15rem;
+  --sidebar-width: 10rem;
   --max-width-narrow: 32rem;
   --max-width-form: 40rem;
   --max-width-text: 65ch;
@@ -178,6 +178,27 @@ body {
   display: none;
 }
 
+/* Antalet olästa notiser ligger som en bubbla i hörnet på menylänken */
+.nav-link {
+	position: relative;
+}
+
+.notification-count {
+	position: absolute;
+	top: 0.1rem;
+	right: 0.25rem;
+	min-width: 1.1rem;
+	height: 1.1rem;
+	padding: 0 0.3rem;
+	border-radius: 999px;
+	background-color: var(--danger);
+	color: #fff;
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: 1.1rem;
+	text-align: center;
+}
+
 /* =========================================================
    Rubriker, texter, badges & pills
    ========================================================= */
@@ -259,6 +280,19 @@ h3 {
   border: 1px solid var(--success-border);
 }
 
+/* Meddelandet på inloggningen när användaren inte finns längre (TB-60) */
+.notice-removed {
+  max-width: var(--max-width-form);
+  margin: 0 0 var(--space-md) 0;
+  padding: 0.75rem var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--warning-text);
+  background-color: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius);
+}
+
 .summary-box {
   max-width: var(--max-width-narrow);
   background-color: var(--bg-page);
@@ -297,11 +331,34 @@ h3 {
   font-weight: 600;
 }
 
+.pill-info {
+	color: var(--accent);
+	background-color: var(--bg-selected);
+	border-color: var(--accent);
+	font-weight: 600;
+}
+
 .pill-danger {
   color: var(--danger);
   background-color: var(--danger-bg);
   border-color: var(--danger-border);
   font-weight: 600;
+}
+
+/* "Nytt svar" i ärendelistan (TB-79) */
+.pill-info {
+  color: var(--accent);
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+  font-weight: 600;
+}
+
+/* Märken till höger i en listrad, t.ex. "Nytt svar" och prioritet */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
 }
 
 .material-symbols-outlined {
@@ -575,6 +632,19 @@ input[type='radio']:focus-visible {
   border-color: var(--danger-border);
 }
 
+/* Olästa notiser, med en blå kant till vänster */
+.list-item-unread {
+	background-color: var(--bg-selected);
+	box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.list-item-unread .item-title {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-xs);
+	color: var(--accent);
+}
+
 .list-row-btn {
   justify-content: space-between;
   align-items: center;
@@ -680,6 +750,13 @@ input[type='radio']:focus-visible {
   overflow-wrap: anywhere;
 }
 
+.data-table tr th {
+  padding-left: 0px;
+}
+.data-table tr td:last-of-type {
+  padding-right: 0px;
+}
+
 .data-table tr:last-child th,
 .data-table tr:last-child td {
   border-bottom: none;
@@ -716,7 +793,8 @@ input[type='radio']:focus-visible {
 .ticket-comments-pane {
   order: 2;
   width: 26rem;
-  flex-shrink: 0;
+  flex: 1;
+  flex-shrink: 0.5;
   margin-left: auto;
   padding: var(--space-lg);
   background-color: var(--bg-page);
@@ -724,10 +802,12 @@ input[type='radio']:focus-visible {
 }
 
 .ticket-detail-table th {
-  width: 11rem;
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--text-muted);
+  white-space: normal;
+	word-break: keep-all;
+	overflow-wrap: normal;
 }
 
 .ticket-detail-pane .section-divider.inline-field {
@@ -971,8 +1051,10 @@ input[type='radio']:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-/* Vanliga frågor (TB-77) */
 }
+
+/* FAQ (TB-77) */
+
 .faq-section {
   margin-bottom: 1.5rem;
 }
@@ -1083,4 +1165,27 @@ input[type='radio']:focus-visible {
 
 .link-button:hover {
   color: var(--accent-hover);
+}
+
+/* Liknande öppna ärenden när man skriver en rubrik (TB-82) */
+.similar-tickets {
+  padding: 0.75rem var(--space-md);
+  color: var(--warning-text);
+  background-color: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius);
+}
+
+.similar-tickets-title {
+  margin: 0 0 var(--space-xs) 0;
+  font-weight: 600;
+}
+
+.similar-tickets ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.similar-tickets a {
+  overflow-wrap: anywhere;
 }

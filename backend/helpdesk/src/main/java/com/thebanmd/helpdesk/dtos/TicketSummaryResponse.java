@@ -22,5 +22,14 @@ public record TicketSummaryResponse(
     String assignedTo,
     Long assignedToId,
     Instant createdAt,
-    TicketPriority priority) {
+    TicketPriority priority,
+    boolean hasNewReplyFromReporter) {
+    /**
+     * Returnerar en kopia där hasNewReplyFromReporter är true (TB-79).
+     */
+    public TicketSummaryResponse withNewReplyFromReporter() {
+        return new TicketSummaryResponse(
+            id, title, category, status, createdBy, createdById,
+            assignedTo, assignedToId, createdAt, priority, true);
+    }
 }

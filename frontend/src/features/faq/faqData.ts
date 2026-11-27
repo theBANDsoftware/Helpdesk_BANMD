@@ -1,7 +1,7 @@
 import type { categoryTicket } from '../../Types';
 
 /**
- * Frågorna och svaren till Vanliga frågor (TB-77).
+ * Frågorna och svaren till FAQ (TB-77).
  *
  * Texterna står direkt i koden. Det finns ingen databas och ingen endpoint,
  * så den som vill ändra en fråga gör det här och skickar en PR (beslut 15).

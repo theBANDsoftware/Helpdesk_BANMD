@@ -1,27 +1,54 @@
-import { useState, type ReactNode } from 'react';
-import { readSelectedUser, writeSelectedUser } from '../../shared/selectedUserStorage';
+import { useEffect, useState, type ReactNode } from 'react';
+import {
+  SELECTED_USER_REMOVED_EVENT,
+  clearLogin,
+  readSelectedUser,
+  readToken,
+  saveLogin,
+} from '../../shared/selectedUserStorage';
 import { SelectedUserContext } from './selectedUserContext';
 import { roleLabels, type User } from './usersApi';
 
 /**
- * Håller reda på vem som är vald. Valet läses från localStorage när appen
- * startar och sparas där igen varje gång det ändras (AK 3).
+ * Håller reda på vem som är inloggad (TB-33). Användaren och token läses från
+ * localStorage när appen startar, så att man är inloggad även efter omladdning.
+ * Saknas token räknas man som utloggad, även om en användare finns sparad.
  */
 export function SelectedUserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => toUser(readSelectedUser()));
+  const [user, setUser] = useState<User | null>(() =>
+    readToken() === null ? null : toUser(readSelectedUser()),
+  );
+	const [userWasRemoved, setUserWasRemoved] = useState(false);
 
-  function selectUser(selected: User) {
-    writeSelectedUser(selected);
-    setUser(selected);
+	/*
+	 * Svarade backend 404 för användaren har apiClient redan loggat ut och skickat
+	 * eventet. Här nollas state också, och då skickar RequireUser vidare till
+	 * inloggningen i stället för att sidan visar ett felmeddelande (TB-60).
+	 */
+	useEffect(() => {
+		function handleUserRemoved() {
+			setUser(null);
+			setUserWasRemoved(true);
+		}
+
+		window.addEventListener(SELECTED_USER_REMOVED_EVENT, handleUserRemoved);
+		return () => window.removeEventListener(SELECTED_USER_REMOVED_EVENT, handleUserRemoved);
+	}, []);
+
+  function logIn(loggedIn: User, token: string) {
+    saveLogin(loggedIn, token);
+    setUser(loggedIn);
+		setUserWasRemoved(false);
   }
 
-  function clearUser() {
-    writeSelectedUser(null);
+  function logOut() {
+    clearLogin();
     setUser(null);
+		setUserWasRemoved(false);
   }
 
   return (
-    <SelectedUserContext.Provider value={{ user, selectUser, clearUser }}>
+    <SelectedUserContext.Provider value={{ user, logIn, logOut, userWasRemoved }}>
       {children}
     </SelectedUserContext.Provider>
   );

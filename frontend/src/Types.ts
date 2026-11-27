@@ -35,4 +35,5 @@ export type TicketSummary = {
   assignedTo: string | null;
   assignedToId: number | null;
   createdAt: string;
+  hasNewReplyFromReporter: boolean;
 };

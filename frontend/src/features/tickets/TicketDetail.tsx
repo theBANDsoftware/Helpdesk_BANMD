@@ -61,8 +61,7 @@ export default function TicketDetail() {
   // Mutation för att ändra eller ta bort tilldelning
   const assignMutation = useMutation({
     mutationFn: (assignedToUserId: number | null) => {
-      if (!currentUser) throw new Error('Ingen användare är vald');
-      return assignTicket(ticketId, assignedToUserId, currentUser.id);
+      return assignTicket(ticketId, assignedToUserId);
     },
     onSuccess: (updatedTicket) => {
       setAssignError(null);
@@ -86,8 +85,7 @@ export default function TicketDetail() {
   // Mutation för att ändra status (TB-27). Samma mönster som tilldelningen ovan.
   const statusMutation = useMutation({
     mutationFn: ({ status, resolution }: { status: StatusTicket; resolution?: string }) => {
-      if (!currentUser) throw new Error('Ingen användare är vald');
-      return updateTicketStatus(ticketId, status, currentUser.id, resolution);
+      return updateTicketStatus(ticketId, status, resolution);
     },
     onSuccess: (updatedTicket) => {
       setStatusError(null);
@@ -115,8 +113,7 @@ export default function TicketDetail() {
   // Mutation för att ändra kategori (TB-81). Samma mönster som prioriteten nedan.
   const categoryMutation = useMutation({
     mutationFn: (category: categoryTicket) => {
-      if (!currentUser) throw new Error('Ingen användare är vald');
-      return updateTicketCategory(ticketId, category, currentUser.id);
+      return updateTicketCategory(ticketId, category);
     },
     onSuccess: (updatedTicket) => {
       setCategoryError(null);
@@ -140,8 +137,7 @@ export default function TicketDetail() {
   // Mutation till prioritering
   const priorityMutation = useMutation({
     mutationFn: (priority: TicketPriority) => {
-      if (!currentUser) throw new Error('Ingen användare är vald');
-      return updateTicketPriority(ticketId, priority, currentUser.id);
+      return updateTicketPriority(ticketId, priority);
     },
     onSuccess: (updatedTicket) => {
       setPriorityError(null);
@@ -233,9 +229,9 @@ export default function TicketDetail() {
         </section>
       )}
       <section className="card ticket-detail-pane">
-        <a href="#" onClick={() => navigate(-1)} className="back-link">
+        <button onClick={() => navigate(-1)} className="back-link btn">
           &lt; Tillbaka
-        </a>
+        </button>
 		{query.isPending && <p>Hämtar ärendet …</p>}
         {query.isError && query.error instanceof ApiError && query.error.status === 404 && (
           <p className="error">Ärendet hittades inte</p>

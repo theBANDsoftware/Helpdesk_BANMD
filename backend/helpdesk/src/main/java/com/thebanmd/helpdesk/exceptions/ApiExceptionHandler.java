@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -20,6 +19,15 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
  */
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
+    /**
+     * Fältet code i svaret när den inloggade användaren inte finns (TB-60).
+     *
+     * Flera saker kan ge 404, så frontend behöver kunna se skillnad på dem.
+     * Koden är till för program och felmeddelandet för människor, så texten
+     * går att skriva om utan att frontend slutar fungera.
+     */
+    public static final String USER_NOT_FOUND_CODE = "USER_NOT_FOUND";
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<Map<String, String>> handleDatabaseError(DataAccessException e) {
@@ -37,20 +45,24 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(fieldErrors);
     }
 
-    /** Användaren i X-User-Id finns inte (beslut 10). */
+    /**
+     * Den inloggade användaren finns inte, t.ex. för att den tagits
+     * bort ur databasen. Svaret bär med sig USER_NOT_FOUND, så att frontend kan
+     * logga ut och skicka tillbaka till inloggningen (TB-60).
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUserNotFound(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", e.getMessage(), "code", USER_NOT_FOUND_CODE));
     }
 
-    /** Headern X-User-Id saknas, alltså är ingen användare vald (beslut 10). */
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<Map<String, String>> handleMissingHeader(MissingRequestHeaderException e) {
-        return ResponseEntity.badRequest()
-                .body(Map.of("error", "Ingen användare är vald. Headern " + e.getHeaderName() + " saknas."));
+    /** Fel e-post eller lösenord vid inloggning (TB-33). */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
     }
 
-    /** Ärendet finns inte. Svarar 404. */
+    /** Ärendet finns inte. Svarar 404 utan code, så att man inte loggas ut (TB-60). */
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleTicketNotFound(TicketNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
@@ -73,6 +85,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<Map<String, String>> handleAttachmentNotFound(AttachmentNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
+
+	/** Notisen finns inte, eller är någon annans (TB-84). */
+	@ExceptionHandler(NotificationNotFoundException.class)
+	public ResponseEntity<Map<String, String>> handleNotificationNotFound(NotificationNotFoundException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+	}
 
     /** Fel filtyp, för stor fil eller för många bilder (TB-35). */
     /** Status Löst utan lösning (TB-80). */

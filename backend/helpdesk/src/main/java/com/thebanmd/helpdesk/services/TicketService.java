@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +36,7 @@ public class TicketService {
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+	private final NotificationService notificationService;
 
     /** Skapar ett ärende med status NEW och den valda användaren som anmälare. */
     public void create(CreateTicketRequest ticket, Long createdById) {
@@ -71,7 +73,7 @@ public class TicketService {
      */
     @Transactional
     public TicketDetailResponse assignTicket(Long ticketId, AssignTicketRequest request, Long performedByUserId) {
-        requireItAdmin(performedByUserId, "tilldela ärenden");
+        User performingUser = requireItAdmin(performedByUserId, "tilldela ärenden");
 
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
@@ -84,6 +86,7 @@ public class TicketService {
         }
 
         Ticket updated = ticketRepository.save(ticket);
+		notificationService.ticketUpdated(updated, performingUser, "ändrade tilldelningen på");
         return ticketMapper.toDetailResponse(updated);
     }
 
@@ -113,6 +116,7 @@ public class TicketService {
         if (resolving) {
             commentRepository.save(new Comment(updated, performingUser, "Lösning: " + request.resolution().trim()));
         }
+		notificationService.ticketUpdated(updated, performingUser, "ändrade status på");
         return ticketMapper.toDetailResponse(updated);
     }
 
@@ -160,7 +164,15 @@ public class TicketService {
         }
 
         List<Ticket> tickets = ticketRepository.findAllByOrderByCreatedAtDescIdDesc();
-        return ticketMapper.toSummaryResponseList(tickets);
+
+        // Ärenden där anmälaren skrev den senaste kommentaren, bara Ny och Pågående (TB-79)
+        Set<Long> newReplyIds = commentRepository.findTicketIdsWhereLatestCommentIsByReporter(
+            List.of(Status.NEW, Status.IN_PROGRESS));
+
+        return tickets.stream()
+            .map(ticketMapper::toSummaryResponse)
+            .map(ticket -> newReplyIds.contains(ticket.id()) ? ticket.withNewReplyFromReporter() : ticket)
+            .toList();
     }
 
     /** Hämta alla öppna ärenden och räkna per kategori */

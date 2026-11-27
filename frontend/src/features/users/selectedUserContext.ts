@@ -1,16 +1,18 @@
 import { createContext, useContext } from 'react';
 import type { User } from './usersApi';
 
-/** Det som alla komponenter kan läsa och göra med den valda användaren. */
+/** Det som alla komponenter kan läsa och göra med den inloggade användaren (TB-33). */
 export type SelectedUserContextValue = {
   user: User | null;
-  selectUser: (user: User) => void;
-  clearUser: () => void;
+  logIn: (user: User, token: string) => void;
+  logOut: () => void;
+  /** Sant när man loggades ut för att backend svarade att användaren inte finns (TB-60). */
+  userWasRemoved: boolean;
 };
 
 export const SelectedUserContext = createContext<SelectedUserContextValue | null>(null);
 
-/** Hämtar den valda användaren. Fungerar bara inuti <SelectedUserProvider>. */
+/** Hämtar den inloggade användaren. Fungerar bara inuti <SelectedUserProvider>. */
 export function useSelectedUser(): SelectedUserContextValue {
   const context = useContext(SelectedUserContext);
   if (context === null) {

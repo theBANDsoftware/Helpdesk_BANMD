@@ -1,5 +1,5 @@
 import { BrowserRouter, Outlet, Navigate, Route, Routes } from 'react-router';
-import { UserList } from './features/users/UserList';
+import { LoginForm } from './features/users/LoginForm';
 import { CurrentUser } from './features/users/CurrentUser';
 import { RequireUser } from './features/users/RequireUser';
 import { SelectedUserProvider } from './features/users/SelectedUserProvider';
@@ -10,14 +10,15 @@ import TicketDetail from './features/tickets/TicketDetail';
 import AllTickets from './features/tickets/Tickets';
 import TicketStatistics from './features/tickets/TicketStatistics';
 import FaqPage from './features/faq/FaqPage';
+import Notifications from './features/notifications/Notifications';
 import "./index.css"
 
 /**
  * Routern är en knutpunkt som alla stories rör. Håll det till en rad per sida,
  * och lägg själva sidan i sin egen mapp under features/.
  *
- * Alla sidor utom användarlistan ligger under <RequireUser />, så att man
- * skickas till listan om ingen användare är vald.
+ * Alla sidor utom inloggningen ligger under <RequireUser />, så att man
+ * skickas till inloggningen om ingen är inloggad (TB-33).
  */
 export default function App() {
   return (
@@ -33,7 +34,7 @@ export default function App() {
                   <span className="workspace-brand">Helpdesk</span>
                 </header>
                 <main className="login-main">
-                  <UserList />
+                  <LoginForm />
                 </main>
               </div>
             }
@@ -66,6 +67,7 @@ export default function App() {
               <Route path="/tickets/:id" element={<TicketDetail />} />
               <Route path="/tickets/statistics" element={<TicketStatistics />} />
               <Route path="/faq" element={<FaqPage />} />
+							<Route path="/notifications" element={<Notifications />} />
             </Route>
           </Route>
 
