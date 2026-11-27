@@ -25,7 +25,7 @@ class ApiExceptionHandlerTest {
         assertThat(response.getBody()).containsEntry("error", "Användaren med id 7 finns inte");
     }
 
-    /** Ett ärende som inte finns får inte rensa valet av användare (AK 3). */
+    /** Ett ärende som inte finns får inte logga ut användaren (AK 3). */
     @Test
     void arendeSomInteFinnsGer404UtanCode() {
         ResponseEntity<Map<String, String>> response =

@@ -1,5 +1,6 @@
 package com.thebanmd.helpdesk.controllers;
 
+import com.thebanmd.helpdesk.config.CurrentUserId;
 import com.thebanmd.helpdesk.dtos.AttachmentFile;
 import com.thebanmd.helpdesk.dtos.AttachmentResponse;
 import com.thebanmd.helpdesk.services.AttachmentService;
@@ -35,7 +36,7 @@ public class AttachmentController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AttachmentResponse> upload(
             @PathVariable Long ticketId,
-            @RequestHeader("X-User-Id") Long userId,
+            @CurrentUserId Long userId,
             @RequestParam("file") MultipartFile file) {
         AttachmentResponse response = attachmentService.upload(ticketId, userId, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

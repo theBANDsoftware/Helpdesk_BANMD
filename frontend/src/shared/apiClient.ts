@@ -1,4 +1,4 @@
-import { clearSelectedUserNotFound, readSelectedUserId } from './selectedUserStorage';
+import { clearSelectedUserNotFound, clearLogin, readToken } from './selectedUserStorage';
 
 /**
  * Gemensam funktion för alla anrop till backend. Varje funktion (features/...)
@@ -15,23 +15,23 @@ export class ApiError extends Error {
   }
 }
 
-/** Backend sätter fältet code till det här när användaren i X-User-Id inte finns (TB-60). */
+/** Backend sätter fältet code till det här när den inloggade användaren inte finns (TB-60). */
 const USER_NOT_FOUND = 'USER_NOT_FOUND';
 
 /**
- * Lägger till den valda användaren i headern X-User-Id, så att backend vet
- * vem som gör anropet (beslut 10). Är ingen vald skickas ingen header.
+ * Lägger till token från inloggningen i headern Authorization, så att backend vet
+ * vem som gör anropet (TB-33). Är ingen inloggad skickas ingen header.
  */
-function withSelectedUser(headers: Record<string, string>): Record<string, string> {
-  const userId = readSelectedUserId();
-  return userId === null ? headers : { ...headers, 'X-User-Id': String(userId) };
+function withToken(headers: Record<string, string>): Record<string, string> {
+  const token = readToken();
+  return token === null ? headers : { ...headers, Authorization: `Bearer ${token}` };
 }
 
 /**
- * Sant bara när 404 handlar om användaren i X-User-Id, t.ex. om den tagits bort
+ * Sant bara när 404 handlar om den inloggade användaren, t.ex. om den tagits bort
  * ur databasen. Vi läser fältet code och inte felmeddelandet, så att texten går
  * att ändra utan att den här kontrollen slutar fungera. Ett 404 för ett ärende
- * som inte finns saknar fältet och rör därför aldrig valet av användare (TB-60).
+ * som inte finns saknar fältet och loggar därför aldrig ut (TB-60).
  */
 function isUserNotFound(status: number, body: unknown): boolean {
   if (status !== 404 || typeof body !== 'object' || body === null) {
@@ -49,7 +49,7 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const isFormData = requestBody instanceof FormData;
 
-  const headers = withSelectedUser({
+  const headers = withToken({
     Accept: 'application/json',
     ...(!isFormData &&
       requestBody !== undefined && {
@@ -73,9 +73,17 @@ export async function apiRequest<T>(
 
   const body: unknown = await response.json().catch(() => null);
 
+  // 401 betyder att token saknas, är fel eller har gått ut (efter 8 timmar).
+  // Då loggas man ut och skickas till inloggningen. Vid själva inloggningen
+  // betyder 401 fel lösenord, och då visar inloggningssidan felet i stället.
+  if (response.status === 401 && path !== '/auth/login') {
+    clearLogin();
+    window.location.assign('/');
+  }
+
   if (!response.ok) {
-    // Finns inte användaren längre töms valet, så att man skickas till listan
-    // "Vem är du?" i stället för att fastna på ett felmeddelande (TB-60).
+    // Finns inte användaren längre loggas man ut och skickas till inloggningen,
+    // i stället för att fastna på ett felmeddelande (TB-60).
     if (isUserNotFound(response.status, body)) {
       clearSelectedUserNotFound();
     }
