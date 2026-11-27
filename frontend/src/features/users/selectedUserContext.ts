@@ -6,6 +6,8 @@ export type SelectedUserContextValue = {
   user: User | null;
   logIn: (user: User, token: string) => void;
   logOut: () => void;
+  /** Sant när man loggades ut för att backend svarade att användaren inte finns (TB-60). */
+  userWasRemoved: boolean;
 };
 
 export const SelectedUserContext = createContext<SelectedUserContextValue | null>(null);

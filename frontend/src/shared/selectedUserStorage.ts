@@ -6,6 +6,9 @@
 const USER_KEY = 'helpdesk.selectedUser';
 const TOKEN_KEY = 'helpdesk.token';
 
+/** Skickas på window när man loggats ut för att användaren inte finns i databasen (TB-60). */
+export const SELECTED_USER_REMOVED_EVENT = 'helpdesk:selected-user-removed';
+
 export function readSelectedUser(): unknown {
   try {
     const saved = localStorage.getItem(USER_KEY);
@@ -42,5 +45,21 @@ export function clearLogin(): void {
     localStorage.removeItem(TOKEN_KEY);
   } catch {
     // Inget sparat att ta bort.
+  }
+}
+
+/**
+ * Loggar ut och berättar för appen att användaren inte finns längre (TB-60).
+ *
+ * apiClient ligger utanför React och kan inte nå SelectedUserProvider direkt,
+ * så den skickar ett event på window i stället. Provider lyssnar och nollar sin
+ * state, och då skickar RequireUser vidare till inloggningen.
+ */
+export function clearSelectedUserNotFound(): void {
+  clearLogin();
+  try {
+    window.dispatchEvent(new Event(SELECTED_USER_REMOVED_EVENT));
+  } catch {
+    // Finns inget window räcker det att inloggningen är borttagen ur localStorage.
   }
 }

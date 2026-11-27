@@ -20,6 +20,15 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    /**
+     * Fältet code i svaret när den inloggade användaren inte finns (TB-60).
+     *
+     * Flera saker kan ge 404, så frontend behöver kunna se skillnad på dem.
+     * Koden är till för program och felmeddelandet för människor, så texten
+     * går att skriva om utan att frontend slutar fungera.
+     */
+    public static final String USER_NOT_FOUND_CODE = "USER_NOT_FOUND";
+
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<Map<String, String>> handleDatabaseError(DataAccessException e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -36,10 +45,15 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(fieldErrors);
     }
 
-    /** Användaren i inloggningstoken finns inte längre i databasen (TB-33). */
+    /**
+     * Den inloggade användaren finns inte, t.ex. för att den tagits
+     * bort ur databasen. Svaret bär med sig USER_NOT_FOUND, så att frontend kan
+     * logga ut och skicka tillbaka till inloggningen (TB-60).
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUserNotFound(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", e.getMessage(), "code", USER_NOT_FOUND_CODE));
     }
 
     /** Fel e-post eller lösenord vid inloggning (TB-33). */
@@ -48,7 +62,7 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
     }
 
-    /** Ärendet finns inte. Svarar 404. */
+    /** Ärendet finns inte. Svarar 404 utan code, så att man inte loggas ut (TB-60). */
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleTicketNotFound(TicketNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));

@@ -12,7 +12,7 @@ import { homePaths } from './homePaths';
  * vidare beroende på roll (se homePaths).
  */
 export function LoginForm() {
-  const { user, logIn } = useSelectedUser();
+  const { user, logIn, userWasRemoved } = useSelectedUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -36,6 +36,12 @@ export function LoginForm() {
   return (
     <section className="card">
       <h2 className="section-title">Logga in</h2>
+			{/* Blev man utloggad för att användaren tagits bort behöver man veta varför (TB-60) */}
+			{userWasRemoved && (
+				<p className="notice-removed">
+					Användaren du var inloggad som finns inte längre. Logga in med en annan.
+				</p>
+			)}
       <form className="form-stack" onSubmit={handleSubmit} noValidate>
         <label className="form-field">
           E-post

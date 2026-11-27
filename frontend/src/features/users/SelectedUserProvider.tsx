@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
+  SELECTED_USER_REMOVED_EVENT,
   clearLogin,
   readSelectedUser,
   readToken,
@@ -17,19 +18,37 @@ export function SelectedUserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() =>
     readToken() === null ? null : toUser(readSelectedUser()),
   );
+	const [userWasRemoved, setUserWasRemoved] = useState(false);
+
+	/*
+	 * Svarade backend 404 för användaren har apiClient redan loggat ut och skickat
+	 * eventet. Här nollas state också, och då skickar RequireUser vidare till
+	 * inloggningen i stället för att sidan visar ett felmeddelande (TB-60).
+	 */
+	useEffect(() => {
+		function handleUserRemoved() {
+			setUser(null);
+			setUserWasRemoved(true);
+		}
+
+		window.addEventListener(SELECTED_USER_REMOVED_EVENT, handleUserRemoved);
+		return () => window.removeEventListener(SELECTED_USER_REMOVED_EVENT, handleUserRemoved);
+	}, []);
 
   function logIn(loggedIn: User, token: string) {
     saveLogin(loggedIn, token);
     setUser(loggedIn);
+		setUserWasRemoved(false);
   }
 
   function logOut() {
     clearLogin();
     setUser(null);
+		setUserWasRemoved(false);
   }
 
   return (
-    <SelectedUserContext.Provider value={{ user, logIn, logOut }}>
+    <SelectedUserContext.Provider value={{ user, logIn, logOut, userWasRemoved }}>
       {children}
     </SelectedUserContext.Provider>
   );
