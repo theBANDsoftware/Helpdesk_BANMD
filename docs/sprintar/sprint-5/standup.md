@@ -66,8 +66,8 @@
 
 | Namn | Närvaro | Igår | Idag | Hinder |
 |---|---|---|---|---|
-| Adli Anabtawi | | | | |
-| Bleart Rama | | | | |
-| David Andersson | | | | |
-| Noah Fältman | | | | |
-| Mustafa Samir | | | | |
+| Adli Anabtawi |Ja|(TB-33) har pushats ut, Adli och Noah läser igenom den och kolla så att dem är nöjda med den, sen gör dem en PRom PR.|-|-|
+| Bleart Rama |Ja|Klar med TB-82: Som anställd vill jag se mina liknande öppna ärenden när jag skriver en rubrik|Fyllt i standup.md, mergat pull requests|-|
+| David Andersson |Ja|Klar med Bugfix: skalning av huvudfönster i ticketdetail|Klar med bugg fix för bakåt knappen, fixar merge konflikts|-|
+| Noah Fältman |Ja|(TB-33) har pushats ut, Adli och Noah läser igenom den och kolla så att dem är nöjda med den, sen gör dem en PRom PR. Hittat bugg på tillbaka knappen, funkar inte på firefox.|Godkänt pull requests|-|
+| Mustafa Samir |Ja|Klar med TB-60 Tillbaka till användarlistan om den valda användaren inte finns|-|-|
